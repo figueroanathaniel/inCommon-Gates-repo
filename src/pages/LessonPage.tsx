@@ -111,10 +111,10 @@ export default function LessonPage() {
             <MirrorReading pillars={inscribed} label={stone.data!.label} />
           ) : (
             <div className="mx-auto mt-14 max-w-2xl border px-8 py-12 text-center" style={{ borderColor: "rgba(34,31,26,.25)", background: "rgba(255,255,255,.3)" }}>
-              <p className="font-han text-[26px] font-bold text-[#221f1a]">鑑未銘</p>
+              <p className="font-han text-[26px] font-bold text-[#221f1a]">命盤未排</p>
               <p className="font-gloss mt-4 text-[15.5px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
-                The Stone is not yet inscribed, and the house does not read a chart it does not hold.
-                When the Stone is set, this scroll will read it whole, aloud, in the order of the scrolls you have unrolled.
+                The Destiny Chart is not yet laid out, and the house does not read a chart it does not hold.
+                When it is laid out, this scroll will read it whole, aloud, in the order of the scrolls you have unrolled.
               </p>
             </div>
           )
@@ -122,7 +122,7 @@ export default function LessonPage() {
           <div className="mx-auto mt-14 max-w-2xl border-t pt-10" style={{ borderColor: "rgba(150,129,85,.45)" }}>
             <div className="flex items-baseline gap-4">
               <span className="font-han text-[22px] font-bold text-[#221f1a]">鑑</span>
-              <h2 className="font-gloss text-[13px] uppercase tracking-[0.22em] text-[#968155]">The turn of the Stone</h2>
+              <h2 className="font-gloss text-[13px] uppercase tracking-[0.22em] text-[#968155]">The turn of the Destiny Chart</h2>
             </div>
             <p className="font-gloss mt-5 text-[16px] leading-[1.85] text-[rgba(34,31,26,.85)]">{body.stoneTurn}</p>
             {showStoneChart ? (
@@ -131,11 +131,11 @@ export default function LessonPage() {
               </div>
             ) : inscribed ? (
               <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(34,31,26,.6)" }}>
-                Stand before the Stone itself in its own room when you wish to look longer.
+                Stand before the Destiny Chart itself in its own room when you wish to look longer.
               </p>
             ) : (
               <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(34,31,26,.6)" }}>
-                The Stone is not yet inscribed. What this scroll promises, it will keep on the day the Stone is set.
+                The Destiny Chart is not yet laid out. What this scroll promises, it will keep on the day it is laid out.
               </p>
             )}
           </div>

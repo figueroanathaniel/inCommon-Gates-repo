@@ -182,7 +182,7 @@ export const academyRouter = createRouter({
     const db = getDb();
     const existing = await db.select().from(masterChart).limit(1);
     if (existing.length > 0) {
-      throw new TRPCError({ code: "FORBIDDEN", message: "The Stone already stands. It is inscribed once." });
+      throw new TRPCError({ code: "FORBIDDEN", message: "The Destiny Chart is already laid out. It is laid out once." });
     }
     const p = castPillars(input.year, input.month, input.day, input.hour, input.minute, input.zone);
     await db.insert(masterChart).values({

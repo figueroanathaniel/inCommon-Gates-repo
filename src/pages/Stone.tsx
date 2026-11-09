@@ -38,14 +38,14 @@ function InscriptionForm() {
 
   return (
     <div className="mx-auto mt-10 max-w-xl border px-6 py-8 min-[820px]:px-10" style={{ borderColor: "rgba(34,31,26,.3)", background: "rgba(255,255,255,.35)" }}>
-      <h2 className="font-han text-[20px] font-bold text-[#221f1a]">銘石 · Inscribe the Stone</h2>
+      <h2 className="font-han text-[20px] font-bold text-[#221f1a]">排盤 · Lay out the Destiny Chart</h2>
       <p className="font-gloss mt-3 text-[14.5px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
         You carry the seal of the house. Set the true chart here, once, and every scroll in the hall
-        will be found written upon it. The Stone is inscribed once and not re-cut.
+        will be found written upon it. The Destiny Chart is laid out once and not redrawn.
       </p>
       <div className="mt-6 grid gap-4">
         <label className="block">
-          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(34,31,26,.6)" }}>Name upon the Stone</span>
+          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(34,31,26,.6)" }}>Name upon the Destiny Chart</span>
           <input className={field} style={border} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={120} />
         </label>
         <div className="grid grid-cols-2 gap-4">
@@ -65,7 +65,7 @@ function InscriptionForm() {
           <textarea className={`${field} min-h-[88px] py-2`} style={border} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} />
         </label>
         <div className="mt-2 flex flex-wrap items-center gap-4">
-          <JadeButton onClick={submit} disabled={!date || inscribe.isPending}>Set the Stone 銘</JadeButton>
+          <JadeButton onClick={submit} disabled={!date || inscribe.isPending}>Lay out the chart 排盤</JadeButton>
           {inscribe.error ? (
             <p className="font-gloss text-[13.5px]" style={{ color: "var(--warn-ink)" }} role="alert">{inscribe.error.message}</p>
           ) : null}
@@ -75,7 +75,7 @@ function InscriptionForm() {
   );
 }
 
-/** The Stone room: Your Nature, veiled or read. */
+/** The Destiny Chart (命盤) room: Your Nature, veiled or read. */
 export default function Stone() {
   const stone = trpc.academy.stone.useQuery();
   const { user, isAuthenticated } = useAuth();
@@ -94,7 +94,7 @@ export default function Stone() {
     <Shell paper>
       <section className="py-14 min-[820px]:py-20">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="flex justify-center"><Seal char="鑑" size={48} dark /></div>
+          <div className="flex justify-center"><Seal char="命" size={48} dark /></div>
           <h1 className="font-han mt-6 text-[38px] font-black tracking-[0.12em] text-[#221f1a] min-[820px]:text-[46px]">Your Nature</h1>
           <p className="font-gloss mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
             One true chart, set at the centre of the house as the stone was set in the desert:
@@ -104,7 +104,7 @@ export default function Stone() {
 
         {stone.isLoading ? (
           <p className="font-gloss mt-16 text-center text-[15px] italic" style={{ color: "rgba(34,31,26,.55)" }}>
-            The room is quiet while the Stone is sought.
+            The room is quiet while the Destiny Chart is sought.
           </p>
         ) : pillars && stone.data ? (
           <>
@@ -113,7 +113,7 @@ export default function Stone() {
                 Upon the pedestal is written: {stone.data.note}
               </p>
             ) : null}
-            <MirrorReading pillars={pillars} label={`The Stone: ${stone.data.label}`} />
+            <MirrorReading pillars={pillars} label={`The Destiny Chart: ${stone.data.label}`} />
             {stone.data.luck ? (
               <div className="mx-auto mt-14 max-w-3xl">
                 <LuckRoad luck={stone.data.luck} dayStem={stone.data.dayStem} dark />
@@ -126,22 +126,22 @@ export default function Stone() {
         ) : (
           <div className="mx-auto mt-14 max-w-2xl">
             <div className="border px-8 py-14 text-center" style={{ borderColor: "rgba(34,31,26,.3)", background: "rgba(255,255,255,.3)" }}>
-              <p className="font-han text-[60px] font-black leading-none" style={{ color: "rgba(34,31,26,.22)" }}>鑑</p>
-              <p className="font-han mt-6 text-[20px] font-bold text-[#221f1a]">石猶未銘</p>
+              <p className="font-han text-[60px] font-black leading-none" style={{ color: "rgba(34,31,26,.22)" }}>命</p>
+              <p className="font-han mt-6 text-[20px] font-bold text-[#221f1a]">命盤未排</p>
               <p className="font-gloss mx-auto mt-4 max-w-md text-[15px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
-                The Stone stands veiled. The house does not read a chart it does not hold, and it will not invent one.
+                The Destiny Chart is not yet laid out. The house does not read a chart it does not hold, and it will not invent one.
                 When the true chart is set here, every scroll will be found written upon it.
               </p>
             </div>
             {isAuthenticated && isAdmin ? <InscriptionForm /> : null}
             {isAuthenticated && !isAdmin ? (
               <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(34,31,26,.55)" }}>
-                Only the hand that carries the seal of the house may inscribe the Stone.
+                Only the hand that carries the seal of the house may lay out the Destiny Chart.
               </p>
             ) : null}
             {!isAuthenticated ? (
               <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(34,31,26,.55)" }}>
-                The Stone is inscribed after signing in with the seal of the house.
+                The Destiny Chart is laid out after signing in with the seal of the house.
               </p>
             ) : null}
           </div>

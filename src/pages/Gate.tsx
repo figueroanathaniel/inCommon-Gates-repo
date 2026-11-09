@@ -49,7 +49,7 @@ export default function Gate() {
 
         <div className="rise rise-4 mt-10 flex flex-wrap items-center gap-4">
           <JadeButton to="/hall">Enter the hall 入廳</JadeButton>
-          <GhostButton to="/stone">Stand before the Stone</GhostButton>
+          <GhostButton to="/stone">Stand before the Destiny Chart</GhostButton>
         </div>
 
         <p className="rise rise-5 font-gloss mt-8 text-[13px] text-[rgba(250,248,245,.5)]">
@@ -65,8 +65,8 @@ export default function Gate() {
       <section className="grid gap-14 py-20 min-[820px]:grid-cols-3 min-[820px]:gap-10">
         {[
           {
-            hanzi: "四柱",
-            english: "The Four Pillars",
+            hanzi: "八字",
+            english: "BaZi",
             text: "The year, the month, the day and the hour of a birth, written as eight characters and read as one life: root, sprout, flower and fruit.",
           },
           {

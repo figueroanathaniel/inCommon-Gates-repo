@@ -99,7 +99,7 @@ export default function Glossary() {
         </Entry>
       ))}
 
-      <Section hanzi="四柱" english="The Four Pillars" note="Root, sprout, flower, fruit." />
+      <Section hanzi="八字" english="BaZi" note="Root, sprout, flower, fruit." />
       {PILLAR_LABELS.map((l) => (
         <Entry key={l.key} hanzi={l.hanzi} english={l.english}>
           Its ground is {l.domain}.

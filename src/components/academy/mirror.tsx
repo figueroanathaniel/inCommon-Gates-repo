@@ -7,7 +7,7 @@ import { GhostButton, Rule } from "./chrome";
 /**
  * 鑑 The Mirror's whole reading of a chart, spoken in the order of the
  * scrolls: the self named, the census taken, the pillars read in their
- * grounds, the court assembled. Used by the Mirror scroll and the Stone room.
+ * grounds, the court assembled. Used by the Mirror scroll and the Destiny Chart room.
  * One gloss keeper walks the whole reading, so a symbol named in the naming
  * of the self is kept in English when the court speaks it again.
  */

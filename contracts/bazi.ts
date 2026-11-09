@@ -140,10 +140,10 @@ export const LESSONS = [
   { id: "dizhi", order: 2, hanzi: "地支", english: "The Earthly Branches", title: "Twelve mansions of the year and the day" },
   { id: "wuxing", order: 3, hanzi: "五行", english: "The Five Phases", title: "The generating and overcoming rounds" },
   { id: "yinyang", order: 4, hanzi: "陰陽", english: "Yin and Yang", title: "The two breaths that move the ten and the twelve" },
-  { id: "sizhu", order: 5, hanzi: "四柱", english: "The Four Pillars", title: "How one moment becomes eight characters" },
+  { id: "sizhu", order: 5, hanzi: "八字", english: "BaZi", title: "How one moment becomes eight characters" },
   { id: "shishen", order: 6, hanzi: "十神", english: "The Ten Gods", title: "The relations that gather around the Day Master" },
   { id: "dayun", order: 7, hanzi: "大運", english: "The Luck Pillars", title: "The decades a life walks through" },
-  { id: "jian", order: 8, hanzi: "鑑", english: "The Mirror", title: "The Rosetta Stone read whole" },
+  { id: "jian", order: 8, hanzi: "鑑", english: "The Mirror", title: "The Destiny Chart read whole" },
 ] as const;
 
 export type LessonId = (typeof LESSONS)[number]["id"];
