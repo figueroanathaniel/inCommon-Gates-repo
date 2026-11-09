@@ -1,3 +1,4 @@
+import { ReturnLink } from "./return";
 import { Link, NavLink, useLocation } from "react-router";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -131,6 +132,7 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
         }}
       >
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-3 min-[820px]:px-10">
+          <ReturnLink dim="rgba(var(--txr),.75)" />
           <Link to="/" className="flex min-h-[44px] items-center gap-3" aria-label="The Eight Characters Academy, to the Gate">
             <Seal char="書" size={34} dark={paper} />
             <span className="flex flex-col leading-tight">
