@@ -23,8 +23,8 @@ function InscriptionForm() {
   const zone = zoneFrom(place);
 
   const field =
-    "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[#221f1a] placeholder:text-[rgba(34,31,26,.4)]";
-  const border = { borderColor: "rgba(34,31,26,.35)" } as const;
+    "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)]";
+  const border = { borderColor: "rgba(var(--txr),.35)" } as const;
 
   const submit = () => {
     if (!date || !time) return;
@@ -37,31 +37,31 @@ function InscriptionForm() {
   };
 
   return (
-    <div className="mx-auto mt-10 max-w-xl border px-6 py-8 min-[820px]:px-10" style={{ borderColor: "rgba(34,31,26,.3)", background: "rgba(255,255,255,.35)" }}>
-      <h2 className="font-han text-[20px] font-bold text-[#221f1a]">排盤 · Lay out the Destiny Chart</h2>
-      <p className="font-gloss mt-3 text-[14.5px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
+    <div className="mx-auto mt-10 max-w-xl border px-6 py-8 min-[820px]:px-10" style={{ borderColor: "rgba(var(--txr),.3)", background: "rgba(var(--sfr),.84)" }}>
+      <h2 className="font-han text-[20px] font-bold text-[var(--tx)]">排盤 · Lay out the Destiny Chart</h2>
+      <p className="font-gloss mt-3 text-[14.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
         You carry the seal of the house. Set the true chart here, once, and every scroll in the hall
         will be found written upon it. The Destiny Chart is laid out once and not redrawn.
       </p>
       <div className="mt-6 grid gap-4">
         <label className="block">
-          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(34,31,26,.6)" }}>Name upon the Destiny Chart</span>
+          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>Name upon the Destiny Chart</span>
           <input className={field} style={border} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={120} />
         </label>
         <div className="grid grid-cols-2 gap-4">
           <label className="block">
-            <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(34,31,26,.6)" }}>Day of birth</span>
+            <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>Day of birth</span>
             <input type="date" className={field} style={border} value={date} onChange={(e) => setDate(e.target.value)} />
           </label>
           <label className="block">
-            <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(34,31,26,.6)" }}>Hour of birth</span>
+            <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>Hour of birth</span>
             <input type="time" className={field} style={border} value={time} onChange={(e) => setTime(e.target.value)} />
           </label>
         </div>
         <ZoneField dark value={place} onChange={setPlace} invalid={placeTried && !zone} fieldClass={field} border={border} />
         <SexField dark value={sex} onChange={setSex} />
         <label className="block">
-          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(34,31,26,.6)" }}>A line for the pedestal, if you wish</span>
+          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>A line for the pedestal, if you wish</span>
           <textarea className={`${field} min-h-[88px] py-2`} style={border} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} />
         </label>
         <div className="mt-2 flex flex-wrap items-center gap-4">
@@ -95,21 +95,21 @@ export default function Stone() {
       <section className="py-14 min-[820px]:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <div className="flex justify-center"><Seal char="命" size={48} dark /></div>
-          <h1 className="font-han mt-6 text-[38px] font-black tracking-[0.12em] text-[#221f1a] min-[820px]:text-[46px]">Your Nature</h1>
-          <p className="font-gloss mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
+          <h1 className="font-han mt-6 text-[38px] font-black tracking-[0.12em] text-[var(--tx)] min-[820px]:text-[46px]">Your Nature</h1>
+          <p className="font-gloss mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
             One true chart, set at the centre of the house as the stone was set in the desert:
             the same life read in every script the hall keeps, until the scripts become one reading.
           </p>
         </div>
 
         {stone.isLoading ? (
-          <p className="font-gloss mt-16 text-center text-[15px] italic" style={{ color: "rgba(34,31,26,.55)" }}>
+          <p className="font-gloss mt-16 text-center text-[15px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
             The room is quiet while the Destiny Chart is sought.
           </p>
         ) : pillars && stone.data ? (
           <>
             {stone.data.note ? (
-              <p className="font-gloss mx-auto mt-10 max-w-xl text-center text-[14.5px] italic leading-relaxed" style={{ color: "rgba(34,31,26,.6)" }}>
+              <p className="font-gloss mx-auto mt-10 max-w-xl text-center text-[14.5px] italic leading-relaxed" style={{ color: "rgba(var(--txr),.66)" }}>
                 Upon the pedestal is written: {stone.data.note}
               </p>
             ) : null}
@@ -125,22 +125,22 @@ export default function Stone() {
           </>
         ) : (
           <div className="mx-auto mt-14 max-w-2xl">
-            <div className="border px-8 py-14 text-center" style={{ borderColor: "rgba(34,31,26,.3)", background: "rgba(255,255,255,.3)" }}>
-              <p className="font-han text-[60px] font-black leading-none" style={{ color: "rgba(34,31,26,.22)" }}>命</p>
-              <p className="font-han mt-6 text-[20px] font-bold text-[#221f1a]">命盤未排</p>
-              <p className="font-gloss mx-auto mt-4 max-w-md text-[15px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
+            <div className="border px-8 py-14 text-center" style={{ borderColor: "rgba(var(--txr),.3)", background: "rgba(var(--sfr),.84)" }}>
+              <p className="font-han text-[60px] font-black leading-none" style={{ color: "rgba(var(--txr),.66)" }}>命</p>
+              <p className="font-han mt-6 text-[20px] font-bold text-[var(--tx)]">命盤未排</p>
+              <p className="font-gloss mx-auto mt-4 max-w-md text-[15px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
                 The Destiny Chart is not yet laid out. The house does not read a chart it does not hold, and it will not invent one.
                 When the true chart is set here, every scroll will be found written upon it.
               </p>
             </div>
             {isAuthenticated && isAdmin ? <InscriptionForm /> : null}
             {isAuthenticated && !isAdmin ? (
-              <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(34,31,26,.55)" }}>
+              <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
                 Only the hand that carries the seal of the house may lay out the Destiny Chart.
               </p>
             ) : null}
             {!isAuthenticated ? (
-              <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(34,31,26,.55)" }}>
+              <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
                 The Destiny Chart is laid out after signing in with the seal of the house.
               </p>
             ) : null}

@@ -25,7 +25,7 @@ export function ZoneField({
   const id = useId();
   const listId = `${id}-zones`;
   const errId = `${id}-err`;
-  const sub = dark ? "rgba(34,31,26,.6)" : "rgba(250,248,245,.55)";
+  const sub = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.55)";
   return (
     <label className="block">
       <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: sub }}>

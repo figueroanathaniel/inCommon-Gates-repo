@@ -32,30 +32,30 @@ export function MirrorReading({
   return (
     <div className="mt-10">
       <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
-        <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[#968155]">The reading</p>
+        <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[var(--gilt)]">The reading</p>
         <GhostButton dark onClick={() => setPlain(!plain)} aria-pressed={plain}>
           {plain ? "With characters 顯字" : "English only 隱字"}
         </GhostButton>
       </div>
       <PillarChart pillars={pillars} dark caption={`${label}. Touch any pillar to hear its ground.`} />
-      <p className="font-gloss mx-auto mt-8 max-w-2xl text-center text-[15px] italic leading-relaxed" style={{ color: "rgba(34,31,26,.65)" }}>
+      <p className="font-gloss mx-auto mt-8 max-w-2xl text-center text-[15px] italic leading-relaxed" style={{ color: "rgba(var(--txr),.65)" }}>
         The Day Master is {gloss.mark(dm.hanzi, dm.english)}. All that follows is spoken in relation to it.
       </p>
       {sections.map((s) => (
         <section key={s.hanzi} className="mx-auto mt-14 max-w-2xl">
           <div className="flex items-baseline gap-4">
-            <span className="font-han text-[24px] font-bold text-[#221f1a]">{s.hanzi}</span>
-            <h3 className="font-gloss text-[13px] uppercase tracking-[0.22em] text-[#968155]">{s.english}</h3>
+            <span className="font-han text-[24px] font-bold text-[var(--tx)]">{s.hanzi}</span>
+            <h3 className="font-gloss text-[13px] uppercase tracking-[0.22em] text-[var(--gilt)]">{s.english}</h3>
           </div>
           {s.lines.map((line, i) => (
-            <p key={i} className="font-gloss mt-4 text-[16px] leading-[1.85] text-[rgba(34,31,26,.88)]">{line}</p>
+            <p key={i} className="font-gloss mt-4 text-[16px] leading-[1.85] text-[rgba(var(--txr),.88)]">{line}</p>
           ))}
         </section>
       ))}
       {!compact ? (
         <>
           <Rule dark className="mx-auto mt-14 max-w-2xl" />
-          <p className="font-gloss mx-auto mt-8 max-w-2xl text-center text-[15px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
+          <p className="font-gloss mx-auto mt-8 max-w-2xl text-center text-[15px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
             Here the reading stops, for the tradition knows where its jurisdiction ends. The ground is named,
             the season is named, the court is named. What a life makes of them belongs to the life, not to the page.
           </p>

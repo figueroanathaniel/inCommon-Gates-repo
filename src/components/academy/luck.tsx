@@ -19,9 +19,9 @@ const age = (y: number, m: number) => (m ? `${y} y ${m} m` : `${y} y`);
  */
 export function SexField({ value, onChange, dark = false }: { value: Sex | null; onChange: (v: Sex | null) => void; dark?: boolean }) {
   const id = useId();
-  const sub = dark ? "rgba(34,31,26,.6)" : "rgba(250,248,245,.55)";
-  const ink = dark ? "#221f1a" : "#faf8f5";
-  const line = dark ? "rgba(34,31,26,.35)" : "rgba(250,248,245,.3)";
+  const sub = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.55)";
+  const ink = dark ? "var(--tx)" : "var(--tx)";
+  const line = dark ? "rgba(var(--txr),.35)" : "rgba(var(--txr),.3)";
   const opts: { v: Sex | null; han: string; en: string }[] = [
     { v: "m", han: "男", en: "Male" },
     { v: "f", han: "女", en: "Female" },
@@ -43,7 +43,7 @@ export function SexField({ value, onChange, dark = false }: { value: Sex | null;
               aria-checked={on}
               onClick={() => onChange(o.v)}
               className="font-gloss min-h-[44px] border px-4 text-[14px] transition-colors duration-200"
-              style={{ borderColor: on ? "#968155" : line, color: ink, background: on ? "rgba(150,129,85,.16)" : "transparent" }}
+              style={{ borderColor: on ? "var(--gilt)" : line, color: ink, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
             >
               {o.han ? <span className="font-han mr-2">{o.han}</span> : null}
               {o.en}
@@ -61,9 +61,9 @@ export function SexField({ value, onChange, dark = false }: { value: Sex | null;
  * and, where the birth may be shown, the day it opens.
  */
 export function LuckRoad({ luck, dayStem, dark = false }: { luck: LuckView; dayStem: number; dark?: boolean }) {
-  const ink = dark ? "#221f1a" : "#faf8f5";
-  const sub = dark ? "rgba(34,31,26,.62)" : "rgba(250,248,245,.62)";
-  const line = dark ? "rgba(34,31,26,.22)" : "rgba(250,248,245,.18)";
+  const ink = dark ? "var(--tx)" : "var(--tx)";
+  const sub = dark ? "rgba(var(--txr),.62)" : "rgba(var(--txr),.62)";
+  const line = dark ? "rgba(var(--txr),.22)" : "rgba(var(--txr),.18)";
   const dm = STEMS[dayStem];
   const s = luck.start;
   return (
@@ -90,12 +90,12 @@ export function LuckRoad({ luck, dayStem, dark = false }: { luck: LuckView; dayS
               aria-current={now ? "step" : undefined}
               aria-label={`From age ${age(d.ageYears, d.ageMonths)}${d.from ? `, ${d.from}` : ""}: ${stem.english} ${branch.english}, ${branch.animal}, ${god.english}${now ? ", the decade open now" : ""}`}
               className="flex min-w-0 flex-col items-center border px-1 py-3"
-              style={{ borderColor: now ? "#968155" : line, background: now ? "rgba(150,129,85,.12)" : "transparent" }}
+              style={{ borderColor: now ? "var(--gilt)" : line, background: now ? "rgba(var(--ac2r),.12)" : "transparent" }}
             >
               <span className="font-gloss text-[11px] tabular-nums" style={{ color: sub }}>{age(d.ageYears, d.ageMonths)}</span>
               <span className="font-han mt-2 text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{stem.hanzi}</span>
               <span className="font-han text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{branch.hanzi}</span>
-              <span className="font-han mt-2 text-[12px]" style={{ color: "#968155" }}>{god.hanzi}</span>
+              <span className="font-han mt-2 text-[12px]" style={{ color: "var(--gilt)" }}>{god.hanzi}</span>
               <span className="font-gloss text-center text-[10.5px] leading-snug" style={{ color: sub }}>{god.english}</span>
               <span className="font-gloss mt-1 text-center text-[10.5px] leading-snug" style={{ color: sub }}>{branch.animal}</span>
               {d.from ? <span className="font-gloss mt-1 text-[10.5px] tabular-nums" style={{ color: sub }}>{d.from.slice(0, 4)}</span> : null}

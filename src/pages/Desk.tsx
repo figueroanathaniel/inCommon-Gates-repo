@@ -25,8 +25,8 @@ export default function Desk() {
   const zone = zoneFrom(place);
 
   const field =
-    "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[#faf8f5] placeholder:text-[rgba(250,248,245,.35)]";
-  const border = { borderColor: "rgba(250,248,245,.3)" } as const;
+    "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)]";
+  const border = { borderColor: "rgba(var(--txr),.3)" } as const;
 
   const submit = () => {
     if (!date || !time) return;
@@ -43,8 +43,8 @@ export default function Desk() {
       <Shell>
         <section className="py-24 text-center">
           <div className="flex justify-center"><Seal char="案" size={48} /></div>
-          <h1 className="font-han mt-6 text-[30px] font-bold tracking-[0.15em] text-[#faf8f5]">案 · 書桌</h1>
-          <p className="font-gloss mx-auto mt-5 max-w-md text-[15.5px] leading-relaxed text-[rgba(250,248,245,.7)]">
+          <h1 className="font-han mt-6 text-[30px] font-bold tracking-[0.15em] text-[var(--tx)]">案 · 書桌</h1>
+          <p className="font-gloss mx-auto mt-5 max-w-md text-[15.5px] leading-relaxed text-[rgba(var(--txr),.7)]">
             The Desk is where you cast your own pillars and keep what you have cast.
             It is a private corner of the house, and the door opens only to a signed name.
           </p>
@@ -62,31 +62,31 @@ export default function Desk() {
         <div className="flex items-center gap-4">
           <Seal char="案" size={44} />
           <div>
-            <h1 className="font-han text-[32px] font-bold tracking-[0.15em] text-[#faf8f5]">案 · 書桌</h1>
-            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[#968155]">The Desk</p>
+            <h1 className="font-han text-[32px] font-bold tracking-[0.15em] text-[var(--tx)]">案 · 書桌</h1>
+            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Desk</p>
           </div>
         </div>
-        <p className="font-gloss mt-7 max-w-2xl text-[15.5px] leading-relaxed text-[rgba(250,248,245,.72)]">
+        <p className="font-gloss mt-7 max-w-2xl text-[15.5px] leading-relaxed text-[rgba(var(--txr),.72)]">
           Here you may cast the pillars of any moment you have leave to read. The Desk keeps six charts at most,
           for whoever keeps a hundred charts reads none of them. What you cast here is yours alone;
           the scrolls in the hall remain the same for every ear.
         </p>
 
         {/* The casting slip */}
-        <div className="mt-10 max-w-xl border px-6 py-8 min-[820px]:px-10" style={{ borderColor: "rgba(150,129,85,.35)", background: "rgba(29,29,36,.55)" }}>
-          <h2 className="font-han text-[19px] font-bold text-[#faf8f5]">排八字 · Cast the eight characters</h2>
+        <div className="mt-10 max-w-xl border px-6 py-8 min-[820px]:px-10" style={{ borderColor: "rgba(var(--ac2r),.35)", background: "rgba(var(--sfr),.84)" }}>
+          <h2 className="font-han text-[19px] font-bold text-[var(--tx)]">排八字 · Cast the eight characters</h2>
           <div className="mt-6 grid gap-4">
             <label className="block">
-              <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(250,248,245,.55)]">A name for the chart</span>
+              <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]">A name for the chart</span>
               <input className={field} style={border} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={120} placeholder="My own chart" />
             </label>
             <div className="grid grid-cols-2 gap-4">
               <label className="block">
-                <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(250,248,245,.55)]">Day of birth</span>
+                <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]">Day of birth</span>
                 <input type="date" className={field} style={border} value={date} onChange={(e) => setDate(e.target.value)} />
               </label>
               <label className="block">
-                <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(250,248,245,.55)]">Hour of birth</span>
+                <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]">Hour of birth</span>
                 <input type="time" className={field} style={border} value={time} onChange={(e) => setTime(e.target.value)} />
               </label>
             </div>
@@ -96,7 +96,7 @@ export default function Desk() {
               <JadeButton onClick={submit} disabled={!date || cast.isPending}>Cast the pillars</JadeButton>
               {cast.error ? <p className="font-gloss text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">{cast.error.message}</p> : null}
             </div>
-            <p className="font-gloss text-[12.5px] italic leading-relaxed" style={{ color: "rgba(250,248,245,.45)" }}>
+            <p className="font-gloss text-[12.5px] italic leading-relaxed" style={{ color: "rgba(var(--txr),.66)" }}>
               The year turns at 立春, near the fourth of February; the months turn at the solar terms;
               the days turn in the unbroken sixty-day round. The hour is read in the twelve double hours.
             </p>
@@ -107,18 +107,18 @@ export default function Desk() {
         <div className="mt-16">
           <Rule className="mb-10" />
           {charts.isLoading ? (
-            <p className="font-gloss text-[15px] italic text-[rgba(250,248,245,.5)]">The desk is being tidied.</p>
+            <p className="font-gloss text-[15px] italic text-[rgba(var(--txr),.66)]">The desk is being tidied.</p>
           ) : mine.length === 0 ? (
-            <p className="font-gloss text-[15px] italic text-[rgba(250,248,245,.55)]">
+            <p className="font-gloss text-[15px] italic text-[rgba(var(--txr),.66)]">
               The Desk is bare. Cast your own pillars above, and they will be kept here between visits.
             </p>
           ) : (
             <div className="grid gap-12">
               {mine.map((c) => (
-                <div key={c.id} className="border px-5 py-8 min-[820px]:px-8" style={{ borderColor: "rgba(150,129,85,.3)", background: "rgba(29,29,36,.4)" }}>
+                <div key={c.id} className="border px-5 py-8 min-[820px]:px-8" style={{ borderColor: "rgba(var(--ac2r),.3)", background: "rgba(var(--sfr),.84)" }}>
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
-                    <h3 className="font-han text-[20px] font-bold text-[#faf8f5]">{c.label}</h3>
-                    <span className="font-gloss text-[12.5px] text-[rgba(250,248,245,.5)]">
+                    <h3 className="font-han text-[20px] font-bold text-[var(--tx)]">{c.label}</h3>
+                    <span className="font-gloss text-[12.5px] text-[rgba(var(--txr),.66)]">
                       born {c.birthYear}-{String(c.birthMonth).padStart(2, "0")}-{String(c.birthDay).padStart(2, "0")}, {String(c.birthHour).padStart(2, "0")}:{String(c.birthMinute).padStart(2, "0")}
                       {c.birthZone ? `, ${zoneLabel(c.birthZone)}` : ", Beijing time"}
                     </span>
@@ -136,8 +136,8 @@ export default function Desk() {
                       <LuckRoad luck={c.luck} dayStem={c.dayStem} />
                     ) : c.birthZone ? (
                       <div>
-                        <h4 className="font-han text-[17px] font-bold text-[#faf8f5]">大運 · The Luck Pillars</h4>
-                        <p className="font-gloss mt-2 text-[14px] leading-relaxed text-[rgba(250,248,245,.65)]">
+                        <h4 className="font-han text-[17px] font-bold text-[var(--tx)]">大運 · The Luck Pillars</h4>
+                        <p className="font-gloss mt-2 text-[14px] leading-relaxed text-[rgba(var(--txr),.65)]">
                           The decades run forward or backward by the sex at birth. Say which, and they are laid out here.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2">
@@ -147,8 +147,8 @@ export default function Desk() {
                               type="button"
                               disabled={setSex.isPending}
                               onClick={() => setSex.mutate({ id: c.id, sex: v })}
-                              className="font-gloss min-h-[44px] border px-4 text-[14px] text-[#faf8f5] transition-colors duration-200 hover:bg-[rgba(150,129,85,.16)]"
-                              style={{ borderColor: "rgba(250,248,245,.3)" }}
+                              className="font-gloss min-h-[44px] border px-4 text-[14px] text-[var(--tx)] transition-colors duration-200 hover:bg-[rgba(var(--ac2r),.16)]"
+                              style={{ borderColor: "rgba(var(--txr),.3)" }}
                             >
                               <span className="font-han mr-2">{v === "m" ? "男" : "女"}</span>{v === "m" ? "Male" : "Female"}
                             </button>
@@ -156,7 +156,7 @@ export default function Desk() {
                         </div>
                       </div>
                     ) : (
-                      <p className="font-gloss text-[14px] italic leading-relaxed text-[rgba(250,248,245,.55)]">
+                      <p className="font-gloss text-[14px] italic leading-relaxed text-[rgba(var(--txr),.66)]">
                         This chart was cast before the Desk asked where the birth happened. Cast it again to see its luck pillars.
                       </p>
                     )}

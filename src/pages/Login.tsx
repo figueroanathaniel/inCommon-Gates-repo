@@ -4,10 +4,10 @@ import { Shell, Seal, JadeButton, GhostButton, Rule } from "@/components/academy
 import { trpc } from "@/providers/trpc";
 
 const field =
-  "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[#faf8f5] placeholder:text-[rgba(250,248,245,.35)]";
-const border = { borderColor: "rgba(250,248,245,.3)" } as const;
+  "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)]";
+const border = { borderColor: "rgba(var(--txr),.3)" } as const;
 const labelCls =
-  "font-gloss mb-1 block text-left text-[12px] uppercase tracking-[0.18em] text-[rgba(250,248,245,.55)]";
+  "font-gloss mb-1 block text-left text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]";
 
 export default function Login() {
   const [params] = useSearchParams();
@@ -44,12 +44,12 @@ export default function Login() {
     <Shell>
       <section className="flex min-h-[70dvh] flex-col items-center justify-center py-20">
         <Seal char="籍" size={52} />
-        <h1 className="font-han mt-8 text-center text-[30px] font-bold tracking-[0.15em] text-[#faf8f5]">入籍 · 簽名</h1>
-        <p className="font-gloss mt-3 text-center text-[13px] uppercase tracking-[0.28em] text-[#968155]">
+        <h1 className="font-han mt-8 text-center text-[30px] font-bold tracking-[0.15em] text-[var(--tx)]">入籍 · 簽名</h1>
+        <p className="font-gloss mt-3 text-center text-[13px] uppercase tracking-[0.28em] text-[var(--gilt)]">
           Write your name in the Register
         </p>
         <Rule className="mt-10 w-full max-w-xs" />
-        <p className="font-gloss mt-8 max-w-md text-center text-[15.5px] leading-relaxed text-[rgba(250,248,245,.72)]">
+        <p className="font-gloss mt-8 max-w-md text-center text-[15.5px] leading-relaxed text-[rgba(var(--txr),.72)]">
           The house keeps one page for every reader: the scrolls unrolled, the charts kept at the Desk.
           An email and a key of your choosing open your page. The scrolls themselves remain the same
           for every ear that enters.
@@ -123,7 +123,7 @@ export default function Login() {
           <GhostButton onClick={() => { if (!pending) guest.mutate(); }}>
             Enter as a guest 客
           </GhostButton>
-          <p className="font-gloss max-w-xs text-center text-[12.5px] italic leading-relaxed text-[rgba(250,248,245,.45)]">
+          <p className="font-gloss max-w-xs text-center text-[12.5px] italic leading-relaxed text-[rgba(var(--txr),.66)]">
             A guest's page lives in this browser alone. Clear it or come through another door,
             and the marks upon it cannot be found again.
           </p>

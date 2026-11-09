@@ -10,7 +10,7 @@
 // console — logging must never break the app.
 type Level = "info" | "warn" | "error";
 
-const ENDPOINT = "/api/log";
+const ENDPOINT = `${import.meta.env.BASE_URL}api/log`;
 // Coalesce bursts: errors during a render storm would otherwise fire one POST
 // each. Flush on a microtask so ordering is preserved.
 let queue: Array<{ level: Level; msg: string; ctx?: Record<string, unknown> }> =

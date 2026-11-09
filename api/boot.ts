@@ -9,7 +9,19 @@ import { log } from "./lib/logger";
 import { handleClientLog } from "./lib/clientlog";
 import { REQUEST_ID_HEADER, runWithRequestId } from "./lib/requestcontext";
 
-const app = new Hono<{ Bindings: HttpBindings }>();
+/* The house is served under /bazi/ on incommonspace.com. A proxy may strip
+   the prefix before the request arrives, or (in development, or reached
+   directly) it may not, so the router reads the path with it taken off. */
+const BASE = "/bazi";
+function basePathOf(url: string): string {
+  const start = url.indexOf("/", url.indexOf("://") + 3);
+  const q = url.indexOf("?", start);
+  let p = start === -1 ? "/" : q === -1 ? url.slice(start) : url.slice(start, q);
+  if (p === BASE || p.startsWith(BASE + "/")) p = p.slice(BASE.length) || "/";
+  return p;
+}
+
+const app = new Hono<{ Bindings: HttpBindings }>({ getPath: (req) => basePathOf(req.url) });
 
 // One middleware for both halves of request observability, because they need the
 // same scope and the same id:
@@ -59,7 +71,7 @@ app.use("*", async (c, next) => {
 app.use("/api/trpc/*", bodyLimit({ maxSize: 50 * 1024 * 1024 }));
 app.use("/api/trpc/*", async (c) => {
   return fetchRequestHandler({
-    endpoint: "/api/trpc",
+    endpoint: new URL(c.req.url).pathname.startsWith(BASE + "/") ? BASE + "/api/trpc" : "/api/trpc",
     req: c.req.raw,
     router: appRouter,
     createContext,

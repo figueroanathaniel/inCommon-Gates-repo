@@ -4,14 +4,14 @@ const PHASE_ORDER: Phase[] = ["wood", "fire", "earth", "metal", "water"];
 
 /** The table of the ten stems, set like a page from a thread-bound book. */
 export function StemsTable({ dark = true }: { dark?: boolean }) {
-  const line = dark ? "rgba(250,248,245,.16)" : "rgba(34,31,26,.18)";
-  const ink = dark ? "#faf8f5" : "#221f1a";
-  const sub = dark ? "rgba(250,248,245,.6)" : "rgba(34,31,26,.62)";
+  const line = dark ? "rgba(var(--txr),.16)" : "rgba(var(--txr),.18)";
+  const ink = dark ? "var(--tx)" : "var(--tx)";
+  const sub = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.62)";
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[640px] border-collapse text-left">
         <thead>
-          <tr className="font-gloss text-[12px] uppercase tracking-[0.18em]" style={{ color: "#968155" }}>
+          <tr className="font-gloss text-[12px] uppercase tracking-[0.18em]" style={{ color: "var(--gilt)" }}>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>Sign</th>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>Name</th>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>Phase</th>
@@ -48,14 +48,14 @@ export function StemsTable({ dark = true }: { dark?: boolean }) {
 
 /** The table of the twelve branches. */
 export function BranchesTable({ dark = true }: { dark?: boolean }) {
-  const line = dark ? "rgba(250,248,245,.16)" : "rgba(34,31,26,.18)";
-  const ink = dark ? "#faf8f5" : "#221f1a";
-  const sub = dark ? "rgba(250,248,245,.6)" : "rgba(34,31,26,.62)";
+  const line = dark ? "rgba(var(--txr),.16)" : "rgba(var(--txr),.18)";
+  const ink = dark ? "var(--tx)" : "var(--tx)";
+  const sub = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.62)";
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[680px] border-collapse text-left">
         <thead>
-          <tr className="font-gloss text-[12px] uppercase tracking-[0.18em]" style={{ color: "#968155" }}>
+          <tr className="font-gloss text-[12px] uppercase tracking-[0.18em]" style={{ color: "var(--gilt)" }}>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>Sign</th>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>Name</th>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>Creature</th>
@@ -84,7 +84,7 @@ export function BranchesTable({ dark = true }: { dark?: boolean }) {
                 {b.hours}
               </td>
               <td className="border-b py-3" style={{ borderColor: line }}>
-                <span className="font-han text-[16px] tracking-[0.2em]" style={{ color: "#968155" }}>
+                <span className="font-han text-[16px] tracking-[0.2em]" style={{ color: "var(--gilt)" }}>
                   {b.hiddenStems.map((i) => STEMS[i].hanzi).join(" ")}
                 </span>
               </td>
@@ -101,8 +101,8 @@ export function BranchesTable({ dark = true }: { dark?: boolean }) {
  * the overcoming star within. Drawn in ink; no picture could say it better.
  */
 export function PhasesDiagram({ dark = true }: { dark?: boolean }) {
-  const ink = dark ? "#faf8f5" : "#221f1a";
-  const gilt = "#968155";
+  const ink = dark ? "var(--tx)" : "var(--tx)";
+  const gilt = "var(--gilt)";
   const size = 340;
   const cx = size / 2;
   const cy = size / 2;
@@ -142,7 +142,7 @@ export function PhasesDiagram({ dark = true }: { dark?: boolean }) {
         </defs>
         {PHASE_ORDER.map((ph, i) => (
           <g key={ph}>
-            <circle cx={pts[i].x} cy={pts[i].y} r={34} fill={dark ? "#1d1d24" : "#f2ecdc"} stroke={gilt} strokeWidth={1} />
+            <circle cx={pts[i].x} cy={pts[i].y} r={34} fill="var(--bg)" stroke={gilt} strokeWidth={1} />
             <text x={pts[i].x} y={pts[i].y - 2} textAnchor="middle" dominantBaseline="central" fill={ink} fontSize={26} className="font-han" fontWeight={700}>
               {PHASES[ph].hanzi}
             </text>
@@ -152,7 +152,7 @@ export function PhasesDiagram({ dark = true }: { dark?: boolean }) {
           </g>
         ))}
       </svg>
-      <figcaption className="font-gloss mt-4 text-center text-[13px] italic" style={{ color: dark ? "rgba(250,248,245,.6)" : "rgba(34,31,26,.6)" }}>
+      <figcaption className="font-gloss mt-4 text-center text-[13px] italic" style={{ color: dark ? "rgba(var(--txr),.66)" : "rgba(var(--txr),.66)" }}>
         The gilt ring is 相生, the generating round; the pale star within is 相剋, the overcoming round.
       </figcaption>
     </figure>
@@ -161,9 +161,9 @@ export function PhasesDiagram({ dark = true }: { dark?: boolean }) {
 
 /** The court of the ten gods, set out for study. */
 export function GodsTable({ dark = true }: { dark?: boolean }) {
-  const line = dark ? "rgba(250,248,245,.16)" : "rgba(34,31,26,.18)";
-  const ink = dark ? "#faf8f5" : "#221f1a";
-  const sub = dark ? "rgba(250,248,245,.6)" : "rgba(34,31,26,.62)";
+  const line = dark ? "rgba(var(--txr),.16)" : "rgba(var(--txr),.18)";
+  const ink = dark ? "var(--tx)" : "var(--tx)";
+  const sub = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.62)";
   const rows = [
     ["same phase, same breath", TEN_GODS.companion],
     ["same phase, opposite breath", TEN_GODS.robwealth],
@@ -180,7 +180,7 @@ export function GodsTable({ dark = true }: { dark?: boolean }) {
     <div className="overflow-x-auto">
       <table className="w-full min-w-[600px] border-collapse text-left">
         <thead>
-          <tr className="font-gloss text-[12px] uppercase tracking-[0.18em]" style={{ color: "#968155" }}>
+          <tr className="font-gloss text-[12px] uppercase tracking-[0.18em]" style={{ color: "var(--gilt)" }}>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>Relation to the Day Master</th>
             <th className="border-b py-3 pr-4 font-medium" style={{ borderColor: line }}>God</th>
             <th className="border-b py-3 font-medium" style={{ borderColor: line }}>Reading</th>
@@ -192,7 +192,7 @@ export function GodsTable({ dark = true }: { dark?: boolean }) {
               <td className="font-gloss border-b py-3 pr-4 text-[14px]" style={{ borderColor: line, color: sub }}>{rel}</td>
               <td className="border-b py-3 pr-4" style={{ borderColor: line }}>
                 <span className="font-han text-[20px] font-semibold" style={{ color: ink }}>{g.hanzi}</span>{" "}
-                <span className="font-gloss text-[14px]" style={{ color: "#968155" }}>{g.english}</span>
+                <span className="font-gloss text-[14px]" style={{ color: "var(--gilt)" }}>{g.english}</span>
               </td>
               <td className="font-gloss border-b py-3 text-[14px] leading-snug" style={{ borderColor: line, color: sub }}>{g.reading}</td>
             </tr>
@@ -205,8 +205,8 @@ export function GodsTable({ dark = true }: { dark?: boolean }) {
 
 /** The sixty pairs of the sexagenary round, written in their order. */
 export function JiaziCycle({ dark = true }: { dark?: boolean }) {
-  const line = dark ? "rgba(250,248,245,.14)" : "rgba(34,31,26,.16)";
-  const ink = dark ? "rgba(250,248,245,.85)" : "rgba(34,31,26,.85)";
+  const line = dark ? "rgba(var(--txr),.14)" : "rgba(var(--txr),.16)";
+  const ink = dark ? "rgba(var(--txr),.85)" : "rgba(var(--txr),.85)";
   const cells = Array.from({ length: 60 }, (_, i) => ({
     n: i + 1,
     stem: STEMS[i % 10].hanzi,
@@ -219,7 +219,7 @@ export function JiaziCycle({ dark = true }: { dark?: boolean }) {
           <span className="font-han text-[18px] font-semibold leading-snug" style={{ color: ink }}>
             {c.stem}{c.branch}
           </span>
-          <span className="font-gloss text-[10px]" style={{ color: "#968155" }}>{c.n}</span>
+          <span className="font-gloss text-[10px]" style={{ color: "var(--gilt)" }}>{c.n}</span>
         </div>
       ))}
     </div>

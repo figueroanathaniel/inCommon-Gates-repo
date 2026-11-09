@@ -25,8 +25,8 @@ export function PillarChart({
   const [open, setOpen] = useState<string | null>(null);
   const [plain, setPlain] = useState(false);
   const gloss = new ReadingGloss(plain);
-  const inkColor = dark ? "#221f1a" : "#faf8f5";
-  const subColor = dark ? "rgba(34,31,26,.6)" : "rgba(250,248,245,.6)";
+  const inkColor = dark ? "var(--tx)" : "var(--tx)";
+  const subColor = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.6)";
 
   const selected = views.find((v) => v.key === open) ?? null;
 
@@ -51,7 +51,7 @@ export function PillarChart({
               >
                 {v.stem.hanzi}{v.branch.hanzi}
               </span>
-              <span className="font-han mt-3 text-[13px] tracking-[0.25em]" style={{ color: "#968155" }}>
+              <span className="font-han mt-3 text-[13px] tracking-[0.25em]" style={{ color: "var(--gilt)" }}>
                 {v.hanzi}
               </span>
               <span className="font-gloss mt-1 text-center text-[11px]" style={{ color: subColor }}>
@@ -62,8 +62,8 @@ export function PillarChart({
           const baseCls =
             "flex min-w-0 flex-1 flex-col items-center border-y px-1 py-5 transition-colors duration-200 min-[820px]:min-w-[110px]";
           const style = {
-            borderColor: active ? "#968155" : dark ? "rgba(34,31,26,.22)" : "rgba(250,248,245,.18)",
-            background: active ? (dark ? "rgba(150,129,85,.12)" : "rgba(150,129,85,.10)") : "transparent",
+            borderColor: active ? "var(--gilt)" : dark ? "rgba(var(--txr),.22)" : "rgba(var(--txr),.18)",
+            background: active ? (dark ? "rgba(var(--ac2r),.12)" : "rgba(var(--ac2r),.10)") : "transparent",
             cursor: interactive ? "pointer" : "default",
           } as const;
           return interactive ? (
@@ -94,12 +94,12 @@ export function PillarChart({
       {interactive && selected ? (
         <div
           className="mx-auto mt-8 max-w-2xl border px-6 py-6"
-          style={{ borderColor: dark ? "rgba(34,31,26,.25)" : "rgba(150,129,85,.35)", background: dark ? "rgba(255,255,255,.35)" : "rgba(29,29,36,.6)" }}
+          style={{ borderColor: dark ? "rgba(var(--txr),.25)" : "rgba(var(--ac2r),.35)", background: dark ? "rgba(var(--sfr),.84)" : "rgba(var(--sfr),.84)" }}
           role="region"
           aria-label={`Reading of the ${selected.english}`}
         >
           <div className="flex items-center justify-between gap-4">
-            <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[#968155]">Its ground</p>
+            <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[var(--gilt)]">Its ground</p>
             <GhostButton dark={dark} onClick={() => setPlain(!plain)} aria-pressed={plain}>
               {plain ? "With characters 顯字" : "English only 隱字"}
             </GhostButton>

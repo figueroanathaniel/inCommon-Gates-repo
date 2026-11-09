@@ -10,38 +10,44 @@ export default function Gate() {
       <section className="flex min-h-[88dvh] flex-col items-start justify-center py-16">
         <div className="rise rise-1 flex items-center gap-4">
           <Seal char="門" size={44} />
-          <span className="font-gloss text-[13px] uppercase tracking-[0.3em] text-[#968155]">
+          <span className="font-gloss text-[13px] uppercase tracking-[0.3em] text-[var(--gilt)]">
             A branch of inCommon
           </span>
         </div>
 
-        <h1 className="rise rise-2 mt-10 flex items-start gap-6 min-[820px]:gap-10">
+        <h1 className="rise rise-2 mt-10 flex min-w-0 items-start gap-4 min-[820px]:gap-10">
           <span
-            className="vertical-rl font-han font-black leading-none text-[#faf8f5]"
-            style={{ writingMode: "vertical-rl", fontSize: "clamp(64px, 14vw, 128px)", letterSpacing: "0.12em" }}
+            className="relative inline-flex shrink-0 items-center justify-center"
+            style={{ fontSize: "clamp(44px, 11vw, 112px)", width: "clamp(110px, 30vw, 300px)", height: "clamp(110px, 30vw, 300px)" }}
           >
-            八字
+            <span className="mark-ring" aria-hidden />
+            <span
+              className="vertical-rl font-han font-black leading-none text-[var(--tx)]"
+              style={{ writingMode: "vertical-rl", letterSpacing: "0.12em" }}
+            >
+              八字
+            </span>
           </span>
           <span className="flex flex-col justify-between pt-2">
             <span
-              className="vertical-rl font-han font-bold leading-none text-[#968155]"
+              className="vertical-rl font-han font-bold leading-none text-[var(--gilt)]"
               style={{ writingMode: "vertical-rl", fontSize: "clamp(30px, 6.5vw, 56px)", letterSpacing: "0.2em" }}
             >
               書院
             </span>
           </span>
-          <span className="mt-2 flex max-w-[300px] flex-col gap-4">
-            <span className="font-gloss text-[15px] uppercase tracking-[0.34em] text-[rgba(250,248,245,.65)]">
+          <span className="mt-2 flex min-w-0 max-w-[300px] flex-col gap-4">
+            <span className="font-gloss break-words text-[13px] uppercase tracking-[0.22em] min-[820px]:text-[15px] min-[820px]:tracking-[0.34em] text-[rgba(var(--txr),.66)]">
               The Eight Characters Academy
             </span>
-            <span className="hidden h-px w-24 min-[820px]:block" style={{ background: "rgba(150,129,85,.6)" }} />
-            <span className="font-gloss hidden text-[15px] italic leading-relaxed text-[rgba(250,248,245,.65)] min-[820px]:block">
+            <span className="hidden h-px w-24 min-[820px]:block" style={{ background: "rgba(var(--ac2r),.6)" }} />
+            <span className="font-gloss hidden text-[15px] italic leading-relaxed text-[rgba(var(--txr),.65)] min-[820px]:block">
               Four pillars, eight characters, and a life read in its own grammar.
             </span>
           </span>
         </h1>
 
-        <p className="rise rise-3 font-gloss mt-12 max-w-xl text-[17px] leading-relaxed text-[rgba(250,248,245,.85)]">
+        <p className="rise rise-3 font-gloss mt-12 max-w-xl text-[17px] leading-relaxed text-[rgba(var(--txr),.85)]">
           The art was always handed over slowly: one reader, one listener, one chart between them.
           This house keeps that slowness and opens its door wider. Whoever enters receives the
           scrolls whole and in their order, as if each had been unrolled for them alone.
@@ -52,7 +58,7 @@ export default function Gate() {
           <GhostButton to="/stone">Stand before the Destiny Chart</GhostButton>
         </div>
 
-        <p className="rise rise-5 font-gloss mt-8 text-[13px] text-[rgba(250,248,245,.5)]">
+        <p className="rise rise-5 font-gloss mt-8 text-[13px] text-[rgba(var(--txr),.66)]">
           {stone.data
             ? `Your Nature stands inscribed: ${stone.data.label}. Every scroll in the hall is written upon it.`
             : "Your Nature stands veiled. Once it is inscribed, every scroll will be found written upon it."}
@@ -80,18 +86,18 @@ export default function Gate() {
             text: "One true chart set at the centre of the hall. Every scroll returns to it, until the grammar of the art is something you have seen, not something you were told.",
           },
         ].map((c) => (
-          <div key={c.hanzi} className="border-t pt-6" style={{ borderColor: "rgba(150,129,85,.35)" }}>
-            {c.hanzi ? <span className="font-han text-[30px] font-bold text-[#faf8f5]">{c.hanzi}</span> : null}
-            <h2 className="font-gloss mt-2 text-[13px] uppercase tracking-[0.24em] text-[#968155]">{c.english}</h2>
-            <p className="font-gloss mt-4 text-[15px] leading-relaxed text-[rgba(250,248,245,.7)]">{c.text}</p>
+          <div key={c.hanzi} className="border-t pt-6" style={{ borderColor: "rgba(var(--ac2r),.35)" }}>
+            {c.hanzi ? <span className="font-han text-[30px] font-bold text-[var(--tx)]">{c.hanzi}</span> : null}
+            <h2 className="font-gloss mt-2 text-[13px] uppercase tracking-[0.24em] text-[var(--gilt)]">{c.english}</h2>
+            <p className="font-gloss mt-4 text-[15px] leading-relaxed text-[rgba(var(--txr),.7)]">{c.text}</p>
           </div>
         ))}
       </section>
 
       <section className="pb-10">
-        <div className="border px-6 py-10 text-center min-[820px]:px-16" style={{ borderColor: "rgba(150,129,85,.35)", background: "rgba(29,29,36,.55)" }}>
-          <p className="font-han text-[22px] font-semibold tracking-[0.2em] text-[#f2ecdc]">命好不如運好，運好不如流年好</p>
-          <p className="font-gloss mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[rgba(250,248,245,.65)]">
+        <div className="border px-6 py-10 text-center min-[820px]:px-16" style={{ borderColor: "rgba(var(--ac2r),.35)", background: "rgba(var(--sfr),.84)" }}>
+          <p className="font-han text-[22px] font-semibold tracking-[0.2em] text-[var(--paper)]">命好不如運好，運好不如流年好</p>
+          <p className="font-gloss mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[rgba(var(--txr),.65)]">
             A fine chart is not the equal of a fine decade, and a fine decade is not the equal of a fine year.
             The old readers were plain about this: nothing here is a verdict. The chart shows the seed;
             the tending is yours.

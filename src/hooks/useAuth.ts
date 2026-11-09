@@ -37,7 +37,7 @@ export function useAuth(options?: UseAuthOptions) {
 
   useEffect(() => {
     if (redirectOnUnauthenticated && !isLoading && !user) {
-      const currentPath = window.location.pathname;
+      const currentPath = window.location.pathname.replace(/^\/bazi(?=\/|$)/, "") || "/";
       if (currentPath !== redirectPath) {
         navigate(redirectPath);
       }

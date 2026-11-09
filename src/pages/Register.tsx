@@ -14,8 +14,8 @@ export default function Register() {
       <Shell>
         <section className="py-24 text-center">
           <div className="flex justify-center"><Seal char="冊" size={48} /></div>
-          <h1 className="font-han mt-6 text-[30px] font-bold tracking-[0.15em] text-[#faf8f5]">冊 · 學籍</h1>
-          <p className="font-gloss mx-auto mt-5 max-w-md text-[15.5px] leading-relaxed text-[rgba(250,248,245,.7)]">
+          <h1 className="font-han mt-6 text-[30px] font-bold tracking-[0.15em] text-[var(--tx)]">冊 · 學籍</h1>
+          <p className="font-gloss mx-auto mt-5 max-w-md text-[15.5px] leading-relaxed text-[rgba(var(--txr),.7)]">
             The Register keeps each reader's name and the marks of the scrolls they have read through.
             It opens only to the reader it belongs to.
           </p>
@@ -34,14 +34,14 @@ export default function Register() {
         <div className="flex items-center gap-4">
           <Seal char="冊" size={44} />
           <div>
-            <h1 className="font-han text-[32px] font-bold tracking-[0.15em] text-[#faf8f5]">冊 · 學籍</h1>
-            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[#968155]">The Register</p>
+            <h1 className="font-han text-[32px] font-bold tracking-[0.15em] text-[var(--tx)]">冊 · 學籍</h1>
+            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Register</p>
           </div>
         </div>
 
         <div className="mt-10 max-w-2xl">
-          <p className="font-gloss text-[16px] leading-relaxed text-[rgba(250,248,245,.8)]">
-            The house holds the name <span className="font-semibold text-[#faf8f5]">{user?.name ?? "an unsigned reader"}</span>.
+          <p className="font-gloss text-[16px] leading-relaxed text-[rgba(var(--txr),.8)]">
+            The house holds the name <span className="font-semibold text-[var(--tx)]">{user?.name ?? "an unsigned reader"}</span>.
             {readCount === 0
               ? " No scroll has yet been read through. The Prologue waits at the head of the hall."
               : readCount === LESSONS.length
@@ -49,7 +49,7 @@ export default function Register() {
                 : ` Of the nine scrolls, ${readCount} ${readCount === 1 ? "is" : "are"} read through. The rest wait in their order.`}
           </p>
           {(charts.data?.length ?? 0) > 0 ? (
-            <p className="font-gloss mt-3 text-[14.5px] text-[rgba(250,248,245,.6)]">
+            <p className="font-gloss mt-3 text-[14.5px] text-[rgba(var(--txr),.66)]">
               The Desk keeps {charts.data!.length} {charts.data!.length === 1 ? "chart" : "charts"} in your name.
             </p>
           ) : null}
@@ -62,12 +62,12 @@ export default function Register() {
               <li
                 key={l.id}
                 className="flex min-h-[44px] items-center gap-4 border-t py-4"
-                style={{ borderColor: "rgba(150,129,85,.25)" }}
+                style={{ borderColor: "rgba(var(--ac2r),.25)" }}
               >
-                <span className="font-gloss w-7 text-[12px] tracking-[0.2em] text-[rgba(250,248,245,.4)]">{String(i + 1).padStart(2, "0")}</span>
-                <span className="font-han w-12 text-[22px] font-bold text-[#faf8f5]">{l.hanzi}</span>
-                <span className="font-gloss flex-1 text-[14px] uppercase tracking-[0.18em] text-[rgba(250,248,245,.65)]">{l.english}</span>
-                <span className="font-gloss text-[12px] uppercase tracking-[0.16em]" style={{ color: read ? "#b0c6b3" : "rgba(250,248,245,.3)" }}>
+                <span className="font-gloss w-7 text-[12px] tracking-[0.2em] text-[rgba(var(--txr),.66)]">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-han w-12 text-[22px] font-bold text-[var(--tx)]">{l.hanzi}</span>
+                <span className="font-gloss flex-1 text-[14px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.65)]">{l.english}</span>
+                <span className="font-gloss text-[12px] uppercase tracking-[0.16em]" style={{ color: read ? "var(--ok)" : "rgba(var(--txr),.66)" }}>
                   {read ? "讀訖" : "未讀"}
                 </span>
               </li>
@@ -78,7 +78,7 @@ export default function Register() {
         <div className="mt-14 max-w-2xl">
           <Rule />
           <div className="mt-10 flex items-center justify-between">
-            <p className="font-gloss max-w-sm text-[13px] italic leading-relaxed text-[rgba(250,248,245,.5)]">
+            <p className="font-gloss max-w-sm text-[13px] italic leading-relaxed text-[rgba(var(--txr),.66)]">
               Signing out closes your page in the Register. Your marks remain, kept by the house until you return.
             </p>
             <GhostButton onClick={logout}>Sign out 退</GhostButton>

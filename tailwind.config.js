@@ -5,12 +5,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: '#141418',
+        ink: '#05060a',
         ink2: '#1d1d24',
         paper: '#f2ecdc',
         paperdim: '#e7dfca',
         inktext: '#221f1a',
-        gilt: '#968155',
+        gilt: '#b79bff',
         sage: '#b0c6b3',
         jade: '#2fff8f',
         safety: '#e5534d',

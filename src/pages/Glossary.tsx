@@ -21,13 +21,13 @@ function Entry({
   children: ReactNode;
 }) {
   return (
-    <div className="border-t py-4" style={{ borderColor: "rgba(150,129,85,.28)" }}>
+    <div className="border-t py-4" style={{ borderColor: "rgba(var(--ac2r),.28)" }}>
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <span className="font-han text-[24px] font-bold text-[#faf8f5]">{hanzi}</span>
-        {pinyin ? <span className="font-gloss text-[13px] tracking-[0.14em] text-[#968155]">{pinyin}</span> : null}
-        <span className="font-gloss text-[14px] uppercase tracking-[0.2em] text-[rgba(250,248,245,.85)]">{english}</span>
+        <span className="font-han text-[24px] font-bold text-[var(--tx)]">{hanzi}</span>
+        {pinyin ? <span className="font-gloss text-[13px] tracking-[0.14em] text-[var(--gilt)]">{pinyin}</span> : null}
+        <span className="font-gloss text-[14px] uppercase tracking-[0.2em] text-[rgba(var(--txr),.85)]">{english}</span>
       </div>
-      <p className="font-gloss mt-2 max-w-2xl text-[14.5px] leading-relaxed text-[rgba(250,248,245,.7)]">{children}</p>
+      <p className="font-gloss mt-2 max-w-2xl text-[14.5px] leading-relaxed text-[rgba(var(--txr),.7)]">{children}</p>
     </div>
   );
 }
@@ -35,9 +35,9 @@ function Entry({
 function Section({ hanzi, english, note }: { hanzi: string; english: string; note?: string }) {
   return (
     <header className="mt-16 flex items-baseline gap-4">
-      <span className="font-han text-[26px] font-bold text-[#faf8f5]">{hanzi}</span>
-      <h2 className="font-gloss text-[13px] uppercase tracking-[0.24em] text-[#968155]">{english}</h2>
-      {note ? <p className="font-gloss hidden text-[13px] italic text-[rgba(250,248,245,.5)] min-[820px]:block">{note}</p> : null}
+      <span className="font-han text-[26px] font-bold text-[var(--tx)]">{hanzi}</span>
+      <h2 className="font-gloss text-[13px] uppercase tracking-[0.24em] text-[var(--gilt)]">{english}</h2>
+      {note ? <p className="font-gloss hidden text-[13px] italic text-[rgba(var(--txr),.66)] min-[820px]:block">{note}</p> : null}
     </header>
   );
 }
@@ -58,11 +58,11 @@ export default function Glossary() {
         <div className="flex items-center gap-4">
           <Seal char="典" size={44} />
           <div>
-            <h1 className="font-han text-[34px] font-bold tracking-[0.15em] text-[#faf8f5]">字彙</h1>
-            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[#968155]">The Glossary</p>
+            <h1 className="font-han text-[34px] font-bold tracking-[0.15em] text-[var(--tx)]">字彙</h1>
+            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Glossary</p>
           </div>
         </div>
-        <p className="font-gloss mt-8 max-w-2xl text-[16px] leading-relaxed text-[rgba(250,248,245,.75)]">
+        <p className="font-gloss mt-8 max-w-2xl text-[16px] leading-relaxed text-[rgba(var(--txr),.75)]">
           The vocabulary a reading uses, given as the tradition gives it and in the order the scrolls teach it.
           A term is glossed once, at its first showing; the readings themselves keep the same rule, English
           beside the symbol at first appearance, English alone at every showing after.

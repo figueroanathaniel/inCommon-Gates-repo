@@ -50,7 +50,7 @@ export default function LessonPage() {
       <Shell paper>
         <section className="py-24 text-center">
           <p className="font-han text-[24px] font-bold">無此卷</p>
-          <p className="font-gloss mt-3 text-[15px] italic" style={{ color: "rgba(34,31,26,.65)" }}>
+          <p className="font-gloss mt-3 text-[15px] italic" style={{ color: "rgba(var(--txr),.65)" }}>
             No such scroll hangs in the hall.
           </p>
           <div className="mt-8 flex justify-center"><GhostButton to="/hall" dark>Return to the Hall</GhostButton></div>
@@ -73,19 +73,19 @@ export default function LessonPage() {
         {/* The scroll's head */}
         <header className="mx-auto max-w-2xl">
           <div className="flex items-center justify-between">
-            <span className="font-gloss text-[12px] uppercase tracking-[0.26em]" style={{ color: "rgba(34,31,26,.55)" }}>
+            <span className="font-gloss text-[12px] uppercase tracking-[0.26em]" style={{ color: "rgba(var(--txr),.66)" }}>
               Scroll {String(meta.order + 1).padStart(2, "0")} of {String(LESSONS.length).padStart(2, "0")}
             </span>
             <Seal char={meta.hanzi.charAt(0)} size={40} dark />
           </div>
-          <h1 className="font-han mt-8 text-[44px] font-black leading-tight tracking-[0.1em] text-[#221f1a] min-[820px]:text-[56px]">
+          <h1 className="font-han mt-8 text-[44px] font-black leading-tight tracking-[0.1em] text-[var(--tx)] min-[820px]:text-[56px]">
             {meta.hanzi}
           </h1>
-          <p className="font-gloss mt-2 text-[15px] uppercase tracking-[0.28em] text-[#968155]">{meta.english}</p>
-          <p className="font-gloss mt-3 text-[16px] italic" style={{ color: "rgba(34,31,26,.65)" }}>{meta.title}</p>
-          <blockquote className="mt-10 border-l-2 pl-6" style={{ borderColor: "#968155" }}>
-            <p className="font-han text-[19px] font-semibold leading-relaxed text-[#221f1a]">{body.epigraph}</p>
-            <cite className="font-gloss mt-3 block text-[13.5px] not-italic leading-relaxed" style={{ color: "rgba(34,31,26,.6)" }}>
+          <p className="font-gloss mt-2 text-[15px] uppercase tracking-[0.28em] text-[var(--gilt)]">{meta.english}</p>
+          <p className="font-gloss mt-3 text-[16px] italic" style={{ color: "rgba(var(--txr),.65)" }}>{meta.title}</p>
+          <blockquote className="mt-10 border-l-2 pl-6" style={{ borderColor: "var(--gilt)" }}>
+            <p className="font-han text-[19px] font-semibold leading-relaxed text-[var(--tx)]">{body.epigraph}</p>
+            <cite className="font-gloss mt-3 block text-[13.5px] not-italic leading-relaxed" style={{ color: "rgba(var(--txr),.66)" }}>
               {body.epigraphSource}
             </cite>
           </blockquote>
@@ -94,7 +94,7 @@ export default function LessonPage() {
         {/* The scroll's body */}
         <div className="mx-auto mt-12 max-w-2xl">
           {body.paragraphs.map((p, i) => (
-            <p key={i} className="font-gloss mt-6 text-[17px] leading-[1.9] text-[rgba(34,31,26,.9)]">{p}</p>
+            <p key={i} className="font-gloss mt-6 text-[17px] leading-[1.9] text-[rgba(var(--txr),.9)]">{p}</p>
           ))}
         </div>
 
@@ -110,31 +110,31 @@ export default function LessonPage() {
           inscribed ? (
             <MirrorReading pillars={inscribed} label={stone.data!.label} />
           ) : (
-            <div className="mx-auto mt-14 max-w-2xl border px-8 py-12 text-center" style={{ borderColor: "rgba(34,31,26,.25)", background: "rgba(255,255,255,.3)" }}>
-              <p className="font-han text-[26px] font-bold text-[#221f1a]">命盤未排</p>
-              <p className="font-gloss mt-4 text-[15.5px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
+            <div className="mx-auto mt-14 max-w-2xl border px-8 py-12 text-center" style={{ borderColor: "rgba(var(--txr),.25)", background: "rgba(var(--sfr),.84)" }}>
+              <p className="font-han text-[26px] font-bold text-[var(--tx)]">命盤未排</p>
+              <p className="font-gloss mt-4 text-[15.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
                 The Destiny Chart is not yet laid out, and the house does not read a chart it does not hold.
                 When it is laid out, this scroll will read it whole, aloud, in the order of the scrolls you have unrolled.
               </p>
             </div>
           )
         ) : (
-          <div className="mx-auto mt-14 max-w-2xl border-t pt-10" style={{ borderColor: "rgba(150,129,85,.45)" }}>
+          <div className="mx-auto mt-14 max-w-2xl border-t pt-10" style={{ borderColor: "rgba(var(--ac2r),.45)" }}>
             <div className="flex items-baseline gap-4">
-              <span className="font-han text-[22px] font-bold text-[#221f1a]">鑑</span>
-              <h2 className="font-gloss text-[13px] uppercase tracking-[0.22em] text-[#968155]">The turn of the Destiny Chart</h2>
+              <span className="font-han text-[22px] font-bold text-[var(--tx)]">鑑</span>
+              <h2 className="font-gloss text-[13px] uppercase tracking-[0.22em] text-[var(--gilt)]">The turn of the Destiny Chart</h2>
             </div>
-            <p className="font-gloss mt-5 text-[16px] leading-[1.85] text-[rgba(34,31,26,.85)]">{body.stoneTurn}</p>
+            <p className="font-gloss mt-5 text-[16px] leading-[1.85] text-[rgba(var(--txr),.85)]">{body.stoneTurn}</p>
             {showStoneChart ? (
               <div className="mt-8">
                 <PillarChart pillars={inscribed} dark caption={`Your Nature: ${stone.data!.label}`} />
               </div>
             ) : inscribed ? (
-              <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(34,31,26,.6)" }}>
+              <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
                 Stand before the Destiny Chart itself in its own room when you wish to look longer.
               </p>
             ) : (
-              <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(34,31,26,.6)" }}>
+              <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
                 The Destiny Chart is not yet laid out. What this scroll promises, it will keep on the day it is laid out.
               </p>
             )}
@@ -148,7 +148,7 @@ export default function LessonPage() {
             {isAuthenticated ? (
               read ? (
                 <>
-                  <p className="font-han text-[15px] tracking-[0.2em]" style={{ color: "#4a6b52" }}>讀訖 · this scroll is read through</p>
+                  <p className="font-han text-[15px] tracking-[0.2em]" style={{ color: "var(--ok)" }}>讀訖 · this scroll is read through</p>
                   <GhostButton dark onClick={() => unmark.mutate({ lessonId: meta.id })}>Lift the mark</GhostButton>
                 </>
               ) : (
@@ -157,22 +157,22 @@ export default function LessonPage() {
                 </JadeButton>
               )
             ) : (
-              <p className="font-gloss text-[14.5px] italic" style={{ color: "rgba(34,31,26,.6)" }}>
+              <p className="font-gloss text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
                 <Link to="/login" className="underline underline-offset-4 hover:text-gilt">Sign in</Link>, and the house will keep your marks as it keeps every reader's.
               </p>
             )}
           </div>
           <nav className="mt-12 flex items-stretch justify-between gap-4" aria-label="Neighbouring scrolls">
             {prev ? (
-              <Link to={`/scroll/${prev.id}`} className="flex min-h-[44px] flex-1 flex-col border px-4 py-3 transition-colors duration-200 hover:border-gilt" style={{ borderColor: "rgba(34,31,26,.25)" }}>
-                <span className="font-gloss text-[11px] uppercase tracking-[0.2em]" style={{ color: "rgba(34,31,26,.5)" }}>The scroll before</span>
-                <span className="font-han mt-1 text-[18px] font-semibold text-[#221f1a]">{prev.hanzi} <span className="font-gloss text-[13px] font-normal" style={{ color: "rgba(34,31,26,.6)" }}>{prev.english}</span></span>
+              <Link to={`/scroll/${prev.id}`} className="flex min-h-[44px] flex-1 flex-col border px-4 py-3 transition-colors duration-200 hover:border-gilt" style={{ borderColor: "rgba(var(--txr),.25)" }}>
+                <span className="font-gloss text-[11px] uppercase tracking-[0.2em]" style={{ color: "rgba(var(--txr),.66)" }}>The scroll before</span>
+                <span className="font-han mt-1 text-[18px] font-semibold text-[var(--tx)]">{prev.hanzi} <span className="font-gloss text-[13px] font-normal" style={{ color: "rgba(var(--txr),.66)" }}>{prev.english}</span></span>
               </Link>
             ) : <span className="flex-1" />}
             {next ? (
-              <Link to={`/scroll/${next.id}`} className="flex min-h-[44px] flex-1 flex-col items-end border px-4 py-3 text-right transition-colors duration-200 hover:border-gilt" style={{ borderColor: "rgba(34,31,26,.25)" }}>
-                <span className="font-gloss text-[11px] uppercase tracking-[0.2em]" style={{ color: "rgba(34,31,26,.5)" }}>The scroll after</span>
-                <span className="font-han mt-1 text-[18px] font-semibold text-[#221f1a]">{next.hanzi} <span className="font-gloss text-[13px] font-normal" style={{ color: "rgba(34,31,26,.6)" }}>{next.english}</span></span>
+              <Link to={`/scroll/${next.id}`} className="flex min-h-[44px] flex-1 flex-col items-end border px-4 py-3 text-right transition-colors duration-200 hover:border-gilt" style={{ borderColor: "rgba(var(--txr),.25)" }}>
+                <span className="font-gloss text-[11px] uppercase tracking-[0.2em]" style={{ color: "rgba(var(--txr),.66)" }}>The scroll after</span>
+                <span className="font-han mt-1 text-[18px] font-semibold text-[var(--tx)]">{next.hanzi} <span className="font-gloss text-[13px] font-normal" style={{ color: "rgba(var(--txr),.66)" }}>{next.english}</span></span>
               </Link>
             ) : <span className="flex-1" />}
           </nav>

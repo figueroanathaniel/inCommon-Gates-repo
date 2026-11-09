@@ -7,8 +7,11 @@ import { inspectAttr } from 'kimi-plugin-inspect-react'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // The Academy is served at incommonspace.com/bazi/, proxied to its own
+  // server. Every asset, route and API call carries the base.
+  base: "/bazi/",
   plugins: [
-    devServer({ entry: "api/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
+    devServer({ entry: "api/boot.ts", exclude: [/^\/(?!(bazi\/)?api\/).*$/] }),
     inspectAttr(), react()],
   server: {
     port: 3000,
