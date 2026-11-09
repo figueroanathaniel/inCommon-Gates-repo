@@ -26,7 +26,7 @@ export function PillarChart({
   const [plain, setPlain] = useState(false);
   const gloss = new ReadingGloss(plain);
   const inkColor = dark ? "var(--tx)" : "var(--tx)";
-  const subColor = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.6)";
+  const subColor = dark ? "rgba(var(--txr),.7)" : "rgba(var(--txr),.7)";
 
   const selected = views.find((v) => v.key === open) ?? null;
 

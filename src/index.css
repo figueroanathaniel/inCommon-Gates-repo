@@ -1,32 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Unicase:wght@500;600;700&family=Josefin+Sans:wght@400;600&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono&family=Noto+Serif+SC:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Unicase:wght@500;600;700&family=Josefin+Sans:wght@400;600&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;600;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  /* The house wears inCommon's Deep Field: the same sky, faces and tokens as
-     incommonspace.com, with the old art's characters set into it. */
+  /* The house rests on earthly parchment. A reader who arrives from
+     incommonspace.com lands in its Deep Field (html[data-look="field"]) and
+     watches the page rebuild into parchment: see src/lib/arrival.ts. */
   :root {
+    --bg: #f2ecdc;
+    --bgr: 242, 236, 220;
+    --sf: rgba(248, 243, 232, 0.9);
+    --sfr: 248, 243, 232;
+    --tx: #221f1a;
+    --txr: 34, 31, 26;
+    --gilt: #6b5427; /* gilt words, 6.1:1 on the paper */
+    --ac2: #968155; /* gilt rules and borders, never text */
+    --ac2r: 150, 129, 85;
+    --atmc: 150, 129, 85;
+    --atmc2: 120, 84, 40;
+    --paper: #221f1a;
+    --jade: #2fff8f;
+    --jade-tx: #1f6b3e;
+    --ok: #3f6b4a;
+    --safety: #e5534d; /* safety controls only, never an error or a delete */
+    --warn: #8a4b14; /* errors and destructive actions */
+    --warn-ink: #8a4b14;
+    --fd: 'Noto Serif SC', 'EB Garamond', Georgia, serif;
+    --fb: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+    --fk: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+    --ring: #221f1a;
+    --ring2: #968155;
+  }
+  /* inCommon's Deep Field, token for token. */
+  :root[data-look="field"] {
     --bg: #05060a;
     --bgr: 5, 6, 10;
     --sf: rgba(20, 22, 39, 0.84);
     --sfr: 20, 22, 39;
     --tx: #eef0f8;
     --txr: 238, 240, 248;
-    --gilt: #b79bff; /* inCommon's --ac2-hi: every violet word */
-    --ac2: #8b5cf6; /* fills, borders and rules only, never text */
+    --gilt: #b79bff;
+    --ac2: #8b5cf6;
     --ac2r: 139, 92, 246;
     --atmc: 47, 79, 214;
     --atmc2: 242, 214, 158;
     --paper: #eef0f8;
-    --jade: #2fff8f;
+    --jade-tx: #2fff8f;
     --ok: #59b37d;
-    --safety: #e5534d; /* safety controls only, never an error or a delete */
-    --warn: #e0a458; /* errors and destructive actions */
+    --warn: #e0a458;
     --warn-ink: #e0a458;
+    --fd: 'Cormorant Unicase', 'Noto Serif SC', Georgia, serif;
+    --fb: 'Newsreader', 'Noto Serif SC', Georgia, serif;
+    --fk: 'Josefin Sans', 'Noto Serif SC', system-ui, sans-serif;
+    --ring: #9d4edd;
+    --ring2: #00f5d4;
   }
-
 
   html {
     scroll-behavior: smooth;
@@ -35,7 +65,7 @@
   body {
     background: var(--bg);
     color: var(--tx);
-    font-family: 'Newsreader', 'Noto Serif SC', Georgia, serif;
+    font-family: var(--fb);
     font-size: 17px;
     line-height: 1.8;
     -webkit-font-smoothing: antialiased;
@@ -56,15 +86,15 @@
     font-family: 'Noto Serif SC', serif;
   }
   .font-gloss {
-    font-family: 'Newsreader', 'Noto Serif SC', Georgia, serif;
+    font-family: var(--fb);
   }
   /* inCommon's faces: kickers and controls in Josefin Sans, English titles in
      Cormorant Unicase. The characters fall through to Noto Serif SC. */
   .font-gloss.uppercase {
-    font-family: 'Josefin Sans', 'Noto Serif SC', system-ui, sans-serif;
+    font-family: var(--fk);
   }
   h1.font-han, h2.font-han, h3.font-han {
-    font-family: 'Cormorant Unicase', 'Noto Serif SC', Georgia, serif;
+    font-family: var(--fd);
   }
   .vertical-rl {
     writing-mode: vertical-rl;
@@ -93,14 +123,23 @@
   }
 }
 
-/* The sky of incommonspace.com: a cold lobe overhead and a warm horizon
-   under it, with a field of stars. It is painted behind every room. */
+/* The ground. On parchment: the paper's own grain, warm fibres and a
+   darker edge. In Deep Field: the sky of incommonspace.com, a cold lobe
+   overhead, a warm horizon and a field of stars. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 18% 22%, rgba(150, 129, 85, .10), transparent 70%),
+    radial-gradient(50% 35% at 82% 68%, rgba(120, 84, 40, .08), transparent 70%),
+    radial-gradient(140% 120% at 50% 50%, transparent 55%, rgba(120, 84, 40, .16)),
+    repeating-linear-gradient(97deg, rgba(34, 31, 26, .018) 0 1px, transparent 1px 7px),
+    var(--bg);
+}
+:root[data-look="field"] body::before {
   background:
     radial-gradient(1px 1px at 12% 18%, rgba(var(--txr), .7), transparent 60%),
     radial-gradient(1px 1px at 72% 9%, rgba(var(--txr), .55), transparent 60%),
@@ -121,18 +160,63 @@ body::before {
 .mark-ring::before, .mark-ring::after { content: ""; position: absolute; border-radius: 50%; }
 .mark-ring::before {
   inset: 0;
-  border: 3px solid #9d4edd;
-  box-shadow: 0 0 14px #9d4edd, inset 0 0 14px #9d4edd;
+  border: 3px solid var(--ring);
   animation: mark-cw 8s linear infinite;
 }
 .mark-ring::after {
   inset: 5px;
-  border: 1.5px solid #00f5d4;
-  box-shadow: 0 0 9px #00f5d4, inset 0 0 9px #00f5d4;
+  border: 1.5px solid var(--ring2);
   animation: mark-ccw 6s linear infinite;
 }
+/* In Deep Field the ring is the cover's lit mark; on parchment it is an ink
+   circle with a gilt line inside, still turning. */
+:root[data-look="field"] .mark-ring::before { box-shadow: 0 0 14px #9d4edd, inset 0 0 14px #9d4edd; }
+:root[data-look="field"] .mark-ring::after { box-shadow: 0 0 9px #00f5d4, inset 0 0 9px #00f5d4; }
+:root:not([data-look="field"]) .mark-ring::before { border-width: 4px 2px 3px 5px; opacity: .85; }
 @keyframes mark-cw { to { transform: rotate(360deg); } }
 @keyframes mark-ccw { to { transform: rotate(-360deg); } }
+
+/* The arrival from Deep Field. Stage 1 holds the page back until the blocks
+   are marked; stage 2 draws them as frames in space while the stars fall;
+   strata of earth rise over it all, the page turns to parchment under them,
+   and each block settles into place in ink. */
+:root[data-arrive="1"] #root { visibility: hidden; }
+:root[data-arrive] [data-arr] { opacity: 0 !important; }
+:root[data-arrive] .rise, :root[data-arrived] .rise { animation: none; opacity: 1; }
+:root[data-look="field"][data-arrive] body::before {
+  animation: arr-fall 1100ms cubic-bezier(.5, 0, .9, .6) both;
+}
+@keyframes arr-fall { to { transform: translateY(16vh); opacity: .3; } }
+.arr-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.arr-frame {
+  position: absolute;
+  border: 1px solid rgba(139, 92, 246, .8);
+  box-shadow: 0 0 10px rgba(139, 92, 246, .45);
+  animation: arr-draw 360ms cubic-bezier(.2, .7, .2, 1) both;
+  transition: border-color 280ms, box-shadow 280ms, opacity 320ms;
+}
+.arr-frame::before, .arr-frame::after {
+  content: ""; position: absolute; width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(183, 155, 255, .95); box-shadow: 0 0 8px rgba(183, 155, 255, .9);
+}
+.arr-frame::before { left: -3px; top: -3px; }
+.arr-frame::after { right: -3px; bottom: -3px; }
+.arr-frame.ink { border-color: rgba(34, 31, 26, .6); box-shadow: none; }
+.arr-frame.ink::before, .arr-frame.ink::after { background: #6b5427; box-shadow: none; }
+@keyframes arr-draw {
+  from { clip-path: inset(0 50% 0 50%); opacity: 0; }
+  to { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+.arr-stratum {
+  position: absolute; left: -2%; right: -2%;
+  border-top: 2px solid rgba(90, 64, 30, .35);
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, .25);
+  background-image:
+    repeating-linear-gradient(178deg, rgba(90, 64, 30, .07) 0 2px, transparent 2px 9px),
+    radial-gradient(80% 120% at 30% 0%, rgba(255, 250, 238, .35), transparent 70%);
+  animation: arr-rise 360ms cubic-bezier(.25, .7, .2, 1) both;
+}
+@keyframes arr-rise { from { transform: translateY(110%); } to { transform: translateY(0); } }
 
 @media (prefers-reduced-motion: reduce) {
   .mark-ring::before, .mark-ring::after { animation: none !important; }

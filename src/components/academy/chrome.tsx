@@ -53,7 +53,7 @@ export function JadeButton({
     "font-gloss inline-flex min-h-[44px] items-center justify-center gap-2 px-7 text-[15px] tracking-[0.14em] uppercase transition-all duration-200 hover:brightness-[.88]";
   const style = {
     background: disabled ? "rgba(47,255,143,.25)" : "#2fff8f",
-    color: "var(--bg)",
+    color: "#141418", /* the ink on jade, fixed in both looks */
     cursor: disabled ? "default" : "pointer",
   } as const;
   if (to) {

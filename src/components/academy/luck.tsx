@@ -19,7 +19,7 @@ const age = (y: number, m: number) => (m ? `${y} y ${m} m` : `${y} y`);
  */
 export function SexField({ value, onChange, dark = false }: { value: Sex | null; onChange: (v: Sex | null) => void; dark?: boolean }) {
   const id = useId();
-  const sub = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.55)";
+  const sub = "rgba(var(--txr),.7)";
   const ink = dark ? "var(--tx)" : "var(--tx)";
   const line = dark ? "rgba(var(--txr),.35)" : "rgba(var(--txr),.3)";
   const opts: { v: Sex | null; han: string; en: string }[] = [
@@ -62,7 +62,7 @@ export function SexField({ value, onChange, dark = false }: { value: Sex | null;
  */
 export function LuckRoad({ luck, dayStem, dark = false }: { luck: LuckView; dayStem: number; dark?: boolean }) {
   const ink = dark ? "var(--tx)" : "var(--tx)";
-  const sub = dark ? "rgba(var(--txr),.62)" : "rgba(var(--txr),.62)";
+  const sub = "rgba(var(--txr),.7)";
   const line = dark ? "rgba(var(--txr),.22)" : "rgba(var(--txr),.18)";
   const dm = STEMS[dayStem];
   const s = luck.start;

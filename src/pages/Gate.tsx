@@ -105,7 +105,7 @@ export default function Gate() {
           <div className="mt-8 flex justify-center">
             <Link
               to="/scroll/yuan"
-              className="font-gloss inline-flex min-h-[44px] items-center px-6 text-[14px] uppercase tracking-[0.16em] text-[#2fff8f] transition-opacity duration-200 hover:opacity-75"
+              className="font-gloss inline-flex min-h-[44px] items-center px-6 text-[14px] uppercase tracking-[0.16em] text-[var(--jade-tx)] transition-opacity duration-200 hover:opacity-75"
             >
               Begin with the Prologue 緣
             </Link>
