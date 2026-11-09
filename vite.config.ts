@@ -1,18 +1,14 @@
-import devServer from "@hono/vite-dev-server"
 import path from "path"
 const __dirname = import.meta.dirname
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import { inspectAttr } from 'kimi-plugin-inspect-react'
 
-// https://vite.dev/config/
+// The Academy is a branch of inCommon's own site: a static build served at
+// incommonspace.com/bazi/, beside inCommon on the same origin, so it reads
+// the same sign in. It has no server. Every asset and route carries the base.
 export default defineConfig({
-  // The Academy is served at incommonspace.com/bazi/, proxied to its own
-  // server. Every asset, route and API call carries the base.
   base: "/bazi/",
-  plugins: [
-    devServer({ entry: "api/boot.ts", exclude: [/^\/(?!(bazi\/)?api\/).*$/] }),
-    inspectAttr(), react()],
+  plugins: [react()],
   server: {
     port: 3000,
   },
@@ -20,13 +16,10 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@contracts": path.resolve(__dirname, "./contracts"),
-      "@db": path.resolve(__dirname, "./db"),
-      "db": path.resolve(__dirname, "./db"),
     },
   },
-  envDir: path.resolve(__dirname),
   build: {
-    outDir: path.resolve(__dirname, "dist/public"),
+    outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
   },
 });

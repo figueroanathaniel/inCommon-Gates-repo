@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Shell, Seal, Rule, JadeButton } from "@/components/academy/chrome";
 import { PillarChart } from "@/components/academy/pillars";
 import { useAuth } from "@/hooks/useAuth";
-import { trpc } from "@/providers/trpc";
+import { api } from "@/providers/data";
 import { ZoneField } from "@/components/academy/zone-field";
 import { LuckRoad, SexField, type Sex } from "@/components/academy/luck";
 import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
@@ -10,11 +10,10 @@ import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
 /** 案 The Desk: where a reader casts their own pillars and keeps them. */
 export default function Desk() {
   const { isAuthenticated, isLoading } = useAuth();
-  const utils = trpc.useUtils();
-  const charts = trpc.academy.myCharts.useQuery(undefined, { enabled: isAuthenticated });
-  const cast = trpc.academy.cast.useMutation({ onSuccess: () => utils.academy.myCharts.invalidate() });
-  const remove = trpc.academy.removeChart.useMutation({ onSuccess: () => utils.academy.myCharts.invalidate() });
-  const setSex = trpc.academy.setChartSex.useMutation({ onSuccess: () => utils.academy.myCharts.invalidate() });
+  const charts = api.myCharts.useQuery(undefined, { enabled: isAuthenticated });
+  const cast = api.cast.useMutation();
+  const remove = api.removeChart.useMutation();
+  const setSex = api.setChartSex.useMutation();
   const [sex, setSexChoice] = useState<Sex | null>(null);
 
   const [label, setLabel] = useState("");

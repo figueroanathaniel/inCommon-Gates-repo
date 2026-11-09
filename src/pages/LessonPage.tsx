@@ -6,7 +6,7 @@ import { PillarChart } from "@/components/academy/pillars";
 import { MirrorReading } from "@/components/academy/mirror";
 import { LESSON_BODY } from "@/content/lessons";
 import { useAuth } from "@/hooks/useAuth";
-import { trpc } from "@/providers/trpc";
+import { api } from "@/providers/data";
 
 function stoneToPillars(s: {
   yearStem: number; yearBranch: number; monthStem: number; monthBranch: number;
@@ -35,15 +35,10 @@ export default function LessonPage() {
   const meta = LESSONS.find((l) => l.id === lessonId);
   const body = lessonId ? LESSON_BODY[lessonId] : undefined;
   const { isAuthenticated } = useAuth();
-  const utils = trpc.useUtils();
-  const progress = trpc.academy.myProgress.useQuery(undefined, { enabled: isAuthenticated });
-  const stone = trpc.academy.stone.useQuery();
-  const mark = trpc.academy.markRead.useMutation({
-    onSuccess: () => utils.academy.myProgress.invalidate(),
-  });
-  const unmark = trpc.academy.unmarkRead.useMutation({
-    onSuccess: () => utils.academy.myProgress.invalidate(),
-  });
+  const progress = api.myProgress.useQuery(undefined, { enabled: isAuthenticated });
+  const stone = api.stone.useQuery();
+  const mark = api.markRead.useMutation();
+  const unmark = api.unmarkRead.useMutation();
 
   if (!meta || !body) {
     return (

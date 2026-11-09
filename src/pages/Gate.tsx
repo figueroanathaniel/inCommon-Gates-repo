@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 import { Shell, Seal, Rule, GhostButton } from "@/components/academy/chrome";
-import { trpc } from "@/providers/trpc";
+import { api } from "@/providers/data";
 import { BrandDoor } from "@/components/academy/brand";
 
 export default function Gate() {
-  const stone = trpc.academy.stone.useQuery();
+  const stone = api.stone.useQuery();
   return (
     <Shell>
       {/* The threshold */}

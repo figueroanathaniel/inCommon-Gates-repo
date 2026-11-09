@@ -1,13 +1,13 @@
 import { LESSONS } from "@contracts/bazi";
 import { Shell, Seal, Rule, GhostButton } from "@/components/academy/chrome";
 import { useAuth } from "@/hooks/useAuth";
-import { trpc } from "@/providers/trpc";
+import { api } from "@/providers/data";
 
 /** 冊 The Register: the reader's name and marks, kept by the house. */
 export default function Register() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
-  const progress = trpc.academy.myProgress.useQuery(undefined, { enabled: isAuthenticated });
-  const charts = trpc.academy.myCharts.useQuery(undefined, { enabled: isAuthenticated });
+  const progress = api.myProgress.useQuery(undefined, { enabled: isAuthenticated });
+  const charts = api.myCharts.useQuery(undefined, { enabled: isAuthenticated });
 
   if (!isLoading && !isAuthenticated) {
     return (

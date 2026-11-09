@@ -1,58 +1,27 @@
-import { trpc } from "@/providers/trpc";
 import { useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { LOGIN_PATH } from "@/const";
+import { leave, useWho } from "@/providers/data";
 
-type UseAuthOptions = {
-  redirectOnUnauthenticated?: boolean;
-  redirectPath?: string;
-};
+type UseAuthOptions = { redirectOnUnauthenticated?: boolean; redirectPath?: string };
 
+/** Who is reading: a signed in inCommon reader, a guest on this device, or nobody yet. */
 export function useAuth(options?: UseAuthOptions) {
-  const { redirectOnUnauthenticated = false, redirectPath = LOGIN_PATH } =
-    options ?? {};
-
+  const { redirectOnUnauthenticated = false, redirectPath = LOGIN_PATH } = options ?? {};
   const navigate = useNavigate();
+  const w = useWho();
+  const user = w.data ?? null;
 
-  const utils = trpc.useUtils();
-
-  const {
-    data: user,
-    isLoading,
-    error,
-    refetch,
-  } = trpc.auth.me.useQuery(undefined, {
-    staleTime: 1000 * 60 * 5,
-    retry: false,
-  });
-
-  const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: async () => {
-      await utils.invalidate();
-      navigate(redirectPath);
-    },
-  });
-
-  const logout = useCallback(() => logoutMutation.mutate(), [logoutMutation]);
+  const logout = useCallback(() => {
+    void leave().then(() => navigate("/"));
+  }, [navigate]);
 
   useEffect(() => {
-    if (redirectOnUnauthenticated && !isLoading && !user) {
-      const currentPath = window.location.pathname.replace(/^\/bazi(?=\/|$)/, "") || "/";
-      if (currentPath !== redirectPath) {
-        navigate(redirectPath);
-      }
-    }
-  }, [redirectOnUnauthenticated, isLoading, user, navigate, redirectPath]);
+    if (redirectOnUnauthenticated && !w.isLoading && !user) navigate(redirectPath);
+  }, [redirectOnUnauthenticated, w.isLoading, user, navigate, redirectPath]);
 
   return useMemo(
-    () => ({
-      user: user ?? null,
-      isAuthenticated: !!user,
-      isLoading: isLoading || logoutMutation.isPending,
-      error,
-      logout,
-      refresh: refetch,
-    }),
-    [user, isLoading, logoutMutation.isPending, error, logout, refetch],
+    () => ({ user, isAuthenticated: !!user, isLoading: w.isLoading, error: w.error, logout, refresh: w.refetch }),
+    [user, w.isLoading, w.error, logout, w.refetch],
   );
 }

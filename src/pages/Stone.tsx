@@ -1,85 +1,12 @@
-import { useState } from "react";
-import { Shell, Seal, Rule, JadeButton, GhostButton } from "@/components/academy/chrome";
+import { Shell, Seal, Rule, GhostButton } from "@/components/academy/chrome";
 import { MirrorReading } from "@/components/academy/mirror";
-import { useAuth } from "@/hooks/useAuth";
-import { trpc } from "@/providers/trpc";
+import { api } from "@/providers/data";
 import type { FourPillars } from "@contracts/bazi";
-import { ZoneField } from "@/components/academy/zone-field";
-import { LuckRoad, SexField, type Sex } from "@/components/academy/luck";
-import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
-
-function InscriptionForm() {
-  const utils = trpc.useUtils();
-  const inscribe = trpc.academy.inscribeStone.useMutation({
-    onSuccess: () => utils.academy.stone.invalidate(),
-  });
-  const [label, setLabel] = useState("The Chart of the House");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("12:00");
-  const [note, setNote] = useState("");
-  const [place, setPlace] = useState(() => zoneLabel(deviceZone()));
-  const [placeTried, setPlaceTried] = useState(false);
-  const [sex, setSex] = useState<Sex | null>(null);
-  const zone = zoneFrom(place);
-
-  const field =
-    "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)]";
-  const border = { borderColor: "rgba(var(--txr),.35)" } as const;
-
-  const submit = () => {
-    if (!date || !time) return;
-    const [y, m, d] = date.split("-").map(Number);
-    const [h, min] = time.split(":").map(Number);
-    if (!y || !m || !d) return;
-    setPlaceTried(true);
-    if (!zone) return;
-    inscribe.mutate({ label: label.trim() || "The Chart of the House", year: y, month: m, day: d, hour: h, minute: min, zone, sex, note: note.trim() || undefined });
-  };
-
-  return (
-    <div className="mx-auto mt-10 max-w-xl border px-6 py-8 min-[820px]:px-10" style={{ borderColor: "rgba(var(--txr),.3)", background: "rgba(var(--sfr),.84)" }}>
-      <h2 className="font-han text-[20px] font-bold text-[var(--tx)]">排盤 · Lay out the Destiny Chart</h2>
-      <p className="font-gloss mt-3 text-[14.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
-        You carry the seal of the house. Set the true chart here, once, and every scroll in the hall
-        will be found written upon it. The Destiny Chart is laid out once and not redrawn.
-      </p>
-      <div className="mt-6 grid gap-4">
-        <label className="block">
-          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>Name upon the Destiny Chart</span>
-          <input className={field} style={border} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={120} />
-        </label>
-        <div className="grid grid-cols-2 gap-4">
-          <label className="block">
-            <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>Day of birth</span>
-            <input type="date" className={field} style={border} value={date} onChange={(e) => setDate(e.target.value)} />
-          </label>
-          <label className="block">
-            <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>Hour of birth</span>
-            <input type="time" className={field} style={border} value={time} onChange={(e) => setTime(e.target.value)} />
-          </label>
-        </div>
-        <ZoneField dark value={place} onChange={setPlace} invalid={placeTried && !zone} fieldClass={field} border={border} />
-        <SexField dark value={sex} onChange={setSex} />
-        <label className="block">
-          <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(var(--txr),.66)" }}>A line for the pedestal, if you wish</span>
-          <textarea className={`${field} min-h-[88px] py-2`} style={border} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} />
-        </label>
-        <div className="mt-2 flex flex-wrap items-center gap-4">
-          <JadeButton onClick={submit} disabled={!date || inscribe.isPending}>Lay out the chart 排盤</JadeButton>
-          {inscribe.error ? (
-            <p className="font-gloss text-[13.5px]" style={{ color: "var(--warn-ink)" }} role="alert">{inscribe.error.message}</p>
-          ) : null}
-        </div>
-      </div>
-    </div>
-  );
-}
+import { LuckRoad } from "@/components/academy/luck";
 
 /** The Destiny Chart (命盤) room: Your Nature, veiled or read. */
 export default function Stone() {
-  const stone = trpc.academy.stone.useQuery();
-  const { user, isAuthenticated } = useAuth();
-  const isAdmin = user?.role === "admin";
+  const stone = api.stone.useQuery();
 
   const pillars: FourPillars | null = stone.data
     ? {
@@ -133,17 +60,6 @@ export default function Stone() {
                 When the true chart is set here, every scroll will be found written upon it.
               </p>
             </div>
-            {isAuthenticated && isAdmin ? <InscriptionForm /> : null}
-            {isAuthenticated && !isAdmin ? (
-              <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
-                Only the hand that carries the seal of the house may lay out the Destiny Chart.
-              </p>
-            ) : null}
-            {!isAuthenticated ? (
-              <p className="font-gloss mt-8 text-center text-[13.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
-                The Destiny Chart is laid out after signing in with the seal of the house.
-              </p>
-            ) : null}
           </div>
         )}
       </section>

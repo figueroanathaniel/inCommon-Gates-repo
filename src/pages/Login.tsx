@@ -1,44 +1,20 @@
-import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { Shell, Seal, JadeButton, GhostButton, Rule } from "@/components/academy/chrome";
-import { trpc } from "@/providers/trpc";
+import { Shell, Seal, GhostButton, Rule } from "@/components/academy/chrome";
+import { enterAsGuest } from "@/providers/data";
+import { useAuth } from "@/hooks/useAuth";
+import { SIGN_IN_HREF } from "@/lib/cloud";
 
-const field =
-  "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)]";
-const border = { borderColor: "rgba(var(--txr),.3)" } as const;
-const labelCls =
-  "font-gloss mb-1 block text-left text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]";
-
+/*
+  The Register's door. The Academy is a branch of inCommon, so a reader's
+  page here is their inCommon account: signing in happens at inCommon's own
+  door, and this page only points there. A guest keeps their page on this
+  device instead.
+*/
 export default function Login() {
   const [params] = useSearchParams();
   const next = params.get("next") || "/";
   const navigate = useNavigate();
-  const utils = trpc.useUtils();
-
-  const [mode, setMode] = useState<"signin" | "register">("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-
-  const done = async () => {
-    await utils.invalidate();
-    navigate(next.startsWith("/") ? next : "/");
-  };
-  const login = trpc.auth.login.useMutation({ onSuccess: done });
-  const register = trpc.auth.register.useMutation({ onSuccess: done });
-  const guest = trpc.auth.guest.useMutation({ onSuccess: done });
-
-  const active = mode === "signin" ? login : register;
-  const error = active.error ?? guest.error;
-  const pending = login.isPending || register.isPending || guest.isPending;
-
-  const submit = () => {
-    if (mode === "signin") {
-      login.mutate({ email, password });
-    } else {
-      register.mutate({ email, password, name: name.trim() || undefined });
-    }
-  };
+  const { user } = useAuth();
 
   return (
     <Shell>
@@ -51,76 +27,33 @@ export default function Login() {
         <Rule className="mt-10 w-full max-w-xs" />
         <p className="font-gloss mt-8 max-w-md text-center text-[15.5px] leading-relaxed text-[rgba(var(--txr),.72)]">
           The house keeps one page for every reader: the scrolls unrolled, the charts kept at the Desk.
-          An email and a key of your choosing open your page. The scrolls themselves remain the same
-          for every ear that enters.
+          Your inCommon account opens your page, wherever you sign in to it. The scrolls themselves
+          remain the same for every ear that enters.
         </p>
 
-        <div className="mt-10 grid w-full max-w-sm gap-4">
-          {mode === "register" ? (
-            <label className="block">
-              <span className={labelCls}>A name for the page</span>
-              <input
-                className={field}
-                style={border}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                maxLength={120}
-                placeholder="As you would have it written"
-              />
-            </label>
-          ) : null}
-          <label className="block">
-            <span className={labelCls}>Email</span>
-            <input
-              type="email"
-              className={field}
-              style={border}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              maxLength={320}
-              autoComplete="email"
-              placeholder="you@wherever.com"
-            />
-          </label>
-          <label className="block">
-            <span className={labelCls}>{mode === "signin" ? "Your key" : "Choose a key, eight characters or more"}</span>
-            <input
-              type="password"
-              className={field}
-              style={border}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              maxLength={128}
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && email && password) submit();
-              }}
-            />
-          </label>
-          {error ? (
-            <p className="font-gloss text-left text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">
-              {error.message}
+        <div className="mt-10 flex flex-col items-center gap-4">
+          {user && !user.guest ? (
+            <p className="font-gloss text-center text-[15px] text-[var(--tx)]">
+              The house already holds your name, {user.name}.
             </p>
-          ) : null}
-          <div className="mt-2 flex flex-col items-center gap-4">
-            <JadeButton onClick={submit} disabled={!email || !password || pending}>
-              {mode === "signin" ? "Sign in 入" : "Write my name 冊"}
-            </JadeButton>
-            <GhostButton
-              onClick={() => {
-                setMode(mode === "signin" ? "register" : "signin");
-                login.reset();
-                register.reset();
-              }}
+          ) : (
+            <a
+              href={SIGN_IN_HREF}
+              className="font-gloss inline-flex min-h-[44px] items-center justify-center gap-2 px-7 text-[15px] uppercase tracking-[0.14em] transition-all duration-200 hover:brightness-[.88]"
+              style={{ background: "#2fff8f", color: "#141418" }}
             >
-              {mode === "signin" ? "First time at this door" : "My name is already written"}
-            </GhostButton>
-          </div>
+              Sign in with inCommon 入
+            </a>
+          )}
         </div>
 
         <Rule className="mt-12 w-full max-w-xs" />
         <div className="mt-8 flex flex-col items-center gap-3">
-          <GhostButton onClick={() => { if (!pending) guest.mutate(); }}>
+          <GhostButton
+            onClick={() => {
+              void enterAsGuest().then(() => navigate(next.startsWith("/") ? next : "/"));
+            }}
+          >
             Enter as a guest 客
           </GhostButton>
           <p className="font-gloss max-w-xs text-center text-[12.5px] italic leading-relaxed text-[rgba(var(--txr),.66)]">

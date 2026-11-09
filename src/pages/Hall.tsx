@@ -2,14 +2,14 @@ import { Link } from "react-router";
 import { LESSONS } from "@contracts/bazi";
 import { Shell, Seal, Rule } from "@/components/academy/chrome";
 import { useAuth } from "@/hooks/useAuth";
-import { trpc } from "@/providers/trpc";
+import { api } from "@/providers/data";
 
 /** 廳 The Hall: the scrolls in their order, with each reader's marks. */
 export default function Hall() {
   const { isAuthenticated } = useAuth();
-  const progress = trpc.academy.myProgress.useQuery(undefined, { enabled: isAuthenticated });
+  const progress = api.myProgress.useQuery(undefined, { enabled: isAuthenticated });
   const done = new Set((progress.data ?? []).map((p) => p.lessonId));
-  const stone = trpc.academy.stone.useQuery();
+  const stone = api.stone.useQuery();
 
   return (
     <Shell>

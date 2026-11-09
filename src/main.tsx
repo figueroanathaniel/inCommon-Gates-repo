@@ -1,18 +1,17 @@
-import "@/lib/logger";
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import './index.css'
-import { TRPCProvider } from "@/providers/trpc"
+import { DataProvider } from "@/providers/data"
 import App from './App.tsx'
 import { runArrival } from "@/lib/arrival"
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-      <TRPCProvider>
+      <DataProvider>
         <App />
-      </TRPCProvider>
+      </DataProvider>
     </BrowserRouter>
   </StrictMode>,
 )
