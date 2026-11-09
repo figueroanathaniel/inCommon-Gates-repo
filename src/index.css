@@ -230,3 +230,10 @@ body::before {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* The hall's door (brand.tsx). Before the laser reaches it the door is only
+   paper; the flood shows the neon from the lens outward. */
+[data-brand-door][data-brand="pre"] [data-brand-fill] { clip-path: circle(0px at 0 0); }
+[data-brand-door][data-brand="pre"] [data-brand-face] { opacity: 0; }
+[data-brand-door][data-brand="flood"] [data-brand-face] { animation: brand-face 420ms 140ms ease-out both; }
+@keyframes brand-face { from { opacity: 0; } to { opacity: 1; } }

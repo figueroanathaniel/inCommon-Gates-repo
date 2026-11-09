@@ -1,6 +1,7 @@
 import { Link } from "react-router";
-import { Shell, Seal, Rule, JadeButton, GhostButton } from "@/components/academy/chrome";
+import { Shell, Seal, Rule, GhostButton } from "@/components/academy/chrome";
 import { trpc } from "@/providers/trpc";
+import { BrandDoor } from "@/components/academy/brand";
 
 export default function Gate() {
   const stone = trpc.academy.stone.useQuery();
@@ -54,7 +55,7 @@ export default function Gate() {
         </p>
 
         <div className="rise rise-4 mt-10 flex flex-wrap items-center gap-4">
-          <JadeButton to="/hall">Enter the hall 入廳</JadeButton>
+          <BrandDoor to="/hall">Enter the hall 入廳</BrandDoor>
           <GhostButton to="/stone">Stand before the Destiny Chart</GhostButton>
         </div>
 
