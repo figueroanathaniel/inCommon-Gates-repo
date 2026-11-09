@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content="The Eight Characters Academy: the old art of BaZi, kept in nine scrolls and one true chart. A branch of inCommon." />
+    <title>八字書院 The Eight Characters Academy</title>
+    <script>
+      /* A reader sent from incommonspace.com arrives in its Deep Field and
+         watches the house rebuild into parchment (src/lib/arrival.ts). The
+         inCommon page leaves a one-time key; ?arrive=1 replays it. */
+      (function () {
+        try {
+          var d = document.documentElement, go = false, now = Date.now();
+          var raw = sessionStorage.getItem("incommon.bazi.handoff");
+          if (raw) {
+            sessionStorage.removeItem("incommon.bazi.handoff");
+            var h = JSON.parse(raw);
+            if (h && h.v === 1 && now - h.t >= 0 && now - h.t < 15000) go = true;
+          }
+          if (new URLSearchParams(location.search).has("arrive")) go = true;
+          if (go && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            d.setAttribute("data-look", "field");
+            d.setAttribute("data-arrive", "1");
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
