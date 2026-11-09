@@ -4,6 +4,7 @@ import { PillarChart } from "@/components/academy/pillars";
 import { useAuth } from "@/hooks/useAuth";
 import { trpc } from "@/providers/trpc";
 import { ZoneField } from "@/components/academy/zone-field";
+import { LuckRoad, SexField, type Sex } from "@/components/academy/luck";
 import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
 
 /** 案 The Desk: where a reader casts their own pillars and keeps them. */
@@ -13,6 +14,8 @@ export default function Desk() {
   const charts = trpc.academy.myCharts.useQuery(undefined, { enabled: isAuthenticated });
   const cast = trpc.academy.cast.useMutation({ onSuccess: () => utils.academy.myCharts.invalidate() });
   const remove = trpc.academy.removeChart.useMutation({ onSuccess: () => utils.academy.myCharts.invalidate() });
+  const setSex = trpc.academy.setChartSex.useMutation({ onSuccess: () => utils.academy.myCharts.invalidate() });
+  const [sex, setSexChoice] = useState<Sex | null>(null);
 
   const [label, setLabel] = useState("");
   const [date, setDate] = useState("");
@@ -32,7 +35,7 @@ export default function Desk() {
     if (!y || !m || !d) return;
     setPlaceTried(true);
     if (!zone) return;
-    cast.mutate({ label: label.trim() || "A private chart", year: y, month: m, day: d, hour: h, minute: min, zone });
+    cast.mutate({ label: label.trim() || "A private chart", year: y, month: m, day: d, hour: h, minute: min, zone, sex });
   };
 
   if (!isLoading && !isAuthenticated) {
@@ -88,6 +91,7 @@ export default function Desk() {
               </label>
             </div>
             <ZoneField value={place} onChange={setPlace} invalid={placeTried && !zone} fieldClass={field} border={border} />
+            <SexField value={sex} onChange={setSexChoice} />
             <div className="mt-1 flex flex-wrap items-center gap-4">
               <JadeButton onClick={submit} disabled={!date || cast.isPending}>Cast the pillars</JadeButton>
               {cast.error ? <p className="font-gloss text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">{cast.error.message}</p> : null}
@@ -126,6 +130,36 @@ export default function Desk() {
                         dayStem: c.dayStem, dayBranch: c.dayBranch, hourStem: c.hourStem, hourBranch: c.hourBranch,
                       }}
                     />
+                  </div>
+                  <div className="mt-8">
+                    {c.luck ? (
+                      <LuckRoad luck={c.luck} dayStem={c.dayStem} />
+                    ) : c.birthZone ? (
+                      <div>
+                        <h4 className="font-han text-[17px] font-bold text-[#faf8f5]">大運 · The Luck Pillars</h4>
+                        <p className="font-gloss mt-2 text-[14px] leading-relaxed text-[rgba(250,248,245,.65)]">
+                          The decades run forward or backward by the sex at birth. Say which, and they are laid out here.
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {(["m", "f"] as const).map((v) => (
+                            <button
+                              key={v}
+                              type="button"
+                              disabled={setSex.isPending}
+                              onClick={() => setSex.mutate({ id: c.id, sex: v })}
+                              className="font-gloss min-h-[44px] border px-4 text-[14px] text-[#faf8f5] transition-colors duration-200 hover:bg-[rgba(150,129,85,.16)]"
+                              style={{ borderColor: "rgba(250,248,245,.3)" }}
+                            >
+                              <span className="font-han mr-2">{v === "m" ? "男" : "女"}</span>{v === "m" ? "Male" : "Female"}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="font-gloss text-[14px] italic leading-relaxed text-[rgba(250,248,245,.55)]">
+                        This chart was cast before the Desk asked where the birth happened. Cast it again to see its luck pillars.
+                      </p>
+                    )}
                   </div>
                   <div className="mt-6 flex justify-end">
                     <button

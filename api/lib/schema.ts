@@ -39,6 +39,7 @@ const CREATE_CHARTS = `CREATE TABLE IF NOT EXISTS \`charts\` (
   \`birth_hour\` smallint NOT NULL,
   \`birth_minute\` smallint NOT NULL,
   \`birth_zone\` varchar(64) DEFAULT NULL,
+  \`birth_sex\` varchar(1) DEFAULT NULL,
   \`year_stem\` smallint NOT NULL,
   \`year_branch\` smallint NOT NULL,
   \`month_stem\` smallint NOT NULL,
@@ -62,6 +63,13 @@ const CREATE_MASTER_CHART = `CREATE TABLE IF NOT EXISTS \`master_chart\` (
   \`day_branch\` smallint NOT NULL,
   \`hour_stem\` smallint NOT NULL,
   \`hour_branch\` smallint NOT NULL,
+  \`birth_year\` smallint DEFAULT NULL,
+  \`birth_month\` smallint DEFAULT NULL,
+  \`birth_day\` smallint DEFAULT NULL,
+  \`birth_hour\` smallint DEFAULT NULL,
+  \`birth_minute\` smallint DEFAULT NULL,
+  \`birth_zone\` varchar(64) DEFAULT NULL,
+  \`birth_sex\` varchar(1) DEFAULT NULL,
   \`hour_unknown\` tinyint(1) NOT NULL DEFAULT '0',
   \`note\` text DEFAULT NULL,
   \`inscribed_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -124,6 +132,25 @@ export async function ensureSchema(): Promise<void> {
         name: "birth_zone",
         apply: "ALTER TABLE `charts` ADD COLUMN `birth_zone` varchar(64) DEFAULT NULL AFTER `birth_minute`",
       });
+    }
+    if (!(await columnExists(conn, "charts", "birth_sex"))) {
+      patches.push({
+        table: "charts",
+        name: "birth_sex",
+        apply: "ALTER TABLE `charts` ADD COLUMN `birth_sex` varchar(1) DEFAULT NULL AFTER `birth_zone`",
+      });
+    }
+    for (const [col, type] of [
+      ["birth_year", "smallint"], ["birth_month", "smallint"], ["birth_day", "smallint"],
+      ["birth_hour", "smallint"], ["birth_minute", "smallint"], ["birth_zone", "varchar(64)"], ["birth_sex", "varchar(1)"],
+    ] as const) {
+      if (!(await columnExists(conn, "master_chart", col))) {
+        patches.push({
+          table: "master_chart",
+          name: col,
+          apply: `ALTER TABLE \`master_chart\` ADD COLUMN \`${col}\` ${type} DEFAULT NULL AFTER \`hour_branch\``,
+        });
+      }
     }
     if (!(await indexExists(conn, "users", "users_unionId"))) {
       patches.push({

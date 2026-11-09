@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { trpc } from "@/providers/trpc";
 import type { FourPillars } from "@contracts/bazi";
 import { ZoneField } from "@/components/academy/zone-field";
+import { LuckRoad, SexField, type Sex } from "@/components/academy/luck";
 import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
 
 function InscriptionForm() {
@@ -18,6 +19,7 @@ function InscriptionForm() {
   const [note, setNote] = useState("");
   const [place, setPlace] = useState(() => zoneLabel(deviceZone()));
   const [placeTried, setPlaceTried] = useState(false);
+  const [sex, setSex] = useState<Sex | null>(null);
   const zone = zoneFrom(place);
 
   const field =
@@ -31,7 +33,7 @@ function InscriptionForm() {
     if (!y || !m || !d) return;
     setPlaceTried(true);
     if (!zone) return;
-    inscribe.mutate({ label: label.trim() || "The Chart of the House", year: y, month: m, day: d, hour: h, minute: min, zone, note: note.trim() || undefined });
+    inscribe.mutate({ label: label.trim() || "The Chart of the House", year: y, month: m, day: d, hour: h, minute: min, zone, sex, note: note.trim() || undefined });
   };
 
   return (
@@ -57,6 +59,7 @@ function InscriptionForm() {
           </label>
         </div>
         <ZoneField dark value={place} onChange={setPlace} invalid={placeTried && !zone} fieldClass={field} border={border} />
+        <SexField dark value={sex} onChange={setSex} />
         <label className="block">
           <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: "rgba(34,31,26,.6)" }}>A line for the pedestal, if you wish</span>
           <textarea className={`${field} min-h-[88px] py-2`} style={border} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} />
@@ -111,6 +114,11 @@ export default function Stone() {
               </p>
             ) : null}
             <MirrorReading pillars={pillars} label={`The Stone: ${stone.data.label}`} />
+            {stone.data.luck ? (
+              <div className="mx-auto mt-14 max-w-3xl">
+                <LuckRoad luck={stone.data.luck} dayStem={stone.data.dayStem} dark />
+              </div>
+            ) : null}
             <div className="mt-14 flex justify-center">
               <GhostButton to="/scroll/jian" dark>Return to the Mirror scroll</GhostButton>
             </div>

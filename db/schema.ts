@@ -50,6 +50,14 @@ export const masterChart = mysqlTable("master_chart", {
   dayBranch: smallint("day_branch").notNull(),
   hourStem: smallint("hour_stem").notNull(),
   hourBranch: smallint("hour_branch").notNull(),
+  /* The birth itself, kept so the luck pillars can be counted. Never sent to the page. */
+  birthYear: smallint("birth_year"),
+  birthMonth: smallint("birth_month"),
+  birthDay: smallint("birth_day"),
+  birthHour: smallint("birth_hour"),
+  birthMinute: smallint("birth_minute"),
+  birthZone: varchar("birth_zone", { length: 64 }),
+  birthSex: varchar("birth_sex", { length: 1 }),
   dayUnknowable: boolean("hour_unknown").default(false).notNull(),
   note: text("note"),
   inscribedAt: timestamp("inscribed_at").defaultNow().notNull(),
@@ -75,6 +83,8 @@ export const charts = mysqlTable(
     birthHour: smallint("birth_hour").notNull(),
     birthMinute: smallint("birth_minute").notNull(),
     birthZone: varchar("birth_zone", { length: 64 }),
+    /* "m" or "f": which way the luck pillars run. Null until the reader says. */
+    birthSex: varchar("birth_sex", { length: 1 }),
     yearStem: smallint("year_stem").notNull(),
     yearBranch: smallint("year_branch").notNull(),
     monthStem: smallint("month_stem").notNull(),
