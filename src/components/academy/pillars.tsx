@@ -101,7 +101,7 @@ export function PillarChart({
           <div className="flex items-center justify-between gap-4">
             <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[#968155]">Its ground</p>
             <GhostButton dark={dark} onClick={() => setPlain(!plain)} aria-pressed={plain}>
-              {plain ? "Show the characters 顯字" : "Translate to English 英譯"}
+              {plain ? "With characters 顯字" : "English only 隱字"}
             </GhostButton>
           </div>
           <p className="font-gloss mt-4 text-[15px] leading-relaxed" style={{ color: inkColor }}>

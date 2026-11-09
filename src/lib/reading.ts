@@ -55,7 +55,7 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /**
  * The gloss keeper. In its bilingual posture a symbol carries its English
  * beside it at first showing, （甲）, and stays in English only at every
- * showing after. In the plain posture, kept for the Translate to English
+ * showing after. In the plain posture, kept for the English only
  * control, the characters rest and the reading speaks English alone.
  */
 export class ReadingGloss {

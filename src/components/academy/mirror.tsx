@@ -34,7 +34,7 @@ export function MirrorReading({
       <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
         <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[#968155]">The reading</p>
         <GhostButton dark onClick={() => setPlain(!plain)} aria-pressed={plain}>
-          {plain ? "Show the characters 顯字" : "Translate to English 英譯"}
+          {plain ? "With characters 顯字" : "English only 隱字"}
         </GhostButton>
       </div>
       <PillarChart pillars={pillars} dark caption={`${label}. Touch any pillar to hear its ground.`} />
@@ -57,7 +57,7 @@ export function MirrorReading({
           <Rule dark className="mx-auto mt-14 max-w-2xl" />
           <p className="font-gloss mx-auto mt-8 max-w-2xl text-center text-[15px] leading-relaxed" style={{ color: "rgba(34,31,26,.7)" }}>
             Here the reading stops, for the tradition knows where its jurisdiction ends. The ground is named,
-            the season is named, the court is named. The walking of the decades belongs to the life, not to the page.
+            the season is named, the court is named. What a life makes of them belongs to the life, not to the page.
           </p>
         </>
       ) : null}
