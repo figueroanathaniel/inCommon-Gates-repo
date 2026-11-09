@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient
 import { useEffect, type ReactNode } from "react";
 import { LESSONS } from "@contracts/bazi";
 import { castPillars, isZone, luckOf } from "@/lib/cast";
-import { cloud, currentReader, signOutHere, type Reader } from "@/lib/cloud";
+import { cloud, currentReader, type Reader } from "@/lib/cloud";
 import { stoneChart } from "@/lib/stone";
 
 /*
@@ -14,7 +14,6 @@ import { stoneChart } from "@/lib/stone";
   The Stone is data in the bundle. Lessons and the canon were always static.
 */
 
-const GUEST_KEY = "incommon.bazi.guest";
 const CHARTS_KEY = "incommon.bazi.charts.v1";
 const PROGRESS_KEY = "incommon.bazi.progress.v1";
 const MAX_CHARTS = 6;
@@ -46,14 +45,15 @@ const write = (k: string, v: unknown) => {
     throw new Error("This device would not keep it. Private browsing can refuse storage.");
   }
 };
-const isGuest = () => {
-  try { return localStorage.getItem(GUEST_KEY) === "1"; } catch { return false; }
-};
-
-async function who(): Promise<Who | null> {
+/**
+ * Who is reading. A reader signed in to inCommon is signed in here on arrival;
+ * everybody else reads as a guest on this device. The Academy has no door of
+ * its own: signing in and out is inCommon's.
+ */
+async function who(): Promise<Who> {
   const r = await currentReader();
   if (r) return { ...r, guest: false };
-  return isGuest() ? { id: "guest", name: "Guest", email: null, guest: true } : null;
+  return { id: "guest", name: "Guest", email: null, guest: true };
 }
 
 /* Rows as the database holds them. */
@@ -170,8 +170,14 @@ const queryClient = new QueryClient();
 
 export function DataProvider({ children }: { children: ReactNode }) {
   // A sign in or out elsewhere on the site (another tab) changes who is reading.
+  // The refetch is put off a tick and nothing is returned: supabase-js awaits
+  // this callback while it holds its lock, and the refetch asks for the session,
+  // which waits on that same lock. Awaited, a reader arriving signed in from
+  // inCommon was never let in.
   useEffect(() => {
-    const { data } = cloud().auth.onAuthStateChange(() => queryClient.invalidateQueries({ queryKey: ["bazi"] }));
+    const { data } = cloud().auth.onAuthStateChange(() => {
+      setTimeout(() => void queryClient.invalidateQueries({ queryKey: ["bazi"] }), 0);
+    });
     return () => data.subscription.unsubscribe();
   }, []);
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
@@ -222,7 +228,7 @@ function useWrite<V>(fn: (w: Who, v: V) => Promise<void>, refresh: string[], o?:
   const w = useNeedWho();
   return useMutation({
     mutationFn: async (v: V) => {
-      if (!w) throw new Error("Sign in, or enter as a guest, to keep this.");
+      if (!w) throw new Error("The house is still opening. Try again in a moment.");
       await fn(w, v);
     },
     onSuccess: async () => {
@@ -230,17 +236,4 @@ function useWrite<V>(fn: (w: Who, v: V) => Promise<void>, refresh: string[], o?:
       o?.onSuccess?.();
     },
   });
-}
-
-/** Enter as a guest: the marks and charts stay on this device. */
-export function enterAsGuest() {
-  try { localStorage.setItem(GUEST_KEY, "1"); } catch { /* storage refused: the reader stays unsigned */ }
-  return queryClient.invalidateQueries({ queryKey: ["bazi"] });
-}
-
-/** Leave: a guest stops being one (their device keeps its charts); a reader is signed out on this device. */
-export async function leave() {
-  try { localStorage.removeItem(GUEST_KEY); } catch { /* nothing kept */ }
-  await signOutHere();
-  await queryClient.invalidateQueries({ queryKey: ["bazi"] });
 }

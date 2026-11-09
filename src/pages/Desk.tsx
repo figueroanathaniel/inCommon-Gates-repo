@@ -4,17 +4,16 @@ import { PillarChart } from "@/components/academy/pillars";
 import { useAuth } from "@/hooks/useAuth";
 import { api } from "@/providers/data";
 import { ZoneField } from "@/components/academy/zone-field";
-import { LuckRoad, SexField, type Sex } from "@/components/academy/luck";
+import { LuckRoad } from "@/components/academy/luck";
 import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
 
 /** 案 The Desk: where a reader casts their own pillars and keeps them. */
 export default function Desk() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const charts = api.myCharts.useQuery(undefined, { enabled: isAuthenticated });
   const cast = api.cast.useMutation();
   const remove = api.removeChart.useMutation();
   const setSex = api.setChartSex.useMutation();
-  const [sex, setSexChoice] = useState<Sex | null>(null);
 
   const [label, setLabel] = useState("");
   const [date, setDate] = useState("");
@@ -34,24 +33,8 @@ export default function Desk() {
     if (!y || !m || !d) return;
     setPlaceTried(true);
     if (!zone) return;
-    cast.mutate({ label: label.trim() || "A private chart", year: y, month: m, day: d, hour: h, minute: min, zone, sex });
+    cast.mutate({ label: label.trim() || "A private chart", year: y, month: m, day: d, hour: h, minute: min, zone, sex: null });
   };
-
-  if (!isLoading && !isAuthenticated) {
-    return (
-      <Shell>
-        <section className="py-24 text-center">
-          <div className="flex justify-center"><Seal char="案" size={48} /></div>
-          <h1 className="font-han mt-6 text-[30px] font-bold tracking-[0.15em] text-[var(--tx)]">案 · 書桌</h1>
-          <p className="font-gloss mx-auto mt-5 max-w-md text-[15.5px] leading-relaxed text-[rgba(var(--txr),.7)]">
-            The Desk is where you cast your own pillars and keep what you have cast.
-            It is a private corner of the house, and the door opens only to a signed name.
-          </p>
-          <div className="mt-10 flex justify-center"><JadeButton to="/login?next=/desk">Sign in and sit down</JadeButton></div>
-        </section>
-      </Shell>
-    );
-  }
 
   const mine = charts.data ?? [];
 
@@ -90,7 +73,6 @@ export default function Desk() {
               </label>
             </div>
             <ZoneField value={place} onChange={setPlace} invalid={placeTried && !zone} fieldClass={field} border={border} />
-            <SexField value={sex} onChange={setSexChoice} />
             <div className="mt-1 flex flex-wrap items-center gap-4">
               <JadeButton onClick={submit} disabled={!date || cast.isPending}>Cast the pillars</JadeButton>
               {cast.error ? <p className="font-gloss text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">{cast.error.message}</p> : null}
