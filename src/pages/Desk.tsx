@@ -20,6 +20,7 @@ export default function Desk() {
   const [time, setTime] = useState("12:00");
   const [place, setPlace] = useState(() => zoneLabel(deviceZone()));
   const [placeTried, setPlaceTried] = useState(false);
+  const [wants, setWants] = useState<number | null>(null);
   const zone = zoneFrom(place);
 
   const field =
@@ -115,11 +116,20 @@ export default function Desk() {
                   <div className="mt-8">
                     {c.luck ? (
                       <LuckRoad luck={c.luck} dayStem={c.dayStem} />
+                    ) : c.birthZone && wants !== c.id ? (
+                      <button
+                        type="button"
+                        onClick={() => setWants(c.id)}
+                        className="font-gloss min-h-[44px] border px-4 text-[14px] text-[var(--tx)] transition-colors duration-200 hover:bg-[rgba(var(--ac2r),.16)]"
+                        style={{ borderColor: "rgba(var(--txr),.3)" }}
+                      >
+                        <span className="font-han mr-2">命盤</span>Lay out my Destiny Chart
+                      </button>
                     ) : c.birthZone ? (
                       <div>
-                        <h4 className="font-han text-[17px] font-bold text-[var(--tx)]">大運 · The Luck Pillars</h4>
+                        <h4 className="font-han text-[17px] font-bold text-[var(--tx)]">命盤 · Your Destiny Chart</h4>
                         <p className="font-gloss mt-2 text-[14px] leading-relaxed text-[rgba(var(--txr),.65)]">
-                          The decades run forward or backward by the sex at birth. Say which, and they are laid out here.
+                          Its decades run forward or backward by the sex at birth. Say which, and they are laid out here.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {(["m", "f"] as const).map((v) => (
@@ -138,7 +148,7 @@ export default function Desk() {
                       </div>
                     ) : (
                       <p className="font-gloss text-[14px] italic leading-relaxed text-[rgba(var(--txr),.66)]">
-                        This chart was cast before the Desk asked where the birth happened. Cast it again to see its luck pillars.
+                        This chart was cast before the Desk asked where the birth happened. Cast it again to lay out its Destiny Chart.
                       </p>
                     )}
                   </div>
