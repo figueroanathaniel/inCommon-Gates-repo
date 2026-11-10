@@ -24,7 +24,7 @@ export default function Desk() {
   const zone = zoneFrom(place);
 
   const field =
-    "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)]";
+    "font-gloss block h-[48px] w-full min-w-0 appearance-none rounded-none border bg-transparent px-3 text-left text-[16px] leading-[48px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)] [&::-webkit-date-and-time-value]:text-left [&::-webkit-date-and-time-value]:min-h-[1.2em] [&::-webkit-datetime-edit]:p-0";
   const border = { borderColor: "rgba(var(--txr),.3)" } as const;
 
   const submit = () => {
@@ -63,7 +63,7 @@ export default function Desk() {
               <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]">A name for the chart</span>
               <input className={field} style={border} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={120} placeholder="My own chart" />
             </label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2">
               <label className="block">
                 <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]">Day of birth</span>
                 <input type="date" className={field} style={border} value={date} onChange={(e) => setDate(e.target.value)} />
