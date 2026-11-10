@@ -167,8 +167,9 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
                 )}
               </NavLink>
             ))}
-            <span className="mx-2 hidden h-5 w-px min-[820px]:block" style={{ background: paper ? "rgba(var(--txr),.2)" : "rgba(var(--txr),.2)" }} aria-hidden />
             {isSignedIn ? (
+              <>
+              <span className="mx-2 hidden h-5 w-px min-[820px]:block" style={{ background: "rgba(var(--txr),.2)" }} aria-hidden />
               <Link
                 to="/register"
                 className="font-gloss flex min-h-[44px] items-center px-2 text-[13px] tracking-[0.12em] uppercase hover:text-gilt"
@@ -176,6 +177,7 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
               >
                 {user?.name ?? "Reader"}
               </Link>
+              </>
             ) : null}
           </nav>
         </div>

@@ -52,7 +52,7 @@ export default function Hall() {
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="font-gloss text-[15px] uppercase tracking-[0.2em] text-[var(--gilt)]">{l.english}</span>
-                  <span className="font-gloss mt-1 truncate text-[15px] italic text-[rgba(var(--txr),.65)] min-[820px]:whitespace-normal">
+                  <span className="font-gloss mt-1 text-[15px] italic leading-snug text-[rgba(var(--txr),.65)]">
                     {l.title}
                   </span>
                 </span>
