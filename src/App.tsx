@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import Gate from "./pages/Gate";
 import Hall from "./pages/Hall";
 import Glossary from "./pages/Glossary";
@@ -6,7 +6,6 @@ import LessonPage from "./pages/LessonPage";
 import Stone from "./pages/Stone";
 import Desk from "./pages/Desk";
 import Register from "./pages/Register";
-import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -19,7 +18,7 @@ export default function App() {
       <Route path="/stone" element={<Stone />} />
       <Route path="/desk" element={<Desk />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<Navigate to="/" replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

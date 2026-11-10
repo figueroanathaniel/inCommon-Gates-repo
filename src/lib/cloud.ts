@@ -22,9 +22,6 @@ const ANON_KEY =
 const EPHEMERAL_KEY = "incommon.signin.ephemeral";
 const LIVE_COOKIE = "incommon_signin_live";
 
-/** Where inCommon's cover opens its sign in form. */
-export const SIGN_IN_HREF = "/?signin=1";
-
 let client: SupabaseClient | null = null;
 export function cloud(): SupabaseClient {
   if (!client) {
@@ -73,13 +70,4 @@ export async function currentReader(): Promise<Reader | null> {
   const first = (meta.full_name ?? "").trim().split(/\s+/)[0];
   const email = s.user.email ?? null;
   return { id: s.user.id, name: first || (email ? email.split("@")[0] : "Reader"), email };
-}
-
-/** Signs out this device only, as inCommon's Log Out does. */
-export async function signOutHere(): Promise<void> {
-  try {
-    await cloud().auth.signOut({ scope: "local" });
-  } catch {
-    /* the stored session is gone either way */
-  }
 }

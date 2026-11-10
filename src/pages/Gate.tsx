@@ -54,7 +54,7 @@ export default function Gate() {
           scrolls whole and in their order, as if each had been unrolled for them alone.
         </p>
 
-        <div className="rise rise-4 mt-10 flex flex-wrap items-center gap-4">
+        <div className="rise rise-4 mt-10 flex flex-col items-stretch gap-4 min-[560px]:flex-row min-[560px]:flex-wrap min-[560px]:items-center">
           <BrandDoor to="/hall">Enter the hall 入廳</BrandDoor>
           <GhostButton to="/stone">Stand before the Destiny Chart</GhostButton>
         </div>

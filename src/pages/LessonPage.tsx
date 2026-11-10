@@ -152,9 +152,7 @@ export default function LessonPage() {
                 </JadeButton>
               )
             ) : (
-              <p className="font-gloss text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
-                <Link to="/login" className="underline underline-offset-4 hover:text-gilt">Sign in</Link>, and the house will keep your marks as it keeps every reader's.
-              </p>
+              <p className="font-gloss text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>The house is opening.</p>
             )}
           </div>
           <nav className="mt-12 flex items-stretch justify-between gap-4" aria-label="Neighbouring scrolls">

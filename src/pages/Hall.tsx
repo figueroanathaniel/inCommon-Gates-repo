@@ -24,9 +24,7 @@ export default function Hall() {
         <p className="font-gloss mt-8 max-w-2xl text-[16px] leading-relaxed text-[rgba(var(--txr),.75)]">
           Nine scrolls hang in this hall, and they are unrolled in one order, the order in which the art unfolds.
           None is withheld, and none can be stepped past, for each is written in the characters of the one before it.
-          {isAuthenticated
-            ? " Your marks are kept in the register, and a scroll once read through carries the sage mark."
-            : " Sign in, and the house will keep your place among the scrolls."}
+          {" A scroll once read through carries the sage mark, and the register keeps your place among them."}
         </p>
         {stone.data ? (
           <p className="font-gloss mt-4 max-w-2xl text-[15px] leading-relaxed text-[rgba(var(--txr),.66)]">
@@ -54,7 +52,7 @@ export default function Hall() {
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="font-gloss text-[15px] uppercase tracking-[0.2em] text-[var(--gilt)]">{l.english}</span>
-                  <span className="font-gloss mt-1 truncate text-[15px] italic text-[rgba(var(--txr),.65)] min-[820px]:whitespace-normal">
+                  <span className="font-gloss mt-1 text-[15px] italic leading-snug text-[rgba(var(--txr),.65)]">
                     {l.title}
                   </span>
                 </span>

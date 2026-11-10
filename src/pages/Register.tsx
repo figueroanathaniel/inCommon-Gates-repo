@@ -1,29 +1,13 @@
 import { LESSONS } from "@contracts/bazi";
-import { Shell, Seal, Rule, GhostButton } from "@/components/academy/chrome";
+import { Shell, Seal } from "@/components/academy/chrome";
 import { useAuth } from "@/hooks/useAuth";
 import { api } from "@/providers/data";
 
 /** 冊 The Register: the reader's name and marks, kept by the house. */
 export default function Register() {
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isSignedIn } = useAuth();
   const progress = api.myProgress.useQuery(undefined, { enabled: isAuthenticated });
   const charts = api.myCharts.useQuery(undefined, { enabled: isAuthenticated });
-
-  if (!isLoading && !isAuthenticated) {
-    return (
-      <Shell>
-        <section className="py-24 text-center">
-          <div className="flex justify-center"><Seal char="冊" size={48} /></div>
-          <h1 className="font-han mt-6 text-[30px] font-bold tracking-[0.15em] text-[var(--tx)]">冊 · 學籍</h1>
-          <p className="font-gloss mx-auto mt-5 max-w-md text-[15.5px] leading-relaxed text-[rgba(var(--txr),.7)]">
-            The Register keeps each reader's name and the marks of the scrolls they have read through.
-            It opens only to the reader it belongs to.
-          </p>
-          <div className="mt-10 flex justify-center"><GhostButton to="/login?next=/register">Sign in to open your page</GhostButton></div>
-        </section>
-      </Shell>
-    );
-  }
 
   const done = new Set((progress.data ?? []).map((p) => p.lessonId));
   const readCount = done.size;
@@ -41,7 +25,11 @@ export default function Register() {
 
         <div className="mt-10 max-w-2xl">
           <p className="font-gloss text-[16px] leading-relaxed text-[rgba(var(--txr),.8)]">
-            The house holds the name <span className="font-semibold text-[var(--tx)]">{user?.name ?? "an unsigned reader"}</span>.
+            {isSignedIn ? (
+              <>The house holds the name <span className="font-semibold text-[var(--tx)]">{user?.name}</span>, from your inCommon account.</>
+            ) : (
+              <>A guest's marks are kept in this browser alone. Sign in to inCommon, and they are kept on your account.</>
+            )}
             {readCount === 0
               ? " No scroll has yet been read through. The Prologue waits at the head of the hall."
               : readCount === LESSONS.length
@@ -75,15 +63,6 @@ export default function Register() {
           })}
         </ol>
 
-        <div className="mt-14 max-w-2xl">
-          <Rule />
-          <div className="mt-10 flex items-center justify-between">
-            <p className="font-gloss max-w-sm text-[13px] italic leading-relaxed text-[rgba(var(--txr),.66)]">
-              Signing out closes your page in the Register. Your marks remain, kept by the house until you return.
-            </p>
-            <GhostButton onClick={logout}>Sign out 退</GhostButton>
-          </div>
-        </div>
       </section>
     </Shell>
   );

@@ -4,27 +4,27 @@ import { PillarChart } from "@/components/academy/pillars";
 import { useAuth } from "@/hooks/useAuth";
 import { api } from "@/providers/data";
 import { ZoneField } from "@/components/academy/zone-field";
-import { LuckRoad, SexField, type Sex } from "@/components/academy/luck";
+import { LuckRoad } from "@/components/academy/luck";
 import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
 
 /** 案 The Desk: where a reader casts their own pillars and keeps them. */
 export default function Desk() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const charts = api.myCharts.useQuery(undefined, { enabled: isAuthenticated });
   const cast = api.cast.useMutation();
   const remove = api.removeChart.useMutation();
   const setSex = api.setChartSex.useMutation();
-  const [sex, setSexChoice] = useState<Sex | null>(null);
 
   const [label, setLabel] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("12:00");
   const [place, setPlace] = useState(() => zoneLabel(deviceZone()));
   const [placeTried, setPlaceTried] = useState(false);
+  const [wants, setWants] = useState<number | null>(null);
   const zone = zoneFrom(place);
 
   const field =
-    "font-gloss min-h-[44px] w-full border bg-transparent px-3 text-[15px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)]";
+    "font-gloss block h-[48px] w-full min-w-0 appearance-none rounded-none border bg-transparent px-3 text-left text-[16px] leading-[48px] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.66)] [&::-webkit-date-and-time-value]:text-left [&::-webkit-date-and-time-value]:min-h-[1.2em] [&::-webkit-datetime-edit]:p-0";
   const border = { borderColor: "rgba(var(--txr),.3)" } as const;
 
   const submit = () => {
@@ -34,24 +34,8 @@ export default function Desk() {
     if (!y || !m || !d) return;
     setPlaceTried(true);
     if (!zone) return;
-    cast.mutate({ label: label.trim() || "A private chart", year: y, month: m, day: d, hour: h, minute: min, zone, sex });
+    cast.mutate({ label: label.trim() || "A private chart", year: y, month: m, day: d, hour: h, minute: min, zone, sex: null });
   };
-
-  if (!isLoading && !isAuthenticated) {
-    return (
-      <Shell>
-        <section className="py-24 text-center">
-          <div className="flex justify-center"><Seal char="案" size={48} /></div>
-          <h1 className="font-han mt-6 text-[30px] font-bold tracking-[0.15em] text-[var(--tx)]">案 · 書桌</h1>
-          <p className="font-gloss mx-auto mt-5 max-w-md text-[15.5px] leading-relaxed text-[rgba(var(--txr),.7)]">
-            The Desk is where you cast your own pillars and keep what you have cast.
-            It is a private corner of the house, and the door opens only to a signed name.
-          </p>
-          <div className="mt-10 flex justify-center"><JadeButton to="/login?next=/desk">Sign in and sit down</JadeButton></div>
-        </section>
-      </Shell>
-    );
-  }
 
   const mine = charts.data ?? [];
 
@@ -79,7 +63,7 @@ export default function Desk() {
               <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]">A name for the chart</span>
               <input className={field} style={border} value={label} onChange={(e) => setLabel(e.target.value)} maxLength={120} placeholder="My own chart" />
             </label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2">
               <label className="block">
                 <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em] text-[rgba(var(--txr),.66)]">Day of birth</span>
                 <input type="date" className={field} style={border} value={date} onChange={(e) => setDate(e.target.value)} />
@@ -90,7 +74,6 @@ export default function Desk() {
               </label>
             </div>
             <ZoneField value={place} onChange={setPlace} invalid={placeTried && !zone} fieldClass={field} border={border} />
-            <SexField value={sex} onChange={setSexChoice} />
             <div className="mt-1 flex flex-wrap items-center gap-4">
               <JadeButton onClick={submit} disabled={!date || cast.isPending}>Cast the pillars</JadeButton>
               {cast.error ? <p className="font-gloss text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">{cast.error.message}</p> : null}
@@ -133,11 +116,20 @@ export default function Desk() {
                   <div className="mt-8">
                     {c.luck ? (
                       <LuckRoad luck={c.luck} dayStem={c.dayStem} />
+                    ) : c.birthZone && wants !== c.id ? (
+                      <button
+                        type="button"
+                        onClick={() => setWants(c.id)}
+                        className="font-gloss min-h-[44px] border px-4 text-[14px] text-[var(--tx)] transition-colors duration-200 hover:bg-[rgba(var(--ac2r),.16)]"
+                        style={{ borderColor: "rgba(var(--txr),.3)" }}
+                      >
+                        <span className="font-han mr-2">命盤</span>Lay out my Destiny Chart
+                      </button>
                     ) : c.birthZone ? (
                       <div>
-                        <h4 className="font-han text-[17px] font-bold text-[var(--tx)]">大運 · The Luck Pillars</h4>
+                        <h4 className="font-han text-[17px] font-bold text-[var(--tx)]">命盤 · Your Destiny Chart</h4>
                         <p className="font-gloss mt-2 text-[14px] leading-relaxed text-[rgba(var(--txr),.65)]">
-                          The decades run forward or backward by the sex at birth. Say which, and they are laid out here.
+                          Its decades run forward or backward by the sex at birth. Say which, and they are laid out here.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {(["m", "f"] as const).map((v) => (
@@ -156,7 +148,7 @@ export default function Desk() {
                       </div>
                     ) : (
                       <p className="font-gloss text-[14px] italic leading-relaxed text-[rgba(var(--txr),.66)]">
-                        This chart was cast before the Desk asked where the birth happened. Cast it again to see its luck pillars.
+                        This chart was cast before the Desk asked where the birth happened. Cast it again to lay out its Destiny Chart.
                       </p>
                     )}
                   </div>
