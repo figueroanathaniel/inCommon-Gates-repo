@@ -4,6 +4,7 @@ import { LESSONS } from "@contracts/bazi";
 import { castPillars, isZone, luckOf } from "@/lib/cast";
 import { cloud, currentReader, type Reader } from "@/lib/cloud";
 import { stoneChart } from "@/lib/stone";
+import { dropTeacherRecord } from "@/lib/teacher";
 
 /*
   The Academy's data, with no server of its own.
@@ -134,10 +135,12 @@ const store = {
   async remove(w: Who, id: number) {
     if (w.guest) {
       write(CHARTS_KEY, read<ChartRow[]>(CHARTS_KEY, []).filter((c) => c.id !== id));
+      dropTeacherRecord(w.id, id);
       return;
     }
     const { error } = await cloud().from("bazi_charts").delete().eq("id", id);
     refused(error);
+    dropTeacherRecord(w.id, id);
   },
   async progress(w: Who): Promise<{ lessonId: string; completedAt: string }[]> {
     if (w.guest) return read(PROGRESS_KEY, []);

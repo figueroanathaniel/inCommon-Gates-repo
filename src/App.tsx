@@ -6,6 +6,7 @@ import LessonPage from "./pages/LessonPage";
 import Stone from "./pages/Stone";
 import Desk from "./pages/Desk";
 import Register from "./pages/Register";
+import Teacher from "./pages/Teacher";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/stone" element={<Stone />} />
       <Route path="/desk" element={<Desk />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/teacher" element={<Teacher />} />
       <Route path="/login" element={<Navigate to="/" replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

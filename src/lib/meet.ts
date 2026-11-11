@@ -177,3 +177,47 @@ export function seasonState(monthBranch: number, phase: Phase): SeasonState {
   if (PHASES[phase].overcomes === season) return "qiu";
   return "si";
 }
+
+/**
+ * 師生合參: the meetings between two charts, a teacher's and a student's.
+ * Only a meeting with a sign from each chart is kept; what a chart does
+ * within itself is its own table. The same tables as above, nothing added.
+ */
+export function crossSigns(teacher: FourPillars, student: FourPillars): { teacher: Sign[]; student: Sign[] } {
+  const side = (p: FourPillars, key: string, han: string, en: string) =>
+    natalSigns(p).map((s) => ({ ...s, key: `${key}-${s.key}`, hanzi: `${han}${s.hanzi}`, english: `${en} ${s.english}` }));
+  return { teacher: side(teacher, "t", "師", "Teacher"), student: side(student, "s", "生", "Student") };
+}
+
+export function crossTies(teacher: FourPillars, student: FourPillars): Tie[] {
+  const { teacher: ts, student: ss } = crossSigns(teacher, student);
+  const out: Tie[] = [];
+  for (const a of ts) {
+    for (const b of ss) {
+      for (const m of stemMeetings(a.stem, b.stem)) {
+        out.push({ ...m, layer: "stem", incoming: false, members: [{ sign: a.key, char: STEMS[a.stem].hanzi }, { sign: b.key, char: STEMS[b.stem].hanzi }] });
+      }
+      for (const m of branchMeetings(a.branch, b.branch)) {
+        out.push({ ...m, layer: "branch", incoming: false, members: [{ sign: a.key, char: BRANCHES[a.branch].hanzi }, { sign: b.key, char: BRANCHES[b.branch].hanzi }] });
+      }
+    }
+  }
+  const all = [...ts, ...ss];
+  const isT = (s: Sign) => s.key.startsWith("t-");
+  for (const h of HARMONIES) {
+    const holders = h.trio.map((b) => all.filter((s) => s.branch === b));
+    if (holders.some((x) => x.length === 0)) continue;
+    /* A whole trio that neither chart holds alone: the first choice of holders that draws on both. */
+    let pick: Sign[] | null = null;
+    for (const a of holders[0]) for (const b of holders[1]) for (const c of holders[2]) {
+      if (pick) continue;
+      const trio = [a, b, c];
+      if (trio.some(isT) && !trio.every(isT)) pick = trio;
+    }
+    if (!pick) continue;
+    const alone = (side: Sign[]) => h.trio.every((b) => side.some((s) => s.branch === b));
+    if (alone(ts) || alone(ss)) continue;
+    out.push({ kind: "harmony", layer: "branch", phase: h.phase, incoming: false, members: pick.map((s) => ({ sign: s.key, char: BRANCHES[s.branch].hanzi })) });
+  }
+  return out;
+}

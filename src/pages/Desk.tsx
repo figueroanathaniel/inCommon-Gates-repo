@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { Shell, Seal, Rule, JadeButton } from "@/components/academy/chrome";
 import { PillarChart } from "@/components/academy/pillars";
 import type { FourPillars } from "@contracts/bazi";
@@ -151,7 +152,14 @@ export default function Desk() {
                       </p>
                     )}
                   </div>
-                  <div className="mt-6 flex justify-end">
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
+                    <Link
+                      to={`/teacher?student=${c.id}`}
+                      className="font-gloss inline-flex min-h-[44px] items-center border px-4 text-[14px] text-[var(--tx)] transition-colors duration-200 hover:bg-[rgba(var(--ac2r),.16)]"
+                      style={{ borderColor: "rgba(var(--txr),.3)" }}
+                    >
+                      <span className="font-han mr-2">師</span><span data-en>Read as a teacher</span><span data-zh>師席</span>
+                    </Link>
                     <button
                       type="button"
                       onClick={() => remove.mutate({ id: c.id })}
