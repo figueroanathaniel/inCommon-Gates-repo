@@ -9,32 +9,26 @@ const MEANING: Record<string, string> = Object.fromEntries([
 ]);
 
 /**
- * A stem or branch of a chart, as the English Academy writes it: the pinyin
- * with its tone, then the character and its English name in full width
- * brackets: Jiǎ （甲 "Yang Wood"）. Nate set the shape on 11 November 2026 from
- * his own sample ("West （生氣 "Generating-Breath," wealth)"); the dashes in the
- * sample are left out by the no dash rule.
+ * A stem or branch of a chart, as the English Academy writes it: its English
+ * name first, then the character and its toned pinyin in full width brackets:
+ * Yang Wood （甲 "Jiǎ"）, Rat （子 "Zǐ"）. Nate chose this on 11 November 2026
+ * from his own sample ("West （生氣 "Generating-Breath," wealth)"); the dashes
+ * in the sample are left out by the no dash rule.
  */
 export function SignWord({ en, han, stack }: { en: string; han: string; stack?: boolean }) {
-  const m = MEANING[han];
-  // A pillar cell is a quarter of a phone wide and already names the meaning
-  // on the line under it, so there the bracket takes its own line and carries
-  // the character alone: Jiǎ, then （甲）.
+  const name = MEANING[han] ?? en;
+  // The pillar row is laid out right to left (dir="rtl"), so the sign sets its
+  // own direction or its brackets and quotes come out mirrored.
+  // A pillar cell is a quarter of a phone wide, so there the bracket takes
+  // its own line under the name, smaller, and the name may wrap.
+  const inner = <>（<span className="font-han" lang="zh-Hant">{han}</span> “{en}”）</>;
   if (stack) {
     return (
-      <>
-        {en}
-        <span className="block whitespace-nowrap">（<span className="font-han" lang="zh-Hant">{han}</span>）</span>
-      </>
+      <span dir="ltr" className="block max-w-full text-center">
+        <span className="block">{name}</span>
+        <span className="block whitespace-nowrap text-[max(0.62em,10.5px)] font-semibold">{inner}</span>
+      </span>
     );
   }
-  return (
-    <>
-      {en}{" "}
-      <span className="whitespace-nowrap">
-        （<span className="font-han" lang="zh-Hant">{han}</span>
-        {m ? <> "{m}"</> : null}）
-      </span>
-    </>
-  );
+  return <span dir="ltr">{name} <span className="whitespace-nowrap">{inner}</span></span>;
 }
