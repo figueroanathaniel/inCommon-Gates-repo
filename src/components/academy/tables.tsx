@@ -151,7 +151,7 @@ export function PhasesDiagram({ dark = true }: { dark?: boolean }) {
         ))}
       </svg>
       <figcaption className={(zh ? "font-han" : "font-gloss italic") + " mt-4 text-center text-[13px]"} style={{ color: "rgba(var(--txr),.66)" }}>
-        {zh ? "金色之環為相生，內中淡星為相剋。" : "The gilt ring is the generating round; the pale star within is the overcoming round."}
+        {zh ? "金色之環為相生，內中淡星為相剋。" : "The gilt ring is the generating round, and the pale star inside it is the overcoming round."}
       </figcaption>
     </figure>
   );

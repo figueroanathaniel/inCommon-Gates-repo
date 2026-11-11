@@ -117,7 +117,7 @@ export default function LessonPage() {
               <p className={(zh ? "font-han" : "font-gloss") + " text-[26px] font-bold text-[var(--tx)]"}>{t("The Destiny Chart is not yet laid out", "命盤未排")}</p>
               <p className="font-gloss mt-4 text-[15.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
                 {t(
-                  "The house does not read a chart it does not hold. When it is laid out, this scroll will read it whole, aloud, in the order of the scrolls you have unrolled.",
+                  "The house does not read a chart it does not hold. Once the chart is laid out, this scroll reads it whole, aloud, in the order of the scrolls you have unrolled.",
                   "書院不讀未持之盤。命盤排定之日，此卷便依你所展諸卷之序，通篇讀之。",
                 )}
               </p>
@@ -136,11 +136,11 @@ export default function LessonPage() {
               </div>
             ) : inscribed ? (
               <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
-                {t("Stand before the Destiny Chart itself in its own room when you wish to look longer.", "若欲久觀，請往命盤本室。")}
+                {t("The Destiny Chart has a room of its own, for when you want to look longer.", "若欲久觀，請往命盤本室。")}
               </p>
             ) : (
               <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>
-                {t("The Destiny Chart is not yet laid out. What this scroll promises, it will keep on the day it is laid out.", "命盤未排。此卷所許，待排定之日自當兌現。")}
+                {t("The Destiny Chart is not laid out yet. This scroll keeps its promise on the day it is.", "命盤未排。此卷所許，待排定之日自當兌現。")}
               </p>
             )}
           </div>

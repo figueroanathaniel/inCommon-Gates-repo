@@ -63,7 +63,7 @@ export function MirrorReading({
         caption={zh ? `${label}。點觸任一柱，以聞其所主。` : `${label}. Touch any pillar to hear its ground.`}
       />
       <p className={font + " mx-auto mt-8 max-w-2xl text-center text-[15px] italic leading-relaxed"} style={{ color: "rgba(var(--txr),.65)" }}>
-        {zh ? `日主為${dm.hanzi}。以下所言，皆就此而論。` : `The Day Master is ${dm.english}. All that follows is spoken in relation to it.`}
+        {zh ? `日主為${dm.hanzi}。以下所言，皆就此而論。` : `The Day Master is ${dm.english}. Everything after this is said in relation to it.`}
       </p>
       {sections.map((s) => (
         <section key={s.key} className="mx-auto mt-14 max-w-2xl">
@@ -79,7 +79,7 @@ export function MirrorReading({
           <p className={font + " mx-auto mt-8 max-w-2xl text-center text-[15px] leading-relaxed"} style={{ color: "rgba(var(--txr),.7)" }}>
             {zh
               ? "讀盤至此而止，傳統自知其所轄之界。地已名，季已名，朝已名。一生如何用之，屬於那一生。"
-              : "Here the reading stops, for the tradition knows where its jurisdiction ends. The ground is named, the season is named, the court is named. What a life makes of them belongs to the life."}
+              : "The reading stops here, because the tradition knows where its say ends. The ground is named, the season is named and the court is named. What a life makes of them belongs to the life."}
           </p>
         </>
       ) : null}

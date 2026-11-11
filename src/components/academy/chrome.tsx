@@ -229,7 +229,7 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
             {zh ? "一命二運三風水，四積陰德五讀書" : "First fate, second fortune, third the lie of the land, fourth quiet kindness, fifth study."}
           </p>
           <p className="font-gloss text-[13px]" style={{ color: "rgba(var(--txr),.66)" }}>
-            {zh ? "inCommon 之一支。命盤示其種，耕耘在你。" : "A branch of inCommon. The chart shows the seed; the tending is yours."}
+            {zh ? "inCommon 之一支。命盤示其種，耕耘在你。" : "A branch of inCommon. The chart shows the seed, and the tending is yours."}
           </p>
         </div>
       </footer>

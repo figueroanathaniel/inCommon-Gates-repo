@@ -102,8 +102,8 @@ export const TEN_GODS: Record<
   string,
   { hanzi: string; pinyin: string; english: string; reading: string; readingZh: string }
 > = {
-  companion: { hanzi: "比肩", pinyin: "bǐ jiān", english: "Companion", reading: "shoulder to shoulder, the same element in the same polarity", readingZh: "並肩而立，同行同性" },
-  robwealth: { hanzi: "劫財", pinyin: "jié cái", english: "Rob Wealth", reading: "the same element in opposite polarity, a rival who shares your nature", readingZh: "同行異性，與己同質而相爭者" },
+  companion: { hanzi: "比肩", pinyin: "bǐ jiān", english: "Companion", reading: "shoulder to shoulder, the same phase in the same polarity", readingZh: "並肩而立，同行同性" },
+  robwealth: { hanzi: "劫財", pinyin: "jié cái", english: "Rob Wealth", reading: "the same phase in opposite polarity, a rival who shares your nature", readingZh: "同行異性，與己同質而相爭者" },
   eatinggod: { hanzi: "食神", pinyin: "shí shén", english: "Eating God", reading: "what the self produces in its own polarity, expression that nourishes", readingZh: "我所生之同性，滋養人的表達" },
   hurtingofficer: { hanzi: "傷官", pinyin: "shāng guān", english: "Hurting Officer", reading: "what the self produces in opposite polarity, brilliance that tests authority", readingZh: "我所生之異性，考驗權威的才華" },
   indirectwealth: { hanzi: "偏財", pinyin: "piān cái", english: "Indirect Wealth", reading: "what the self masters in the same polarity, the windfall and the wide field", readingZh: "我所剋之同性，意外之財與廣闊之田" },
