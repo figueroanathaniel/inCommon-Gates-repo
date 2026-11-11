@@ -72,12 +72,17 @@ export function PillarChart({
           <span className="font-gloss text-[11px] uppercase tracking-[0.12em] min-[820px]:tracking-[0.2em]" style={{ color: subColor }}>
             {english}
           </span>
+          {/* The signs on a pillar are the characters themselves, in either
+              language (Nate, 11 Nov 2026: "No English in the main text on the
+              pillars, ever"). The English names stay on the small lines under them. */}
           <span
-            className="font-gloss mt-3 flex flex-col items-center font-bold"
-            style={{ fontSize: wide ? "clamp(17px, 4.2vw, 30px)" : "clamp(19px, 5vw, 34px)", lineHeight: 1.15 }}
+            className="font-han mt-3 font-bold"
+            lang="zh-Hant"
+            aria-label={`${stem.english} ${branch.english}`}
+            style={{ writingMode: "vertical-rl", textOrientation: "upright", fontSize: wide ? "clamp(26px, 7vw, 56px)" : "clamp(32px, 9vw, 64px)", letterSpacing: "0.14em", lineHeight: 1 }}
           >
-            <span className="max-w-full" style={charStyle(key, "stem", stem.phase)}><SignWord stack en={stem.english} han={stem.hanzi} /></span>
-            <span className="max-w-full" style={charStyle(key, "branch", branch.phase)}><SignWord stack en={branch.english} han={branch.hanzi} /></span>
+            <span className="max-w-full" style={charStyle(key, "stem", stem.phase)}>{stem.hanzi}</span>
+            <span className="max-w-full" style={charStyle(key, "branch", branch.phase)}>{branch.hanzi}</span>
           </span>
           <span className="font-gloss mt-3 text-center text-[11px] leading-snug" style={{ color: subColor }}>
             {stem.yinyang === "yang" ? "Yang" : "Yin"} {PHASES[stem.phase].english}
@@ -102,7 +107,7 @@ export function PillarChart({
                 const hs = STEMS[h];
                 return (
                   <span key={h} className="font-gloss flex flex-col items-center text-center leading-tight" style={{ opacity: phase && phase !== hs.phase ? 0.28 : 1 }}>
-                    <span className="text-[13px] font-bold" style={{ color: inkColor }}><SignWord stack en={hs.english} han={hs.hanzi} /></span>
+                    <span className="font-han text-[15px] font-bold" lang="zh-Hant" aria-label={hs.english} style={{ color: inkColor }}>{hs.hanzi}</span>
                     {prefs.gods ? <span className="text-[10px]" style={{ color: "var(--gilt)" }}>{tenGodOf(day, hs).english}</span> : null}
                   </span>
                 );
