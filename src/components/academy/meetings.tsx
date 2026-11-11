@@ -1,7 +1,9 @@
 import { PHASES } from "@contracts/bazi";
 import { TIE_NAMES, litKey, tiesAmong, type Sign, type Tie } from "@/lib/meet";
 import { setChartPrefs, useChartPrefs } from "@/lib/prefs";
+import { useZh } from "@/lib/lang";
 
+const tieLabelZh = (t: Tie) => `${TIE_NAMES[t.kind].hanzi}${t.phase ? PHASES[t.phase].hanzi : ""}`;
 const tieLabel = (t: Tie) => `${TIE_NAMES[t.kind].english}${t.phase ? `, ${PHASES[t.phase].english}` : ""}`;
 
 /**
@@ -11,6 +13,8 @@ const tieLabel = (t: Tie) => `${TIE_NAMES[t.kind].english}${t.phase ? `, ${PHASE
  */
 export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: string[]) => void }) {
   const prefs = useChartPrefs();
+  const zh = useZh();
+  const label = zh ? tieLabelZh : tieLabel;
   const ties = tiesAmong(signs);
   const ink = "var(--tx)";
   const sub = "rgba(var(--txr),.7)";
@@ -21,8 +25,8 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
   return (
     <div className="mx-auto mt-8 w-full max-w-2xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>合沖刑害 · The Meetings</h4>
-        <div role="radiogroup" aria-label="How the meetings are laid out" className="flex gap-2">
+        <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>{zh ? "合沖刑害" : "合沖刑害 · The Meetings"}</h4>
+        <div role="radiogroup" aria-label={zh ? "列法" : "How the meetings are laid out"} className="flex gap-2">
           {(["list", "grid"] as const).map((v) => {
             const on = prefs.table === v;
             return (
@@ -35,7 +39,7 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
                 className="font-gloss min-h-[44px] min-w-[64px] border px-3 text-[13px] transition-colors duration-200"
                 style={{ borderColor: on ? "var(--gilt)" : line, color: ink, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
               >
-                {v === "list" ? "List" : "Grid"}
+                {zh ? <span className="font-han">{v === "list" ? "列" : "表"}</span> : v === "list" ? "List" : "Grid"}
               </button>
             );
           })}
@@ -43,7 +47,7 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
       </div>
 
       {ties.length === 0 ? (
-        <p className="font-gloss mt-4 text-[14px] italic" style={{ color: sub }}>None among these signs.</p>
+        <p className={zh ? "font-han mt-4 text-[14px]" : "font-gloss mt-4 text-[14px] italic"} style={{ color: sub }}>{zh ? "無合沖刑害" : "None among these signs."}</p>
       ) : prefs.table === "list" ? (
         <ul className="mt-4 grid gap-1">
           {ties.map((t, i) => (
@@ -58,14 +62,14 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
               style={{ borderColor: line }}
             >
               <span className="font-han text-[17px] font-bold" style={{ color: "var(--gilt)" }}>{TIE_NAMES[t.kind].hanzi}</span>
-              <span className="font-gloss text-[13.5px]" style={{ color: ink }}>{tieLabel(t)}</span>
+              {zh ? (t.phase ? <span className="font-han text-[14px]" style={{ color: ink }}>{PHASES[t.phase].hanzi}</span> : null) : <span className="font-gloss text-[13.5px]" style={{ color: ink }}>{tieLabel(t)}</span>}
               <span className="ml-auto flex flex-wrap items-baseline gap-x-3">
                 {t.members.map((m, k) => {
                   const s = name(m.sign);
                   return (
                     <span key={k} className="whitespace-nowrap">
                       <span className="font-han text-[17px] font-bold" style={{ color: ink }}>{m.char}</span>
-                      <span className="font-gloss ml-1 text-[12px]" style={{ color: sub }}>{s?.english}</span>
+                      <span className={(zh ? "font-han" : "font-gloss") + " ml-1 text-[12px]"} style={{ color: sub }}>{zh ? s?.hanzi : s?.english}</span>
                     </span>
                   );
                 })}
@@ -75,14 +79,14 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
         </ul>
       ) : (
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full border-collapse text-center" aria-label="The meetings, sign against sign">
+          <table className="w-full border-collapse text-center" aria-label={zh ? "合沖刑害表" : "The meetings, sign against sign"}>
             <thead>
               <tr>
                 <td />
                 {signs.map((s) => (
                   <th key={s.key} scope="col" className="px-1 pb-2 font-normal">
                     <span className="font-han block text-[14px]" style={{ color: "var(--gilt)" }}>{s.hanzi}</span>
-                    <span className="font-gloss block text-[11px]" style={{ color: sub }}>{s.english}</span>
+                    {zh ? null : <span className="font-gloss block text-[11px]" style={{ color: sub }}>{s.english}</span>}
                   </th>
                 ))}
               </tr>
@@ -92,24 +96,24 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
                 <tr key={r.key}>
                   <th scope="row" className="pr-2 text-right font-normal">
                     <span className="font-han text-[14px]" style={{ color: "var(--gilt)" }}>{r.hanzi}</span>
-                    <span className="font-gloss ml-1 text-[11px]" style={{ color: sub }}>{r.english}</span>
+                    {zh ? null : <span className="font-gloss ml-1 text-[11px]" style={{ color: sub }}>{r.english}</span>}
                   </th>
                   {signs.map((c, ci) => {
                     const here = ci > ri
                       ? ties.filter((t) => t.members.length === 2 && t.members[0].sign === r.key && t.members[1].sign === c.key)
                       : [];
-                    const text = here.map((t) => `${t.layer === "stem" ? "stems" : "branches"} ${tieLabel(t)}`).join("; ");
+                    const text = here.map((t) => (zh ? `${t.layer === "stem" ? "天干" : "地支"}${tieLabelZh(t)}` : `${t.layer === "stem" ? "stems" : "branches"} ${tieLabel(t)}`)).join(zh ? "，" : "; ");
                     return (
                       <td
                         key={c.key}
                         className="h-[52px] min-w-[52px] border align-middle"
                         style={{ borderColor: line, background: ci <= ri ? "rgba(var(--txr),.04)" : "transparent" }}
-                        aria-label={ci > ri ? `${r.english} and ${c.english}: ${text || "none"}` : undefined}
+                        aria-label={ci > ri ? (zh ? `${r.hanzi}${c.hanzi} ${text || "無"}` : `${r.english} and ${c.english}: ${text || "none"}`) : undefined}
                         onMouseEnter={() => onLit?.(here.flatMap((t) => t.members.map((m) => litKey(m.sign, t.layer))))}
                         onMouseLeave={() => onLit?.([])}
                       >
                         {here.map((t, k) => (
-                          <span key={k} className="font-han mx-[2px] inline-block text-[15px] font-bold" style={{ color: t.layer === "stem" ? ink : "var(--gilt)" }} title={tieLabel(t)}>
+                          <span key={k} className="font-han mx-[2px] inline-block text-[15px] font-bold" style={{ color: t.layer === "stem" ? ink : "var(--gilt)" }} title={label(t)}>
                             {TIE_NAMES[t.kind].hanzi}
                           </span>
                         ))}
@@ -121,13 +125,13 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
             </tbody>
           </table>
           <p className="font-gloss mt-3 text-[12.5px]" style={{ color: sub }}>
-            <span className="font-han font-bold" style={{ color: ink }}>干</span> stems{" "}
-            <span className="font-han ml-3 font-bold" style={{ color: "var(--gilt)" }}>支</span> branches
+            <span className="font-han font-bold" style={{ color: ink }}>干</span> {zh ? <span className="font-han">天干</span> : "stems"}{" "}
+            <span className="font-han ml-3 font-bold" style={{ color: "var(--gilt)" }}>支</span> {zh ? <span className="font-han">地支</span> : "branches"}
           </p>
           {ties.filter((t) => t.members.length === 3).map((t, i) => (
             <p key={i} className="font-gloss mt-2 text-[13.5px]" style={{ color: ink }}>
               <span className="font-han mr-2 font-bold" style={{ color: "var(--gilt)" }}>{TIE_NAMES[t.kind].hanzi}</span>
-              {tieLabel(t)}
+              {zh ? (t.phase ? <span className="font-han">{PHASES[t.phase].hanzi}</span> : null) : tieLabel(t)}
               <span className="font-han ml-3 font-bold">{t.members.map((m) => m.char).join("")}</span>
             </p>
           ))}

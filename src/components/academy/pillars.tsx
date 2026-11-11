@@ -7,6 +7,7 @@ import { setChartPrefs, useChartPrefs } from "@/lib/prefs";
 import { GhostButton, Rule } from "./chrome";
 import { Meetings } from "./meetings";
 import { litKey } from "@/lib/meet";
+import { YINYANG_ZH, useZh } from "@/lib/lang";
 
 const PHASE_ORDER: Phase[] = ["wood", "fire", "earth", "metal", "water"];
 
@@ -38,6 +39,7 @@ export function PillarChart({
 }) {
   const views = pillarViews(pillars);
   const prefs = useChartPrefs();
+  const zh = useZh();
   const [open, setOpen] = useState<string | null>(null);
   const [plain, setPlain] = useState(false);
   const [phase, setPhase] = useState<Phase | null>(null);
@@ -68,7 +70,7 @@ export function PillarChart({
     return (
       <>
         <span className="font-gloss text-[11px] uppercase tracking-[0.12em] min-[820px]:tracking-[0.2em]" style={{ color: subColor }}>
-          {english}
+          {zh ? (/^\d+$/.test(english) ? english : "\u00a0") : english}
         </span>
         <span
           className="font-han mt-3 font-bold"
@@ -81,12 +83,12 @@ export function PillarChart({
           {hanzi}
         </span>
         <span className="font-gloss mt-1 text-center text-[11px]" style={{ color: subColor }}>
-          {branch.animal} · {PHASES[branch.phase].english}
+          {zh ? <span className="font-han">{branch.animalHanzi} · {PHASES[branch.phase].hanzi}</span> : <>{branch.animal} · {PHASES[branch.phase].english}</>}
         </span>
         {prefs.gods ? (
           <span data-row="gods" className="mt-3 flex flex-col items-center">
             <span className="font-han text-[13px]" style={{ color: "var(--gilt)" }}>{god ? god.hanzi : "日主"}</span>
-            <span className="font-gloss text-center text-[10.5px] leading-snug" style={{ color: subColor }}>{god ? god.english : "Day Master"}</span>
+            {zh ? null : <span className="font-gloss text-center text-[10.5px] leading-snug" style={{ color: subColor }}>{god ? god.english : "Day Master"}</span>}
           </span>
         ) : null}
         {prefs.season ? (
@@ -94,14 +96,14 @@ export function PillarChart({
             data-row="season"
             className="font-han mt-3 text-center text-[13px] leading-relaxed"
             style={{ color: inkColor }}
-            aria-label={`${PHASES[stem.phase].english} ${stemState.english}, ${PHASES[branch.phase].english} ${branchState.english}`}
+            aria-label={zh ? undefined : `${PHASES[stem.phase].english} ${stemState.english}, ${PHASES[branch.phase].english} ${branchState.english}`}
           >
             <span className="block">{PHASES[stem.phase].hanzi}{stemState.hanzi}</span>
             <span className="block">{PHASES[branch.phase].hanzi}{branchState.hanzi}</span>
           </span>
         ) : null}
         {prefs.hidden ? (
-          <span data-row="hidden" className="mt-3 flex flex-col items-center gap-[2px]" aria-label={`Hidden stems: ${branch.hiddenStems.map((h) => STEMS[h].english).join(", ")}`}>
+          <span data-row="hidden" className="mt-3 flex flex-col items-center gap-[2px]" aria-label={zh ? `藏干 ${branch.hiddenStems.map((h) => STEMS[h].hanzi).join("")}` : `Hidden stems: ${branch.hiddenStems.map((h) => STEMS[h].english).join(", ")}`}>
             {branch.hiddenStems.map((h) => {
               const hs = STEMS[h];
               return (
@@ -131,7 +133,7 @@ export function PillarChart({
         dir="rtl"
         className={"mx-auto flex w-full items-stretch justify-center " + (wide ? "max-w-3xl gap-1 min-[820px]:gap-3" : "max-w-2xl gap-2 min-[820px]:gap-4")}
         role="group"
-        aria-label={wide ? "The four pillars, year at the right, hour at the left, with what is laid beside them past the hour" : "The four pillars, year at the right, hour at the left"}
+        aria-label={zh ? (wide ? "四柱，右起年柱，左至時柱，其左為大運流年" : "四柱，右起年柱，左至時柱") : wide ? "The four pillars, year at the right, hour at the left, with what is laid beside them past the hour" : "The four pillars, year at the right, hour at the left"}
       >
         {views.map((v) => {
           const active = open === v.key;
@@ -146,7 +148,7 @@ export function PillarChart({
               key={v.key}
               type="button"
               aria-expanded={active}
-              aria-label={`${v.english}: ${v.stem.english} ${v.branch.english}, ${v.branch.animal}`}
+              aria-label={zh ? `${v.hanzi} ${v.stem.hanzi}${v.branch.hanzi} ${v.branch.animalHanzi}` : `${v.english}: ${v.stem.english} ${v.branch.english}, ${v.branch.animal}`}
               onClick={() => setOpen(active ? null : v.key)}
               className={baseCls}
               style={style}
@@ -165,13 +167,13 @@ export function PillarChart({
             data-incoming={s.key}
             className={baseCls + (i === 0 ? " ms-2 min-[820px]:ms-4" : "")}
             style={{ borderColor: "var(--gilt)", borderStyle: "dashed", background: "rgba(var(--ac2r),.06)" }}
-            aria-label={`${s.english}: ${STEMS[s.stem].english} ${BRANCHES[s.branch].english}, ${BRANCHES[s.branch].animal}`}
+            aria-label={zh ? `${s.hanzi} ${STEMS[s.stem].hanzi}${BRANCHES[s.branch].hanzi} ${BRANCHES[s.branch].animalHanzi}` : `${s.english}: ${STEMS[s.stem].english} ${BRANCHES[s.branch].english}, ${BRANCHES[s.branch].animal}`}
           >
             {column(s.key, s.english, s.hanzi, s.stem, s.branch, false)}
           </div>
         ))}
       </div>
-      {caption ? (
+      {caption && !zh ? (
         <p className="font-gloss mt-4 text-center text-[13px] italic" style={{ color: subColor }}>
           {caption}
         </p>
@@ -192,12 +194,12 @@ export function PillarChart({
                   className="font-gloss min-h-[44px] border px-3 text-[13px] transition-colors duration-200"
                   style={{ borderColor: on ? "var(--gilt)" : line, color: inkColor, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
                 >
-                  <span className="font-han mr-2">{w.hanzi}</span>{w.english}
+                  <span className={zh ? "font-han" : "font-han mr-2"}>{w.hanzi}</span>{zh ? null : w.english}
                 </button>
               );
             })}
           </div>
-          <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Show where one phase stands">
+          <div className="flex flex-wrap justify-center gap-2" role="group" aria-label={zh ? "五行" : "Show where one phase stands"}>
             {PHASE_ORDER.map((p) => {
               const on = phase === p;
               return (
@@ -209,7 +211,7 @@ export function PillarChart({
                   className="font-gloss min-h-[44px] min-w-[44px] border px-3 text-[13px] transition-colors duration-200"
                   style={{ borderColor: on ? "var(--gilt)" : line, color: inkColor, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
                 >
-                  <span className="font-han mr-2 font-bold">{PHASES[p].hanzi}</span>{PHASES[p].english}
+                  <span className={zh ? "font-han font-bold" : "font-han mr-2 font-bold"}>{PHASES[p].hanzi}</span>{zh ? null : PHASES[p].english}
                 </button>
               );
             })}
@@ -218,7 +220,32 @@ export function PillarChart({
       ) : null}
       {meetings ? <Meetings signs={signs} onLit={setLit} /> : null}
 
-      {interactive && selected ? (
+      {interactive && selected && zh ? (
+        <div
+          lang="zh-Hant"
+          className="font-han mx-auto mt-8 max-w-2xl border px-6 py-6 text-[16px] leading-loose"
+          style={{ borderColor: dark ? "rgba(var(--txr),.25)" : "rgba(var(--ac2r),.35)", background: "rgba(var(--sfr),.84)", color: inkColor }}
+          role="region"
+          aria-label={selected.hanzi}
+        >
+          <p className="text-[13px] tracking-[0.25em] text-[var(--gilt)]">{selected.hanzi}</p>
+          <p className="mt-3">
+            <span style={{ color: subColor }}>天干</span> <span className="font-bold">{selected.stem.hanzi}</span>{" "}
+            {YINYANG_ZH[selected.stem.yinyang]}{PHASES[selected.stem.phase].hanzi}
+          </p>
+          <p>
+            <span style={{ color: subColor }}>地支</span> <span className="font-bold">{selected.branch.hanzi}</span>{" "}
+            {YINYANG_ZH[selected.branch.yinyang]}{PHASES[selected.branch.phase].hanzi} · {selected.branch.animalHanzi}
+          </p>
+          <p>
+            <span style={{ color: subColor }}>藏干</span>{" "}
+            {selected.branch.hiddenStems.map((h) => STEMS[h].hanzi).join(" ")}
+          </p>
+          <p>
+            <span style={{ color: subColor }}>十神</span> {selected.god ? selected.god.hanzi : "日主"}
+          </p>
+        </div>
+      ) : interactive && selected ? (
         <div
           className="mx-auto mt-8 max-w-2xl border px-6 py-6"
           style={{ borderColor: dark ? "rgba(var(--txr),.25)" : "rgba(var(--ac2r),.35)", background: "rgba(var(--sfr),.84)" }}

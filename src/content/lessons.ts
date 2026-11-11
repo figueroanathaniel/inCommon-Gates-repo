@@ -12,10 +12,10 @@
  *  - Nothing is ever declared to be fated. The tradition describes
  *    weights, seasons and relations; the life remains the reader's.
  *
- * The diction is the diction the founder would have known: 徐子平 [Xu Ziping]
- * of the Song set the Day Master at the centre of the chart, and the old
- * commentaries of his century wrote as these scrolls write, in measured
- * periods, naming weight and season and refusing the verdict.
+ * The history is kept to what was read: 李虛中 [Li Xuzhong] of the Tang
+ * through Han Yu's epitaph for him, the verses of 滴天髓 and Ren Tieqiao's
+ * notes on them, and the opening of 子平真詮. What rests on later report,
+ * such as 徐子平 [Xu Ziping] and the stem of the day, is said as remembered.
  */
 
 export interface LessonBody {
@@ -34,11 +34,12 @@ export const LESSON_BODY: Record<string, LessonBody> = {
     epigraph: "易與天地準，故能彌綸天地之道。",
     epigraphSource: "The Book of Changes, Appended Statements: the Change measures itself against heaven and earth, and so it can enfold the way of heaven and earth entire.",
     paragraphs: [
-      "（八字） [BaZi, the Eight Characters] is the old art of reading a moment of birth as four pairs of signs: the year, the month, the day and the hour, each written as one sign of heaven above one sign of earth. Four pillars, eight characters, and a whole life laid out upon a sheet of paper no larger than a letter. The tradition is old beyond easy reckoning. Its roots were already deep when the scholars of the Tang set the year pillar in order, and it took the form we keep here under （徐子平） [Xu Ziping] of the Song, who placed the day at the centre of the chart and held that the self, not the year, is the heart the other seven characters gather around.",
-      "This house was raised beside inCommon as a branch of one root. inCommon reads the western sky; the Academy keeps the eastern reckoning, and keeps it the way it was kept before either of our centuries: passed from one reader to one listener, a single chart read aloud between them until the listener could read it alone. That care was always bounded. One voice, one ear at a time.",
-      "Here the bound is loosened without being broken. The scrolls you will unroll in this hall were composed once, in one voice, and whoever enters receives them whole and unchanged, as if the scroll had been unrolled for them alone. A thousand ears will hear the same words. That is the promise the house is built on, and nothing in it is allowed to hurry, to flatter, or to pretend to know what will happen.",
-      "The method of the house is the method of Your Nature: one true chart set at the centre of the hall, as a true stone once stood in the desert and let three scripts be read as one. Every scroll you unroll will return to that chart and show its matter written there in real characters: the same stems, the same branches, the same relations, until the grammar of the art is not something you were told but something you have seen with your own eyes, inscribed in a life.",
-      "What the tradition offers is not a verdict. It is a weight, a season, a relation. The eight characters describe the ground a life was planted in and the weather it was born under; they do not walk the decades for you. The old readers said it plainly: the chart shows the seed, and the tending is yours.",
+      "（八字） [BaZi, the Eight Characters] reads a moment of birth as four pairs of signs: the year, the month, the day and the hour, each a sign of heaven set above a sign of earth. Four pillars, eight characters, and a life laid out on a sheet no larger than a letter.",
+      "Its first reader with a name is （李虛中） [Li Xuzhong], a censor of the Tang who died in 813. His friend （韓愈） [Han Yu] wrote his epitaph and remembered him as the man who went deepest into the books of the Five Phases. From the year, month and day of a birth he weighed how long a life would run, how high it would rise, and where it would meet ease or difficulty, and he was seldom wrong. The same epitaph remembers that he took an elixir of quicksilver, hoping not to die. A man who could read the length of other lives wanted to lengthen his own. The art has carried both wishes ever since: to know the shape of a life, and to meet it well.",
+      "Under the Song the hour joined the year, the month and the day, and the art took the name it is still taught under, （子平） [Ziping], after （徐子平） [Xu Ziping], whom the tradition remembers for setting the stem of the day at the centre of the chart. His line's teaching was gathered in （淵海子平） [the Deep Sea of Ziping], and under the Ming （萬民英） [Wan Minying] is credited with drawing the whole field together in （三命通會） [the Compendium of the Three Destinies].",
+      "Two later books gave the art its discipline and its reason. （子平真詮） [the True Commentary on Ziping], by （沈孝瞻） [Shen Xiaozhan] of the Qing, sends every reading back to one question: the self of the day against the season of its month. And （滴天髓） [the Marrow of Heaven's Drops], a verse long credited to （劉基） [Liu Ji] of the early Ming, says why anyone should read a chart at all: 要與人間開聾聵 [to open the ears and eyes of the people of this world]. Its great commentator, （任鐵樵） [Ren Tieqiao], filled it with five hundred and twelve charts of real lives.",
+      "This hall keeps to that method. One true chart, Your Nature, stands at its centre, and every scroll returns to it, until the grammar of the art is something seen written in a life.",
+      "The Marrow puts the heart of the matter in a single line: 順則吉兮凶則悖 [going with the grain is fortune; going against it is misfortune]. The eight characters show the grain of a life, the ground it was planted in and the weather it was born under. The walking is the walker's.",
     ],
     stoneTurn:
       "Your Nature stands at the centre of this hall. When it is inscribed, every scroll you have read will be found written in it, and the last scroll will read it whole, aloud, in one voice, for the reader who has stayed to hear it.",
@@ -46,13 +47,13 @@ export const LESSON_BODY: Record<string, LessonBody> = {
 
   tiangan: {
     id: "tiangan",
-    epigraph: "天干十名，甲乙為首，如木之幹，承天而立。",
-    epigraphSource: "In the manner of the old commentaries: the heavenly stems are ten in name, Jia and Yi at their head, standing like the trunk of a tree beneath heaven.",
+    epigraph: "欲識三元萬法宗，先觀帝載與神功。",
+    epigraphSource: "The Marrow of Heaven's Drops, the Way of Heaven: to know the three origins, the root of every method, look first at what heaven carries and the work of its spirit.",
     paragraphs: [
-      "（天干） [the Heavenly Stems] are the ten signs of heaven's turning. The tradition gives them as a sequence older than the dynasties that used it: Jia （甲）, Yi （乙）, Bing （丙）, Ding （丁）, Wu （戊）, Ji （己）, Geng （庚）, Xin （辛）, Ren （壬）, Gui （癸）. They are not numerals and not letters. Each is a phase of one breath, and the ten together are the five phases of the world, each taken twice, once in its yang fullness and once in its yin refinement.",
-      "Read them as the old readers did, as one growth unfolding. Jia is the seed splitting open, the great tree's first upthrust. Yi is the same wood become vine, bending and finding its way. Bing is the sun at full declaration, and Ding the lamp that carries fire into the house. Wu is the mountain that will not be moved, Ji the garden soil that receives everything and refuses nothing. Geng is metal as ore and blade, Xin metal as the finished jewel. Ren is the river in flood running to the sea, and Gui the quiet rain that ends the cycle by beginning it again, since rain is where every seed's story starts.",
-      "Each stem therefore carries three truths at once: its phase （五行） [the Five Phases], its polarity （陰陽） [yin or yang], and its quality, the shape that phase takes in that polarity. Yang wood is the tree; yin wood is the vine. The phase is what a stem is; the polarity is how it goes about being it. Hold all three and a stem stops being a symbol to memorise and becomes a presence you recognise.",
-      "In a chart the stems stand above, in the place of heaven, and the tradition reads them as what is visible, declared, and offered to the world. The stems are what a life shows on its face. What it keeps in its root cellar belongs to the branches, which the next scroll unrolls.",
+      "（天干） [the Heavenly Stems] are the ten signs of heaven's turning, in an order older than the dynasties that kept it: Jia （甲）, Yi （乙）, Bing （丙）, Ding （丁）, Wu （戊）, Ji （己）, Geng （庚）, Xin （辛）, Ren （壬）, Gui （癸）. They are the five phases each taken twice, once in yang fullness and once in yin refinement: one breath moving through ten shapes.",
+      "Meet them in turn. Jia rises first, the great tree pushing up through the split seed. Yi bends and finds its way, wood as the vine. Bing declares itself at noon and warms whatever it reaches; Ding carries a flame indoors and lights one room exactly. Wu stands as the mountain. Ji opens as garden soil and takes in whatever falls. Geng comes out of the ore as a blade; Xin is pressed and polished into the jewel. Ren runs in flood toward the sea, and Gui falls as quiet rain, closing the round where every seed begins.",
+      "Each stem carries its phase （五行） [the Five Phases], its breath （陰陽） [yin or yang], and the shape that phase takes in that breath. Yang wood is the tree; yin wood is the vine. Hold all three, and a stem becomes a presence you recognise.",
+      "In a chart the stems stand above, in heaven's place, and show what a life wears on its face. What it keeps in its cellar belongs to the branches.",
     ],
     table: "stems",
     stoneTurn:
@@ -61,8 +62,8 @@ export const LESSON_BODY: Record<string, LessonBody> = {
 
   dizhi: {
     id: "dizhi",
-    epigraph: "地支十二，承干而行，如地之枝，載物不言之德。",
-    epigraphSource: "In the manner of the old commentaries: the earthly branches are twelve, walking beneath the stems as the branches of the earth, the virtue of carrying all things without speaking of it.",
+    epigraph: "干為天元，支為地元，支中所藏為人元。",
+    epigraphSource: "Ren Tieqiao on the Marrow of Heaven's Drops: the stems are heaven's origin, the branches earth's origin, and what the branches store is the human origin.",
     paragraphs: [
       "（地支） [the Earthly Branches] are the twelve mansions the year and the day pass through: Zi （子）, Chou （丑）, Yin （寅）, Mao （卯）, Chen （辰）, Si （巳）, Wu （午）, Wei （未）, Shen （申）, You （酉）, Xu （戌）, Hai （亥）. Where the stems are heaven's breath, the branches are earth's body: the twelve months of the year, the twelve double hours of the day, and the twelve creatures by which the branches are first remembered, the Rat （鼠）, the Ox （牛）, the Tiger （虎）, the Rabbit （兔）, the Dragon （龍）, the Snake （蛇）, the Horse （馬）, the Goat （羊）, the Monkey （猴）, the Rooster （雞）, the Dog （狗）, the Pig （豬）.",
       "The creatures are a memory house, not the root of the matter. Beneath each one, a branch is a season and an hour and a phase of the world's breathing. Zi is the hour of deepest night and the month of the solstice, water at its stillest, where the year's next yang is already conceived in the dark. Wu is high noon and high summer, fire at its summit, where yin is likewise already conceived. The twelve are one circle of breathing, out and in, and every branch holds the seed of its own turning.",
@@ -119,8 +120,8 @@ export const LESSON_BODY: Record<string, LessonBody> = {
 
   shishen: {
     id: "shishen",
-    epigraph: "以我為主，生剋為用，十神之名，皆從此出。",
-    epigraphSource: "In the manner of the old commentaries: take the self as the sovereign and the generating and overcoming rounds as the instrument; the names of the ten gods all arise from this.",
+    epigraph: "以日干配月令地支，而生剋不同，格局分焉。",
+    epigraphSource: "The True Commentary on Ziping: set the stem of the day against the branch of the month's decree, and as their feeding and overcoming differ, the structures divide.",
     paragraphs: [
       "（十神） [the Ten Gods] are not spirits. They are the ten possible relations any sign can bear to the Day Master, and they are derived entirely from the two rounds you already hold. Take the Day Master's phase and polarity, set another stem beside it, and ask the old questions: is it the same phase as me, does it generate me, do I generate it, does it overcome me, or do I overcome it, and is its breath the same as mine or opposite? Five relations, each in two polarities, make ten gods. Nothing new is added. The whole vocabulary is the same reckoning you already carry, read as kinship.",
       "Walk the ring. What shares my phase is my kin: in the same polarity the Companion （比肩）, shoulder to shoulder, and in the opposite Rob Wealth （劫財）, the rival who shares my nature and contends for what is mine. What I generate is my expression: in the same polarity the Eating God （食神）, expression that nourishes, and in the opposite the Hurting Officer （傷官）, brilliance that tests every authority it meets. What I overcome is my wealth: in the same polarity Indirect Wealth （偏財）, the windfall and the wide field, and in the opposite Direct Wealth （正財）, the honest wage and the kept store.",

@@ -48,7 +48,7 @@ export default function Desk() {
           <Seal char="案" size={44} />
           <div>
             <h1 className="font-han text-[32px] font-bold tracking-[0.15em] text-[var(--tx)]">案 · 書桌</h1>
-            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Desk</p>
+            <p data-en className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Desk</p>
           </div>
         </div>
         <p className="font-gloss mt-7 max-w-2xl text-[15.5px] leading-relaxed text-[rgba(var(--txr),.72)]">

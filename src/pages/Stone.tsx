@@ -24,9 +24,9 @@ export default function Stone() {
       <section className="py-14 min-[820px]:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <div className="flex justify-center"><Seal char="命" size={48} dark /></div>
-          <h1 className="font-han mt-6 text-[38px] font-black tracking-[0.12em] text-[var(--tx)] min-[820px]:text-[46px]">Your Nature</h1>
-          <p className="font-gloss mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
-            One true chart, set at the centre of the house as the stone was set in the desert:
+          <h1 className="font-han mt-6 text-[38px] font-black tracking-[0.12em] text-[var(--tx)] min-[820px]:text-[46px]"><span data-en>Your Nature</span><span data-zh>命盤</span></h1>
+          <p data-en className="font-gloss mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
+            One true chart, set at the centre of the house:
             the same life read in every script the hall keeps, until the scripts become one reading.
           </p>
         </div>
