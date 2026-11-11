@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { FourPillars, Phase } from "@contracts/bazi";
 import { BRANCHES, PHASES, STEMS, tenGodOf } from "@contracts/bazi";
-import { ReadingGloss, pillarViews } from "@/lib/reading";
+import { pillarViews } from "@/lib/reading";
 import { SEASON_STATES, natalSigns, seasonState, type Sign } from "@/lib/meet";
 import { setChartPrefs, useChartPrefs } from "@/lib/prefs";
-import { GhostButton, Rule } from "./chrome";
+import { Rule } from "./chrome";
 import { Meetings } from "./meetings";
 import { litKey } from "@/lib/meet";
 import { YINYANG_ZH, useZh } from "@/lib/lang";
@@ -41,10 +41,8 @@ export function PillarChart({
   const prefs = useChartPrefs();
   const zh = useZh();
   const [open, setOpen] = useState<string | null>(null);
-  const [plain, setPlain] = useState(false);
   const [phase, setPhase] = useState<Phase | null>(null);
   const [lit, setLit] = useState<string[]>([]);
-  const gloss = new ReadingGloss(plain);
   const inkColor = "var(--tx)";
   const subColor = "rgba(var(--txr),.7)";
   const line = dark ? "rgba(var(--txr),.22)" : "rgba(var(--txr),.18)";
@@ -67,10 +65,56 @@ export function PillarChart({
     const stemState = SEASON_STATES[seasonState(pillars.monthBranch, stem.phase)];
     const branchState = SEASON_STATES[seasonState(pillars.monthBranch, branch.phase)];
     const god = isDay ? null : tenGodOf(day, stem);
+    if (!zh) {
+      return (
+        <>
+          <span className="font-gloss text-[11px] uppercase tracking-[0.12em] min-[820px]:tracking-[0.2em]" style={{ color: subColor }}>
+            {english}
+          </span>
+          <span
+            className="font-gloss mt-3 flex flex-col items-center font-bold"
+            style={{ fontSize: wide ? "clamp(17px, 4.2vw, 30px)" : "clamp(19px, 5vw, 34px)", lineHeight: 1.15 }}
+          >
+            <span style={charStyle(key, "stem", stem.phase)}>{stem.english}</span>
+            <span style={charStyle(key, "branch", branch.phase)}>{branch.english}</span>
+          </span>
+          <span className="font-gloss mt-3 text-center text-[11px] leading-snug" style={{ color: subColor }}>
+            {stem.yinyang === "yang" ? "Yang" : "Yin"} {PHASES[stem.phase].english}
+          </span>
+          <span className="font-gloss mt-1 text-center text-[11px] leading-snug" style={{ color: subColor }}>
+            {branch.animal} · {PHASES[branch.phase].english}
+          </span>
+          {prefs.gods ? (
+            <span data-row="gods" className="font-gloss mt-3 text-center text-[11.5px] leading-snug" style={{ color: "var(--gilt)" }}>
+              {god ? god.english : "Day Master"}
+            </span>
+          ) : null}
+          {prefs.season ? (
+            <span data-row="season" className="font-gloss mt-3 text-center text-[11.5px] leading-snug" style={{ color: inkColor }}>
+              <span className="block">{PHASES[stem.phase].english} {stemState.english}</span>
+              <span className="block">{PHASES[branch.phase].english} {branchState.english}</span>
+            </span>
+          ) : null}
+          {prefs.hidden ? (
+            <span data-row="hidden" className="mt-3 flex flex-col items-center gap-[2px]" aria-label={`Hidden stems: ${branch.hiddenStems.map((h) => STEMS[h].english).join(", ")}`}>
+              {branch.hiddenStems.map((h) => {
+                const hs = STEMS[h];
+                return (
+                  <span key={h} className="font-gloss flex flex-col items-center text-center leading-tight" style={{ opacity: phase && phase !== hs.phase ? 0.28 : 1 }}>
+                    <span className="text-[13px] font-bold" style={{ color: inkColor }}>{hs.english}</span>
+                    {prefs.gods ? <span className="text-[10px]" style={{ color: "var(--gilt)" }}>{tenGodOf(day, hs).english}</span> : null}
+                  </span>
+                );
+              })}
+            </span>
+          ) : null}
+        </>
+      );
+    }
     return (
       <>
         <span className="font-gloss text-[11px] uppercase tracking-[0.12em] min-[820px]:tracking-[0.2em]" style={{ color: subColor }}>
-          {zh ? (/^\d+$/.test(english) ? english : "\u00a0") : english}
+          {/^\d+$/.test(english) ? english : "\u00a0"}
         </span>
         <span
           className="font-han mt-3 font-bold"
@@ -82,28 +126,20 @@ export function PillarChart({
         <span className="font-han mt-3 text-[13px] tracking-[0.25em]" style={{ color: "var(--gilt)" }}>
           {hanzi}
         </span>
-        <span className="font-gloss mt-1 text-center text-[11px]" style={{ color: subColor }}>
-          {zh ? <span className="font-han">{branch.animalHanzi} · {PHASES[branch.phase].hanzi}</span> : <>{branch.animal} · {PHASES[branch.phase].english}</>}
+        <span className="font-han mt-1 text-center text-[11px]" style={{ color: subColor }}>
+          {branch.animalHanzi} · {PHASES[branch.phase].hanzi}
         </span>
         {prefs.gods ? (
-          <span data-row="gods" className="mt-3 flex flex-col items-center">
-            <span className="font-han text-[13px]" style={{ color: "var(--gilt)" }}>{god ? god.hanzi : "日主"}</span>
-            {zh ? null : <span className="font-gloss text-center text-[10.5px] leading-snug" style={{ color: subColor }}>{god ? god.english : "Day Master"}</span>}
-          </span>
+          <span data-row="gods" className="font-han mt-3 text-[13px]" style={{ color: "var(--gilt)" }}>{god ? god.hanzi : "日主"}</span>
         ) : null}
         {prefs.season ? (
-          <span
-            data-row="season"
-            className="font-han mt-3 text-center text-[13px] leading-relaxed"
-            style={{ color: inkColor }}
-            aria-label={zh ? undefined : `${PHASES[stem.phase].english} ${stemState.english}, ${PHASES[branch.phase].english} ${branchState.english}`}
-          >
+          <span data-row="season" className="font-han mt-3 text-center text-[13px] leading-relaxed" style={{ color: inkColor }}>
             <span className="block">{PHASES[stem.phase].hanzi}{stemState.hanzi}</span>
             <span className="block">{PHASES[branch.phase].hanzi}{branchState.hanzi}</span>
           </span>
         ) : null}
         {prefs.hidden ? (
-          <span data-row="hidden" className="mt-3 flex flex-col items-center gap-[2px]" aria-label={zh ? `藏干 ${branch.hiddenStems.map((h) => STEMS[h].hanzi).join("")}` : `Hidden stems: ${branch.hiddenStems.map((h) => STEMS[h].english).join(", ")}`}>
+          <span data-row="hidden" className="mt-3 flex flex-col items-center gap-[2px]" aria-label={`藏干 ${branch.hiddenStems.map((h) => STEMS[h].hanzi).join("")}`}>
             {branch.hiddenStems.map((h) => {
               const hs = STEMS[h];
               return (
@@ -173,8 +209,8 @@ export function PillarChart({
           </div>
         ))}
       </div>
-      {caption && !zh ? (
-        <p className="font-gloss mt-4 text-center text-[13px] italic" style={{ color: subColor }}>
+      {caption ? (
+        <p className={(zh ? "font-han" : "font-gloss italic") + " mt-4 text-center text-[13px]"} style={{ color: subColor }}>
           {caption}
         </p>
       ) : null}
@@ -194,7 +230,7 @@ export function PillarChart({
                   className="font-gloss min-h-[44px] border px-3 text-[13px] transition-colors duration-200"
                   style={{ borderColor: on ? "var(--gilt)" : line, color: inkColor, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
                 >
-                  <span className={zh ? "font-han" : "font-han mr-2"}>{w.hanzi}</span>{zh ? null : w.english}
+                  {zh ? <span className="font-han">{w.hanzi}</span> : w.english}
                 </button>
               );
             })}
@@ -211,7 +247,7 @@ export function PillarChart({
                   className="font-gloss min-h-[44px] min-w-[44px] border px-3 text-[13px] transition-colors duration-200"
                   style={{ borderColor: on ? "var(--gilt)" : line, color: inkColor, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
                 >
-                  <span className={zh ? "font-han font-bold" : "font-han mr-2 font-bold"}>{PHASES[p].hanzi}</span>{zh ? null : PHASES[p].english}
+                  {zh ? <span className="font-han font-bold">{PHASES[p].hanzi}</span> : PHASES[p].english}
                 </button>
               );
             })}
@@ -229,20 +265,21 @@ export function PillarChart({
           aria-label={selected.hanzi}
         >
           <p className="text-[13px] tracking-[0.25em] text-[var(--gilt)]">{selected.hanzi}</p>
+          <p className="mt-2 text-[15px]" style={{ color: subColor }}>其所主：{selected.domainZh}。</p>
           <p className="mt-3">
             <span style={{ color: subColor }}>天干</span> <span className="font-bold">{selected.stem.hanzi}</span>{" "}
-            {YINYANG_ZH[selected.stem.yinyang]}{PHASES[selected.stem.phase].hanzi}
+            {YINYANG_ZH[selected.stem.yinyang]}{PHASES[selected.stem.phase].hanzi}，{selected.stem.qualityZh}
           </p>
           <p>
             <span style={{ color: subColor }}>地支</span> <span className="font-bold">{selected.branch.hanzi}</span>{" "}
-            {YINYANG_ZH[selected.branch.yinyang]}{PHASES[selected.branch.phase].hanzi} · {selected.branch.animalHanzi}
+            {YINYANG_ZH[selected.branch.yinyang]}{PHASES[selected.branch.phase].hanzi} · {selected.branch.animalHanzi}，{selected.branch.qualityZh}
           </p>
           <p>
             <span style={{ color: subColor }}>藏干</span>{" "}
             {selected.branch.hiddenStems.map((h) => STEMS[h].hanzi).join(" ")}
           </p>
           <p>
-            <span style={{ color: subColor }}>十神</span> {selected.god ? selected.god.hanzi : "日主"}
+            <span style={{ color: subColor }}>十神</span> {selected.god ? `${selected.god.hanzi}，${selected.god.readingZh}` : "日主，命盤中其餘諸字皆以此論其關係"}
           </p>
         </div>
       ) : interactive && selected ? (
@@ -252,36 +289,18 @@ export function PillarChart({
           role="region"
           aria-label={`Reading of the ${selected.english}`}
         >
-          <div className="flex items-center justify-between gap-4">
-            <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[var(--gilt)]">Its ground</p>
-            <GhostButton dark={dark} onClick={() => setPlain(!plain)} aria-pressed={plain}>
-              {plain ? "With characters 顯字" : "English only 隱字"}
-            </GhostButton>
-          </div>
+          <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[var(--gilt)]">{selected.english}</p>
           <p className="font-gloss mt-4 text-[15px] leading-relaxed" style={{ color: inkColor }}>
-            <span className="font-han font-semibold">
-              {plain ? selected.stem.english : `${selected.stem.hanzi} ${selected.stem.english}`}
-            </span>
-            {" "}stands above: {selected.stem.quality}. Beneath it,{" "}
-            <span className="font-han font-semibold">
-              {plain ? selected.branch.english : `${selected.branch.hanzi} ${selected.branch.english}`}
-            </span>, the{" "}
-            {gloss.mark(selected.branch.animalHanzi, selected.branch.animal)}: {selected.branch.quality}.
+            <span className="font-semibold">{selected.stem.english}</span> stands above: {selected.stem.quality}. Beneath it,{" "}
+            <span className="font-semibold">{selected.branch.english}</span>, the {selected.branch.animal}: {selected.branch.quality}.
           </p>
           <Rule dark={dark} className="my-4" />
           <p className="font-gloss text-[14px] leading-relaxed" style={{ color: subColor }}>
-            This is the {selected.english.toLowerCase()}
-            {plain ? "." : ` （${selected.hanzi}）.`} Its ground is {selected.domain}.
+            This is the {selected.english.toLowerCase()}. Its ground is {selected.domain}.
             {selected.god ? (
-              <>
-                {" "}Against the Day Master it sits as{" "}
-                {plain ? selected.god.english : `${selected.god.english} （${selected.god.hanzi}）`}: {selected.god.reading}.
-              </>
+              <> Against the Day Master it sits as {selected.god.english}: {selected.god.reading}.</>
             ) : (
-              <>
-                {" "}Its stem is the Day Master
-                {plain ? "." : " （日主）, the self from which every other sign in the chart takes its relation."}
-              </>
+              <> Its stem is the Day Master, the self from which every other sign in the chart takes its relation.</>
             )}
           </p>
         </div>

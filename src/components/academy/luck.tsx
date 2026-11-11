@@ -4,6 +4,8 @@ import { STEMS, BRANCHES, tenGodOf, type FourPillars } from "@contracts/bazi";
 import { TIE_NAMES, kindsAgainst, yearPillar } from "@/lib/meet";
 import { ageZh, useZh } from "@/lib/lang";
 
+const SHORT: Record<string, string> = { combine: "Comb.", clash: "Clash", harm: "Harm", punish: "Pun." };
+
 export type Sex = "m" | "f";
 
 export interface LuckView {
@@ -49,7 +51,7 @@ export function SexField({ value, onChange, dark = false }: { value: Sex | null;
               className="font-gloss min-h-[44px] border px-4 text-[14px] transition-colors duration-200"
               style={{ borderColor: on ? "var(--gilt)" : line, color: ink, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
             >
-              {zh ? <span className="font-han">{o.han || "不說"}</span> : <>{o.han ? <span className="font-han mr-2">{o.han}</span> : null}{o.en}</>}
+              {zh ? <span className="font-han">{o.han || "不說"}</span> : o.en}
             </button>
           );
         })}
@@ -78,7 +80,7 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>{zh ? "大運" : "大運 · The Luck Pillars"}</h4>
+        <h4 className={(zh ? "font-han" : "font-gloss") + " text-[17px] font-bold"} style={{ color: ink }}>{zh ? "大運" : "The Luck Pillars"}</h4>
         {zh ? (
           <span lang="zh-Hant" className="font-han text-[13px]" style={{ color: sub }}>
             {luck.forward ? "順行" : "逆行"}，{ageZh(s.years, s.months)}{s.days ? `${s.days}日` : ""}起運
@@ -107,15 +109,24 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
           const body = (
             <>
               <span className={(zh ? "font-han" : "font-gloss") + " text-[11px] tabular-nums"} style={{ color: sub }}>{zh ? ageZh(d.ageYears, d.ageMonths) : age(d.ageYears, d.ageMonths)}</span>
-              <span className="font-han mt-2 text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{stem.hanzi}</span>
-              <span className="font-han text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{branch.hanzi}</span>
-              <span className="font-han mt-2 text-[12px]" style={{ color: "var(--gilt)" }}>{god.hanzi}</span>
-              {zh ? null : <span className="font-gloss text-center text-[10.5px] leading-snug" style={{ color: sub }}>{god.english}</span>}
+              {zh ? (
+                <>
+                  <span className="font-han mt-2 text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{stem.hanzi}</span>
+                  <span className="font-han text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{branch.hanzi}</span>
+                  <span className="font-han mt-2 text-[12px]" style={{ color: "var(--gilt)" }}>{god.hanzi}</span>
+                </>
+              ) : (
+                <>
+                  <span className="font-gloss mt-2 text-[17px] font-bold leading-tight min-[820px]:text-[19px]" style={{ color: ink }}>{stem.english}</span>
+                  <span className="font-gloss text-[17px] font-bold leading-tight min-[820px]:text-[19px]" style={{ color: ink }}>{branch.english}</span>
+                  <span className="font-gloss mt-2 text-center text-[10.5px] leading-snug" style={{ color: "var(--gilt)" }}>{god.english}</span>
+                </>
+              )}
               <span className={(zh ? "font-han" : "font-gloss") + " mt-1 text-center text-[10.5px] leading-snug"} style={{ color: sub }}>{zh ? branch.animalHanzi : branch.animal}</span>
               {d.from ? <span className="font-gloss mt-1 text-[10.5px] tabular-nums" style={{ color: sub }}>{d.from.slice(0, 4)}</span> : null}
               {pillars ? (
-                <span data-marks className="font-han mt-1 min-h-[16px] text-[11.5px] tracking-[0.1em]" style={{ color: "var(--gilt)" }} aria-hidden="true">
-                  {met.map((k) => TIE_NAMES[k].hanzi).join(" ")}
+                <span data-marks className={(zh ? "font-han text-[11.5px] tracking-[0.1em]" : "font-gloss text-center text-[10px] leading-snug") + " mt-1 min-h-[16px]"} style={{ color: "var(--gilt)" }} aria-hidden="true">
+                  {met.map((k) => (zh ? TIE_NAMES[k].hanzi : SHORT[k] ?? TIE_NAMES[k].english)).join(" ")}
                 </span>
               ) : null}
             </>
@@ -141,7 +152,7 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
       </ol>
       {times && years.length ? (
         <div className="mt-6">
-          <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>{zh ? "流年" : "流年 · The Years"}</h4>
+          <h4 className={(zh ? "font-han" : "font-gloss") + " text-[17px] font-bold"} style={{ color: ink }}>{zh ? "流年" : "The Years"}</h4>
           <ol className="mt-3 grid grid-cols-5 gap-2 min-[820px]:grid-cols-10" aria-label={zh ? "此運流年" : "The years of this decade"}>
             {years.map((y) => {
               const yp = yearPillar(y);
@@ -163,9 +174,16 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
                     }}
                   >
                     <span className="font-gloss text-[11px] tabular-nums" style={{ color: sub }}>{y}</span>
-                    <span className="font-han mt-1 text-[18px] font-bold leading-tight" style={{ color: ink }}>{STEMS[yp.stem].hanzi}{BRANCHES[yp.branch].hanzi}</span>
-                    <span data-marks className="font-han mt-1 min-h-[16px] text-[11.5px] tracking-[0.1em]" style={{ color: "var(--gilt)" }} aria-hidden="true">
-                      {met.map((k) => TIE_NAMES[k].hanzi).join(" ")}
+                    {zh ? (
+                      <span className="font-han mt-1 text-[18px] font-bold leading-tight" style={{ color: ink }}>{STEMS[yp.stem].hanzi}{BRANCHES[yp.branch].hanzi}</span>
+                    ) : (
+                      <span className="font-gloss mt-1 flex flex-col items-center text-[13px] font-bold leading-tight" style={{ color: ink }}>
+                        <span>{STEMS[yp.stem].english}</span>
+                        <span>{BRANCHES[yp.branch].english}</span>
+                      </span>
+                    )}
+                    <span data-marks className={(zh ? "font-han text-[11.5px] tracking-[0.1em]" : "font-gloss text-center text-[10px] leading-snug") + " mt-1 min-h-[16px]"} style={{ color: "var(--gilt)" }} aria-hidden="true">
+                      {met.map((k) => (zh ? TIE_NAMES[k].hanzi : SHORT[k] ?? TIE_NAMES[k].english)).join(" ")}
                     </span>
                   </button>
                 </li>
