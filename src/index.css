@@ -237,3 +237,7 @@ body::before {
 [data-brand-door][data-brand="pre"] [data-brand-face] { opacity: 0; }
 [data-brand-door][data-brand="flood"] [data-brand-face] { animation: brand-face 420ms 140ms ease-out both; }
 @keyframes brand-face { from { opacity: 0; } to { opacity: 1; } }
+
+/* 中文: an English gloss under a room's own name is put away while the house is read in characters. */
+html[lang="zh-Hant"] [data-en] { display: none; }
+html:not([lang="zh-Hant"]) [data-zh] { display: none; }

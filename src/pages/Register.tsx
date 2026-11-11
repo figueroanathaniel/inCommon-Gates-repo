@@ -19,7 +19,7 @@ export default function Register() {
           <Seal char="冊" size={44} />
           <div>
             <h1 className="font-han text-[32px] font-bold tracking-[0.15em] text-[var(--tx)]">冊 · 學籍</h1>
-            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Register</p>
+            <p data-en className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Register</p>
           </div>
         </div>
 

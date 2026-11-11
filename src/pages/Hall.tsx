@@ -18,7 +18,7 @@ export default function Hall() {
           <Seal char="廳" size={44} />
           <div>
             <h1 className="font-han text-[34px] font-bold tracking-[0.15em] text-[var(--tx)]">講堂</h1>
-            <p className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Hall of Scrolls</p>
+            <p data-en className="font-gloss text-[13px] uppercase tracking-[0.26em] text-[var(--gilt)]">The Hall of Scrolls</p>
           </div>
         </div>
         <p className="font-gloss mt-8 max-w-2xl text-[16px] leading-relaxed text-[rgba(var(--txr),.75)]">

@@ -2,6 +2,7 @@ import { useId } from "react";
 import { yearsOf, type Times } from "@/lib/times";
 import { STEMS, BRANCHES, tenGodOf, type FourPillars } from "@contracts/bazi";
 import { TIE_NAMES, kindsAgainst, yearPillar } from "@/lib/meet";
+import { ageZh, useZh } from "@/lib/lang";
 
 export type Sex = "m" | "f";
 
@@ -21,6 +22,7 @@ const age = (y: number, m: number) => (m ? `${y} y ${m} m` : `${y} y`);
  */
 export function SexField({ value, onChange, dark = false }: { value: Sex | null; onChange: (v: Sex | null) => void; dark?: boolean }) {
   const id = useId();
+  const zh = useZh();
   const sub = "rgba(var(--txr),.7)";
   const ink = dark ? "var(--tx)" : "var(--tx)";
   const line = dark ? "rgba(var(--txr),.35)" : "rgba(var(--txr),.3)";
@@ -32,7 +34,7 @@ export function SexField({ value, onChange, dark = false }: { value: Sex | null;
   return (
     <div role="radiogroup" aria-labelledby={`${id}-l`}>
       <span id={`${id}-l`} className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: sub }}>
-        Sex at birth, which sets the way the luck pillars run
+        {zh ? <span className="font-han tracking-[0.1em]">出生性別，定大運順逆</span> : "Sex at birth, which sets the way the luck pillars run"}
       </span>
       <div className="flex flex-wrap gap-2">
         {opts.map((o) => {
@@ -47,8 +49,7 @@ export function SexField({ value, onChange, dark = false }: { value: Sex | null;
               className="font-gloss min-h-[44px] border px-4 text-[14px] transition-colors duration-200"
               style={{ borderColor: on ? "var(--gilt)" : line, color: ink, background: on ? "rgba(var(--ac2r),.16)" : "transparent" }}
             >
-              {o.han ? <span className="font-han mr-2">{o.han}</span> : null}
-              {o.en}
+              {zh ? <span className="font-han">{o.han || "不說"}</span> : <>{o.han ? <span className="font-han mr-2">{o.han}</span> : null}{o.en}</>}
             </button>
           );
         })}
@@ -70,21 +71,28 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
   const sub = "rgba(var(--txr),.7)";
   const line = dark ? "rgba(var(--txr),.22)" : "rgba(var(--txr),.18)";
   const dm = STEMS[dayStem];
+  const zh = useZh();
   const s = luck.start;
   const marks = (stem: number, branch: number) => (pillars ? kindsAgainst(pillars, stem, branch) : []);
   const years = times && times.decade !== null ? yearsOf(luck, times.decade, times.open) : [];
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>大運 · The Luck Pillars</h4>
-        <span className="font-gloss text-[12.5px]" style={{ color: sub }}>
-          {luck.forward ? "Forward" : "Backward"} from the month pillar, the first opening at {age(s.years, s.months)}
-          {s.days ? ` ${s.days} d` : ""}
-        </span>
+        <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>{zh ? "大運" : "大運 · The Luck Pillars"}</h4>
+        {zh ? (
+          <span lang="zh-Hant" className="font-han text-[13px]" style={{ color: sub }}>
+            {luck.forward ? "順行" : "逆行"}，{ageZh(s.years, s.months)}{s.days ? `${s.days}日` : ""}起運
+          </span>
+        ) : (
+          <span className="font-gloss text-[12.5px]" style={{ color: sub }}>
+            {luck.forward ? "Forward" : "Backward"} from the month pillar, the first opening at {age(s.years, s.months)}
+            {s.days ? ` ${s.days} d` : ""}
+          </span>
+        )}
       </div>
       <ol
         className="mt-4 grid grid-cols-4 gap-2 min-[820px]:grid-cols-8"
-        aria-label={`The luck pillars, running ${luck.forward ? "forward" : "backward"}`}
+        aria-label={zh ? `大運，${luck.forward ? "順行" : "逆行"}` : `The luck pillars, running ${luck.forward ? "forward" : "backward"}`}
       >
         {luck.decades.map((d, i) => {
           const stem = STEMS[d.stem];
@@ -93,15 +101,17 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
           const now = luck.current === i;
           const picked = times?.decade === i;
           const met = marks(d.stem, d.branch);
-          const label = `From age ${age(d.ageYears, d.ageMonths)}${d.from ? `, ${d.from}` : ""}: ${stem.english} ${branch.english}, ${branch.animal}, ${god.english}${now ? ", the decade open now" : ""}${met.length ? `. Meets the birth: ${met.map((k) => TIE_NAMES[k].english).join(", ")}` : ""}`;
+          const labelZh = `${ageZh(d.ageYears, d.ageMonths)}起${d.from ? `，${d.from.slice(0, 4)}年` : ""}，${stem.hanzi}${branch.hanzi}，${god.hanzi}${now ? "，當運" : ""}${met.length ? `，${met.map((k) => TIE_NAMES[k].hanzi).join("")}` : ""}`;
+          const labelEn = `From age ${age(d.ageYears, d.ageMonths)}${d.from ? `, ${d.from}` : ""}: ${stem.english} ${branch.english}, ${branch.animal}, ${god.english}${now ? ", the decade open now" : ""}${met.length ? `. Meets the birth: ${met.map((k) => TIE_NAMES[k].english).join(", ")}` : ""}`;
+          const label = zh ? labelZh : labelEn;
           const body = (
             <>
-              <span className="font-gloss text-[11px] tabular-nums" style={{ color: sub }}>{age(d.ageYears, d.ageMonths)}</span>
+              <span className={(zh ? "font-han" : "font-gloss") + " text-[11px] tabular-nums"} style={{ color: sub }}>{zh ? ageZh(d.ageYears, d.ageMonths) : age(d.ageYears, d.ageMonths)}</span>
               <span className="font-han mt-2 text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{stem.hanzi}</span>
               <span className="font-han text-[24px] font-bold leading-tight min-[820px]:text-[26px]" style={{ color: ink }}>{branch.hanzi}</span>
               <span className="font-han mt-2 text-[12px]" style={{ color: "var(--gilt)" }}>{god.hanzi}</span>
-              <span className="font-gloss text-center text-[10.5px] leading-snug" style={{ color: sub }}>{god.english}</span>
-              <span className="font-gloss mt-1 text-center text-[10.5px] leading-snug" style={{ color: sub }}>{branch.animal}</span>
+              {zh ? null : <span className="font-gloss text-center text-[10.5px] leading-snug" style={{ color: sub }}>{god.english}</span>}
+              <span className={(zh ? "font-han" : "font-gloss") + " mt-1 text-center text-[10.5px] leading-snug"} style={{ color: sub }}>{zh ? branch.animalHanzi : branch.animal}</span>
               {d.from ? <span className="font-gloss mt-1 text-[10.5px] tabular-nums" style={{ color: sub }}>{d.from.slice(0, 4)}</span> : null}
               {pillars ? (
                 <span data-marks className="font-han mt-1 min-h-[16px] text-[11.5px] tracking-[0.1em]" style={{ color: "var(--gilt)" }} aria-hidden="true">
@@ -131,8 +141,8 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
       </ol>
       {times && years.length ? (
         <div className="mt-6">
-          <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>流年 · The Years</h4>
-          <ol className="mt-3 grid grid-cols-5 gap-2 min-[820px]:grid-cols-10" aria-label="The years of this decade">
+          <h4 className="font-han text-[17px] font-bold" style={{ color: ink }}>{zh ? "流年" : "流年 · The Years"}</h4>
+          <ol className="mt-3 grid grid-cols-5 gap-2 min-[820px]:grid-cols-10" aria-label={zh ? "此運流年" : "The years of this decade"}>
             {years.map((y) => {
               const yp = yearPillar(y);
               const picked = times.year === y;
@@ -143,7 +153,7 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
                   <button
                     type="button"
                     aria-pressed={picked}
-                    aria-label={`${y}: ${STEMS[yp.stem].english} ${BRANCHES[yp.branch].english}, ${BRANCHES[yp.branch].animal}${now ? ", the year open now" : ""}${met.length ? `. Meets the birth: ${met.map((k) => TIE_NAMES[k].english).join(", ")}` : ""}`}
+                    aria-label={zh ? `${y}年，${STEMS[yp.stem].hanzi}${BRANCHES[yp.branch].hanzi}${now ? "，今年" : ""}${met.length ? `，${met.map((k) => TIE_NAMES[k].hanzi).join("")}` : ""}` : `${y}: ${STEMS[yp.stem].english} ${BRANCHES[yp.branch].english}, ${BRANCHES[yp.branch].animal}${now ? ", the year open now" : ""}${met.length ? `. Meets the birth: ${met.map((k) => TIE_NAMES[k].english).join(", ")}` : ""}`}
                     onClick={() => times.setYear(picked ? null : y)}
                     className="flex h-full min-h-[44px] w-full min-w-0 flex-col items-center border px-1 py-2 transition-colors duration-200"
                     style={{

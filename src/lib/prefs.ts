@@ -2,8 +2,8 @@ import { useSyncExternalStore } from "react";
 
 /*
   How the reader likes a chart shown. Kept on the device and nowhere else:
-  three switches on the pillars, all off until chosen, and the shape of the
-  table of meetings.
+  three switches on the pillars, all off until chosen, the shape of the
+  table of meetings, and whether the house is read in English or in 中文.
 */
 
 export interface ChartPrefs {
@@ -11,10 +11,11 @@ export interface ChartPrefs {
   gods: boolean;
   season: boolean;
   table: "list" | "grid";
+  lang: "en" | "zh";
 }
 
 const KEY = "incommon.bazi.view.v1";
-const DEFAULTS: ChartPrefs = { hidden: false, gods: false, season: false, table: "list" };
+const DEFAULTS: ChartPrefs = { hidden: false, gods: false, season: false, table: "list", lang: "en" };
 
 function load(): ChartPrefs {
   try {
@@ -25,6 +26,7 @@ function load(): ChartPrefs {
       gods: raw.gods === true,
       season: raw.season === true,
       table: raw.table === "grid" ? "grid" : "list",
+      lang: raw.lang === "zh" ? "zh" : "en",
     };
   } catch {
     return DEFAULTS;

@@ -2,6 +2,7 @@ import { ReturnLink } from "./return";
 import { Link, NavLink } from "react-router";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { setLang, useLangAttr, useZh } from "@/lib/lang";
 
 /** 印 The seal of the house, set as a rubbing: ink on paper, never cinnabar. */
 export function Seal({ char, size = 44, dark = false }: { char: string; size?: number; dark?: boolean }) {
@@ -119,6 +120,8 @@ const NAV = [
  */
 export function Shell({ children, paper = false }: { children: ReactNode; paper?: boolean }) {
   const { user, isSignedIn } = useAuth();
+  const zh = useZh();
+  useLangAttr();
   return (
     <div className="min-h-[100dvh]" style={{ background: "transparent", color: "var(--tx)" }}>
       {/* The lintel */}
@@ -132,23 +135,25 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
       >
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-3 min-[820px]:px-10">
           <ReturnLink dim="rgba(var(--txr),.75)" />
-          <Link to="/" className="flex min-h-[44px] items-center gap-3" aria-label="The Eight Characters Academy, to the Gate">
+          <Link to="/" className="flex min-h-[44px] items-center gap-3" aria-label={zh ? "八字書院，回門" : "The Eight Characters Academy, to the Gate"}>
             <Seal char="書" size={34} dark={paper} />
             <span className="flex flex-col leading-tight">
               <span className="font-han text-[17px] font-semibold tracking-[0.3em]">八字書院</span>
-              <span className="font-gloss text-[11px] uppercase tracking-[0.22em]" style={{ color: paper ? "rgba(var(--txr),.66)" : "rgba(var(--txr),.66)" }}>
-                The Eight Characters Academy
-              </span>
+              {zh ? null : (
+                <span className="font-gloss text-[11px] uppercase tracking-[0.22em]" style={{ color: "rgba(var(--txr),.66)" }}>
+                  The Eight Characters Academy
+                </span>
+              )}
             </span>
           </Link>
-          <nav className="ml-auto flex flex-wrap items-center" aria-label="The rooms of the house">
+          <nav className="ml-auto flex flex-wrap items-center" aria-label={zh ? "書院各室" : "The rooms of the house"}>
             {NAV.map((n) => (
               <NavLink
                 key={n.to}
                 to={n.to}
                 end={n.end}
                 className="group flex min-h-[44px] min-w-[44px] flex-col items-center justify-center px-2.5"
-                aria-label={`${n.hanzi} ${n.english}`}
+                aria-label={zh ? n.hanzi : `${n.hanzi} ${n.english}`}
               >
                 {({ isActive }) => (
                   <>
@@ -167,6 +172,16 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
                 )}
               </NavLink>
             ))}
+            <button
+              type="button"
+              data-lang-switch
+              lang={zh ? "en" : "zh-Hant"}
+              onClick={() => setLang(zh ? "en" : "zh")}
+              className={(zh ? "font-gloss tracking-[0.12em] uppercase" : "font-han tracking-[0.2em]") + " ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center border px-3 text-[13px] transition-colors duration-200 hover:text-gilt"}
+              style={{ borderColor: "rgba(var(--txr),.3)", color: "rgba(var(--txr),.85)" }}
+            >
+              {zh ? "English" : "中文"}
+            </button>
             {isSignedIn ? (
               <>
               <span className="mx-2 hidden h-5 w-px min-[820px]:block" style={{ background: "rgba(var(--txr),.2)" }} aria-hidden />
