@@ -2,6 +2,7 @@ import { PHASES } from "@contracts/bazi";
 import { TIE_NAMES, litKey, tiesAmong, type Sign, type Tie } from "@/lib/meet";
 import { setChartPrefs, useChartPrefs } from "@/lib/prefs";
 import { useZh } from "@/lib/lang";
+import { SignWord } from "./sign";
 
 const tieLabelZh = (t: Tie) => `${TIE_NAMES[t.kind].hanzi}${t.phase ? PHASES[t.phase].hanzi : ""}`;
 const SHORT: Record<string, string> = { combine: "Combine", clash: "Clash", harm: "Harm", punish: "Punish", harmony: "Trio" };
@@ -75,7 +76,7 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
                   const s = name(m.sign);
                   return (
                     <span key={k} className="whitespace-nowrap">
-                      <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold"} style={{ color: ink }}>{zh ? m.char : m.en}</span>
+                      <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold"} style={{ color: ink }}>{zh ? m.char : <SignWord en={m.en} han={m.char} />}</span>
                       <span className={(zh ? "font-han" : "font-gloss") + " ml-1 text-[12px]"} style={{ color: sub }}>{zh ? s?.hanzi : s?.english}</span>
                     </span>
                   );
@@ -150,7 +151,7 @@ export function Meetings({ signs, onLit }: { signs: Sign[]; onLit?: (keys: strin
             ) : (
               <p key={i} className="font-gloss mt-2 text-[13.5px]" style={{ color: ink }}>
                 <span className="mr-2 font-semibold" style={{ color: "var(--gilt)" }}>{tieLabel(t)}</span>
-                <span className="ml-1 font-bold">{t.members.map((m) => m.en).join(", ")}</span>
+                <span className="ml-1 font-bold">{t.members.map((m, k) => <span key={k}>{k ? ", " : ""}<SignWord en={m.en} han={m.char} /></span>)}</span>
               </p>
             )
           ))}
