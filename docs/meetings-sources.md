@@ -49,3 +49,13 @@ command by days of the month, and is not used.
   is listed as a combination with no phase.
 - Whether a combination transforms. The table lists the meeting and the
   phase the tradition names for it. It does not judge whether it takes.
+
+## Two charts side by side (the Teacher's Table)
+
+`crossTies()` applies the tables above between a teacher's four pillars and a
+student's, keeping only a meeting that takes a sign from each chart, and a
+three harmony only when neither chart holds it alone. No new table was added.
+Setting two charts side by side as a practice was not read on a source for
+this change; the page lists the meetings and says nothing about what they
+mean for the two people. The ten god each Day Master is to the other is left
+out for the same reason.

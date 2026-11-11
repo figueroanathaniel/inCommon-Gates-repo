@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BRANCHES, STEMS, type FourPillars } from "@contracts/bazi";
 import { castPillars } from "./cast";
-import { branchMeetings, decadeYears, kindsAgainst, natalSigns, seasonState, stemMeetings, tiesAmong, yearPillar } from "./meet";
+import { branchMeetings, crossTies, decadeYears, kindsAgainst, natalSigns, seasonState, stemMeetings, tiesAmong, yearPillar } from "./meet";
 
 const S = (h: string) => STEMS.findIndex((s) => s.hanzi === h);
 const B = (h: string) => BRANCHES.findIndex((b) => b.hanzi === h);
@@ -91,5 +91,34 @@ describe("the year and the season", () => {
     for (const h of ["辰", "未", "戌", "丑"]) expect(seasonState(B(h), "earth")).toBe("wang");
     expect(seasonState(B("辰"), "metal")).toBe("xiang");
     expect(seasonState(B("辰"), "wood")).toBe("qiu");
+  });
+});
+
+describe("two charts set side by side", () => {
+  const chart = (c: string): FourPillars => ({
+    yearStem: S(c[0]), yearBranch: B(c[1]), monthStem: S(c[2]), monthBranch: B(c[3]),
+    dayStem: S(c[4]), dayBranch: B(c[5]), hourStem: S(c[6]), hourBranch: B(c[7]),
+  });
+  it("keeps only meetings that take a sign from each chart", () => {
+    /* The teacher clashes within itself (子午) and that is not listed. */
+    const ties = crossTies(chart("甲子甲午甲子甲午"), chart("丙辰丙辰丙辰丙辰"));
+    for (const t of ties) {
+      expect(t.members.some((m) => m.sign.startsWith("t-"))).toBe(true);
+      expect(t.members.some((m) => m.sign.startsWith("s-"))).toBe(true);
+    }
+    expect(ties.some((t) => t.kind === "clash")).toBe(false);
+  });
+  it("finds the stem combination and the branch clash between them", () => {
+    const ties = crossTies(chart("甲子丙辰丙辰丙辰"), chart("己午丙辰丙辰丙辰"));
+    const pair = (t: { members: { sign: string }[] }) => t.members.map((m) => m.sign).join(" ");
+    expect(ties.find((t) => t.kind === "combine" && t.layer === "stem" && pair(t) === "t-year s-year")?.phase).toBe("earth");
+    expect(ties.some((t) => t.kind === "clash" && t.layer === "branch" && pair(t) === "t-year s-year")).toBe(true);
+  });
+  it("names a three harmony only when the two charts complete it together", () => {
+    const together = crossTies(chart("甲寅甲午丙辰丙辰"), chart("丙戌丙辰丙辰丙辰")).filter((t) => t.kind === "harmony" && t.phase === "fire");
+    expect(together).toHaveLength(1);
+    expect(together[0].members.map((m) => m.char).join("")).toBe("寅午戌");
+    const alone = crossTies(chart("甲寅甲午甲戌丙辰"), chart("丙戌丙辰丙辰丙辰")).filter((t) => t.kind === "harmony" && t.phase === "fire");
+    expect(alone).toHaveLength(0);
   });
 });
