@@ -69,7 +69,7 @@ export default function Glossary() {
         </p>
       </section>
 
-      <Section hanzi="五行" english="The Five Phases" note="Movements, not things." />
+      <Section hanzi="五行" english="The Five Phases" note="Movements of the world." />
       {Object.entries(PHASES).map(([phaseKey, ph]) => (
         <Entry key={phaseKey} hanzi={ph.hanzi} pinyin={ph.pinyin} english={ph.english}>
           {PHASE_MOVEMENT[phaseKey]} It generates {PHASES[ph.generates].english.toLowerCase()}
@@ -92,7 +92,7 @@ export default function Glossary() {
         </Entry>
       ))}
 
-      <Section hanzi="十神" english="The Ten Gods" note="Relations around the Day Master, not spirits." />
+      <Section hanzi="十神" english="The Ten Gods" note="Relations around the Day Master." />
       {Object.entries(TEN_GODS).map(([godKey, g]) => (
         <Entry key={godKey} hanzi={g.hanzi} pinyin={g.pinyin} english={g.english}>
           {g.reading.charAt(0).toUpperCase() + g.reading.slice(1)}.
@@ -124,7 +124,7 @@ export default function Glossary() {
       </Entry>
       <Entry hanzi="大運" pinyin="dà yùn" english="The Luck Pillars">
         The decades a life walks through, each a new stem and branch laid beside the eight.
-        Weather, not verdicts.
+        The weather of the years.
       </Entry>
       <Entry hanzi="甲子" pinyin="jiǎ zǐ" english="The Sixty Pairs">
         The cycle made by riding the ten stems on the twelve branches, yang with yang, yin with yin,
