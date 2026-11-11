@@ -76,8 +76,8 @@ export function PillarChart({
             className="font-gloss mt-3 flex flex-col items-center font-bold"
             style={{ fontSize: wide ? "clamp(17px, 4.2vw, 30px)" : "clamp(19px, 5vw, 34px)", lineHeight: 1.15 }}
           >
-            <span style={charStyle(key, "stem", stem.phase)}><SignWord en={stem.english} han={stem.hanzi} /></span>
-            <span style={charStyle(key, "branch", branch.phase)}><SignWord en={branch.english} han={branch.hanzi} /></span>
+            <span style={charStyle(key, "stem", stem.phase)}><SignWord stack en={stem.english} han={stem.hanzi} /></span>
+            <span style={charStyle(key, "branch", branch.phase)}><SignWord stack en={branch.english} han={branch.hanzi} /></span>
           </span>
           <span className="font-gloss mt-3 text-center text-[11px] leading-snug" style={{ color: subColor }}>
             {stem.yinyang === "yang" ? "Yang" : "Yin"} {PHASES[stem.phase].english}
@@ -102,7 +102,7 @@ export function PillarChart({
                 const hs = STEMS[h];
                 return (
                   <span key={h} className="font-gloss flex flex-col items-center text-center leading-tight" style={{ opacity: phase && phase !== hs.phase ? 0.28 : 1 }}>
-                    <span className="text-[13px] font-bold" style={{ color: inkColor }}><SignWord en={hs.english} han={hs.hanzi} /></span>
+                    <span className="text-[13px] font-bold" style={{ color: inkColor }}><SignWord stack en={hs.english} han={hs.hanzi} /></span>
                     {prefs.gods ? <span className="text-[10px]" style={{ color: "var(--gilt)" }}>{tenGodOf(day, hs).english}</span> : null}
                   </span>
                 );
