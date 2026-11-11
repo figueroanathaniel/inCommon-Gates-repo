@@ -4,7 +4,8 @@ import { Shell, Seal, Rule, JadeButton } from "@/components/academy/chrome";
 import { PillarChart } from "@/components/academy/pillars";
 import type { FourPillars } from "@contracts/bazi";
 import { useAuth } from "@/hooks/useAuth";
-import { api } from "@/providers/data";
+import { api, type Offer } from "@/providers/data";
+import { showCode } from "@/lib/share";
 import { ZoneField } from "@/components/academy/zone-field";
 import { LuckRoad, type LuckView } from "@/components/academy/luck";
 import { useTimes } from "@/lib/times";
@@ -12,11 +13,13 @@ import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
 
 /** 案 The Desk: where a reader casts their own pillars and keeps them. */
 export default function Desk() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isSignedIn } = useAuth();
   const charts = api.myCharts.useQuery(undefined, { enabled: isAuthenticated });
   const cast = api.cast.useMutation();
   const remove = api.removeChart.useMutation();
   const setSex = api.setChartSex.useMutation();
+  const shares = api.shares.useQuery(undefined, { enabled: isSignedIn });
+  const sharing = isSignedIn && shares.data?.on === true;
 
   const [label, setLabel] = useState("");
   const [date, setDate] = useState("");
@@ -53,7 +56,7 @@ export default function Desk() {
           </div>
         </div>
         <p className="font-gloss mt-7 max-w-2xl text-[15.5px] leading-relaxed text-[rgba(var(--txr),.72)]">
-          Here you may cast the pillars of any moment you have leave to read. The Desk keeps six charts at most,
+          Here you may cast the pillars of any moment you have leave to read. The Desk keeps twenty four charts at most,
           for whoever keeps a hundred charts reads none of them. What you cast here is yours alone;
           the scrolls in the hall remain the same for every ear.
         </p>
@@ -152,6 +155,9 @@ export default function Desk() {
                       </p>
                     )}
                   </div>
+                  {sharing ? (
+                    <ShareWithTeacher chartId={c.id} label={c.label} offers={(shares.data?.offers ?? []).filter((o) => o.chartId === c.id)} />
+                  ) : null}
                   <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
                     <Link
                       to={`/teacher?student=${c.id}`}
@@ -194,5 +200,97 @@ function DeskChart({ pillars, luck }: { pillars: FourPillars; luck: LuckView | n
         </div>
       ) : null}
     </>
+  );
+}
+
+const day = (iso: string) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { day: "numeric", month: "long" });
+};
+
+/**
+ * 呈師 Share one chart with a teacher. The Desk makes a code; the student hands
+ * it over themselves. Nothing is shared until a teacher takes the code up, and
+ * the student can end it here whenever they like.
+ */
+function ShareWithTeacher({ chartId, label, offers }: { chartId: number; label: string; offers: Offer[] }) {
+  const [open, setOpen] = useState(offers.length > 0);
+  const offer = api.offerShare.useMutation();
+  const setProgress = api.setShareProgress.useMutation();
+  const end = api.endShare.useMutation();
+  const quiet = "rgba(var(--txr),.72)";
+  const edge = { borderColor: "rgba(var(--txr),.3)" } as const;
+  const btn = "font-gloss min-h-[44px] border px-4 text-[14px] text-[var(--tx)] transition-colors duration-200 hover:bg-[rgba(var(--ac2r),.16)] disabled:opacity-50";
+  const panel = `share-${chartId}`;
+
+  return (
+    <div className="mt-8 border-t pt-6" style={{ borderColor: "rgba(var(--txr),.18)" }}>
+      <button type="button" className={btn} style={edge} aria-expanded={open} aria-controls={panel} onClick={() => setOpen(!open)}>
+        <span className="font-han mr-2">呈師</span><span data-en>Share with a teacher</span><span data-zh>呈於師</span>
+      </button>
+      {open ? (
+        <div id={panel} className="mt-5 grid gap-5">
+          <p className="font-gloss max-w-xl text-[14px] leading-relaxed" style={{ color: quiet }}>
+            The Desk makes a code for you to hand to your teacher. A teacher who enters it at their table can read this chart:
+            its name, the day, hour and place of birth as kept here, the sex if you gave it, and the eight characters.
+            They cannot change it, and they see nothing else of yours. You can end the share here at any time.
+          </p>
+          {offers.length > 0 ? (
+            <ul className="grid gap-3" aria-label={`Shares of ${label}`}>
+              {offers.map((o) => {
+                const spent = !o.taken && new Date(o.expiresAt).getTime() < Date.now();
+                return (
+                  <li key={o.id} className="border px-4 py-4" style={edge}>
+                    {o.taken ? (
+                      <p className="font-gloss text-[14.5px] text-[var(--tx)]"><span className="font-han mr-2 font-bold" style={{ color: "var(--gilt)" }}>已受</span>A teacher holds this chart.</p>
+                    ) : spent ? (
+                      <p className="font-gloss text-[14.5px] text-[var(--tx)]"><span className="font-han mr-2 font-bold">過期</span>This code was not taken up within seven days and no longer opens anything.</p>
+                    ) : (
+                      <p className="font-gloss text-[14.5px] text-[var(--tx)]">
+                        <span className="font-han mr-2 font-bold" style={{ color: "var(--gilt)" }}>符</span>
+                        <span className="select-all font-mono text-[18px] tracking-[0.14em]" data-share-code>{showCode(o.code ?? "")}</span>
+                        <span className="ml-3 text-[13px]" style={{ color: quiet }}>good until {day(o.expiresAt)}</span>
+                      </p>
+                    )}
+                    <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                      {spent ? null : (
+                        <label className="font-gloss inline-flex min-h-[44px] cursor-pointer items-center gap-3 text-[14px] text-[var(--tx)]">
+                          <input
+                            type="checkbox"
+                            className="h-5 w-5 accent-[var(--gilt)]"
+                            checked={o.withProgress}
+                            disabled={setProgress.isPending}
+                            onChange={(e) => setProgress.mutate({ id: o.id, on: e.target.checked })}
+                          />
+                          Also show the scrolls I have marked as read
+                        </label>
+                      )}
+                      <button
+                        type="button"
+                        disabled={end.isPending}
+                        onClick={() => end.mutate({ id: o.id })}
+                        className="font-gloss min-h-[44px] px-2 text-[12.5px] uppercase tracking-[0.16em] transition-opacity duration-200 hover:opacity-75"
+                        style={{ color: "var(--warn)" }}
+                        aria-label={o.taken ? `End this share of ${label}` : `Withdraw this code for ${label}`}
+                      >
+                        {o.taken ? "End this share" : "Withdraw"} <span className="font-han">撤</span>
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <button type="button" className={btn} style={edge} disabled={offer.isPending} onClick={() => offer.mutate({ chartId, withProgress: false })}>
+              <span className="font-han mr-2">符</span>Make a code
+            </button>
+          </div>
+          {offer.error || end.error || setProgress.error ? (
+            <p className="font-gloss text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">{(offer.error ?? end.error ?? setProgress.error)?.message}</p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   );
 }

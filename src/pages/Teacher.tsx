@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { LESSONS, PHASES, type FourPillars } from "@contracts/bazi";
+import { LESSONS, PHASES, STEMS, tenGodOf, type FourPillars } from "@contracts/bazi";
 import { Shell, Seal, Rule, GhostButton } from "@/components/academy/chrome";
 import { MirrorReading } from "@/components/academy/mirror";
 import { PillarChart } from "@/components/academy/pillars";
@@ -30,20 +31,26 @@ const line = "rgba(var(--txr),.22)";
 /**
  * 師 The Teacher's Table: a teacher sets one student's chart on the table,
  * reads it whole, lays their own beside it, and keeps what has been taught.
- * Every chart here is one the Desk already keeps. Nothing leaves the device.
+ * The charts are the ones the Desk keeps, and the ones a student has shared
+ * by a code. The teacher's marks and notes never leave the device.
  */
 export default function Teacher() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isSignedIn } = useAuth();
   const zh = useZh();
   const charts = api.myCharts.useQuery(undefined, { enabled: isAuthenticated });
   const [params, setParams] = useSearchParams();
   const mine = (charts.data ?? []) as Kept[];
+  const shares = api.shares.useQuery(undefined, { enabled: isSignedIn });
+  const sharing = isSignedIn && shares.data?.on === true;
+  const held = sharing ? (shares.data?.held ?? []) : [];
+  const shared = held.map((h) => h.chart as Kept);
 
   const num = (k: string) => {
     const v = Number(params.get(k));
     return Number.isInteger(v) && v > 0 ? v : null;
   };
-  const student = mine.find((c) => c.id === num("student")) ?? null;
+  const student = [...mine, ...shared].find((c) => c.id === num("student")) ?? null;
+  const from = student ? (held.find((h) => h.chart.id === student.id) ?? null) : null;
   const teacher = mine.find((c) => c.id === num("teacher") && c.id !== student?.id) ?? null;
 
   const choose = (k: "student" | "teacher", id: number | null) => {
@@ -74,7 +81,8 @@ export default function Teacher() {
 
         {charts.isLoading ? (
           <p className="font-gloss mt-16 text-center text-[15px] italic" style={{ color: sub }}>The table is being cleared.</p>
-        ) : mine.length === 0 ? (
+        ) : mine.length + shared.length === 0 ? (
+          <>
           <div className="mx-auto mt-14 max-w-2xl border px-8 py-12 text-center" style={{ borderColor: "rgba(var(--txr),.3)", background: "rgba(var(--sfr),.84)" }}>
             <p className="font-han text-[20px] font-bold text-[var(--tx)]">案上無盤</p>
             <p data-en className="font-gloss mx-auto mt-4 max-w-md text-[15px] leading-relaxed" style={{ color: sub }}>
@@ -82,6 +90,8 @@ export default function Teacher() {
             </p>
             <div className="mt-8 flex justify-center"><GhostButton to="/desk" dark><span className="font-han">案</span><span data-en>Go to the Desk</span></GhostButton></div>
           </div>
+          {sharing ? <div className="mx-auto mt-10 max-w-2xl"><TakeCode zh={zh} onTaken={(id) => choose("student", id)} known={[]} /></div> : null}
+          </>
         ) : (
           <>
             <div className="mx-auto mt-12 grid max-w-2xl gap-8">
@@ -93,9 +103,18 @@ export default function Teacher() {
                       {c.label}
                     </button>
                   ))}
+                  {shared.map((c) => (
+                    <button
+                      key={c.id} type="button" role="radio" aria-checked={student?.id === c.id} onClick={() => choose("student", c.id)} className={pickCls} style={pick(student?.id === c.id)}
+                      aria-label={zh ? `${c.label} 呈` : `${c.label}, shared with you`}
+                    >
+                      <span className="font-han mr-2" style={{ color: "var(--gilt)" }}>呈</span>{c.label}
+                    </button>
+                  ))}
                 </div>
+                {sharing ? <TakeCode zh={zh} onTaken={(id) => choose("student", id)} known={shared.map((c) => c.id)} /> : null}
               </div>
-              {student && mine.length > 1 ? (
+              {student && mine.filter((c) => c.id !== student.id).length > 0 ? (
                 <div role="radiogroup" aria-label={zh ? "老師" : "The teacher"}>
                   <h2 className="font-han text-[19px] font-bold text-[var(--tx)]">師<span data-en className="font-gloss ml-3 text-[13px] uppercase tracking-[0.22em] text-[var(--gilt)]">The teacher</span></h2>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -113,7 +132,10 @@ export default function Teacher() {
             </div>
 
             {student ? (
-              <Sitting key={student.id} who={user?.id != null ? String(user.id) : null} student={student} teacher={teacher} zh={zh} />
+              <Sitting
+                key={student.id} who={user?.id != null ? String(user.id) : null} student={student} teacher={teacher} zh={zh}
+                shareId={from?.shareId ?? null} read={from?.read ?? null} onGone={() => choose("student", null)}
+              />
             ) : null}
           </>
         )}
@@ -123,7 +145,67 @@ export default function Teacher() {
   );
 }
 
-function Sitting({ who, student, teacher, zh }: { who: string | null; student: Kept; teacher: Kept | null; zh: boolean }) {
+/**
+ * 受符 Take up a student's code. The student made it at their Desk and handed
+ * it over; entering it here puts their chart on this table until either of
+ * the two ends it.
+ */
+function TakeCode({ zh, onTaken, known }: { zh: boolean; onTaken: (chartId: number) => void; known: number[] }) {
+  const [code, setCode] = useState("");
+  const shares = api.shares.useQuery();
+  const take = api.takeShare.useMutation({
+    onSuccess: () => {
+      setCode("");
+      void shares.refetch().then((r) => {
+        const fresh = (r.data?.held ?? []).find((h) => !known.includes(h.chart.id));
+        if (fresh) onTaken(fresh.chart.id);
+      });
+    },
+  });
+  return (
+    <form
+      className="mt-6"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (code.trim()) take.mutate({ code });
+      }}
+    >
+      <label className="block">
+        <span className="font-han text-[16px] font-bold text-[var(--tx)]">受符</span>
+        <span data-en className="font-gloss ml-3 text-[13px] uppercase tracking-[0.22em] text-[var(--gilt)]">A student's code</span>
+        <span className="mt-3 flex flex-wrap items-center gap-3">
+          <input
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            maxLength={24}
+            autoComplete="off"
+            autoCapitalize="characters"
+            spellCheck={false}
+            aria-label={zh ? "學生之符" : "A student's code"}
+            placeholder="ABCDE FGHJK"
+            className="font-mono block h-[48px] w-[15rem] min-w-0 max-w-full rounded-none border bg-transparent px-3 text-[17px] uppercase tracking-[0.12em] text-[var(--tx)] placeholder:text-[rgba(var(--txr),.45)]"
+            style={{ borderColor: "rgba(var(--txr),.3)" }}
+          />
+          <button type="submit" disabled={take.isPending || !code.trim()} className="font-gloss min-h-[48px] border px-4 text-[14px] text-[var(--tx)] transition-colors duration-200 hover:bg-[rgba(var(--ac2r),.16)] disabled:opacity-50" style={{ borderColor: line }}>
+            <span className="font-han mr-2">受</span><span data-en>Take it up</span><span data-zh>受之</span>
+          </button>
+        </span>
+      </label>
+      {take.error ? <p className="font-gloss mt-3 text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">{take.error.message}</p> : null}
+    </form>
+  );
+}
+
+function Sitting({ who, student, teacher, zh, shareId, read, onGone }: {
+  who: string | null; student: Kept; teacher: Kept | null; zh: boolean;
+  /** Set when the student shared this chart by a code. */
+  shareId: number | null;
+  /** The scrolls the student has marked as read, when they share them. */
+  read: string[] | null;
+  onGone: () => void;
+}) {
+  const letGo = api.endShare.useMutation({ onSuccess: onGone });
+  const hasRead = new Set(read ?? []);
   const pillars = pillarsOf(student);
   const times = useTimes(student.luck ?? null);
   const record = useTeacherRecord(who, student.id);
@@ -171,6 +253,12 @@ function Sitting({ who, student, teacher, zh }: { who: string | null; student: K
                 <span className="min-w-0 flex-1">
                   <span className="font-han text-[17px] font-bold text-[var(--tx)]">{l.hanzi}</span>
                   <span data-en className="font-gloss ml-3 text-[14px]" style={{ color: sub }}>{l.english}</span>
+                  {hasRead.has(l.id) ? (
+                    <span className="ml-3 whitespace-nowrap" data-student-read>
+                      <span className="font-han text-[14px] font-bold" style={{ color: "var(--gilt)" }}>已讀</span>
+                      <span data-en className="font-gloss ml-2 text-[12.5px]" style={{ color: sub }}>read by the student</span>
+                    </span>
+                  ) : null}
                 </span>
                 <Link
                   to={`/scroll/${l.id}`}
@@ -205,6 +293,22 @@ function Sitting({ who, student, teacher, zh }: { who: string | null; student: K
         </p>
       </section>
 
+      {shareId !== null ? (
+        <div className="mx-auto mt-12 max-w-2xl text-center">
+          <button
+            type="button"
+            disabled={letGo.isPending}
+            onClick={() => letGo.mutate({ id: shareId, chartId: student.id })}
+            className="font-gloss min-h-[44px] px-4 text-[12.5px] uppercase tracking-[0.16em] transition-opacity duration-200 hover:opacity-75"
+            style={{ color: "var(--warn)" }}
+            aria-label={zh ? `還 ${student.label}` : `Let the chart ${student.label} go from the table`}
+          >
+            <span data-en>Let this chart go</span> <span className="font-han">還</span>
+          </button>
+          {letGo.error ? <p className="font-gloss mt-2 text-[13.5px]" style={{ color: "var(--warn)" }} role="alert">{letGo.error.message}</p> : null}
+        </div>
+      ) : null}
+
       <div className="mt-14 flex justify-center">
         <GhostButton to="/desk" dark><span className="font-han">案</span><span data-en>Return to the Desk</span></GhostButton>
       </div>
@@ -223,6 +327,13 @@ function Between({ teacher, student, zh }: { teacher: Kept; student: Kept; zh: b
   const all = [...signs.teacher, ...signs.student];
   const ties = crossTies(tp, sp);
   const name = (key: string) => all.find((s) => s.key === key);
+  const tDay = STEMS[teacher.dayStem];
+  const sDay = STEMS[student.dayStem];
+  // Read from both sides: what the student's Day Master is to the teacher's, and the other way.
+  const gods = [
+    { key: "t", from: zh ? "師" : "The teacher's", own: tDay, to: zh ? "生" : "the student's", other: sDay, god: tenGodOf(tDay, sDay) },
+    { key: "s", from: zh ? "生" : "The student's", own: sDay, to: zh ? "師" : "the teacher's", other: tDay, god: tenGodOf(sDay, tDay) },
+  ];
 
   return (
     <section className="mx-auto mt-16 max-w-2xl">
@@ -233,6 +344,29 @@ function Between({ teacher, student, zh }: { teacher: Kept; student: Kept; zh: b
       <div className="mt-6 grid gap-8">
         <PillarChart pillars={tp} dark interactive={false} caption={zh ? `師 ${teacher.label}` : `The teacher: ${teacher.label}`} />
         <PillarChart pillars={sp} dark interactive={false} caption={zh ? `生 ${student.label}` : `The student: ${student.label}`} />
+      </div>
+      <div className="mt-8">
+        <h3 className="font-han text-[17px] font-bold text-[var(--tx)]">日主十神<span data-en className="font-gloss ml-3 text-[12.5px] uppercase tracking-[0.2em] text-[var(--gilt)]">Each Day Master to the other</span></h3>
+        <ul className="mt-3 grid gap-1" aria-label={zh ? "日主十神" : "The ten god each Day Master is to the other"}>
+          {gods.map((g) => (
+            <li key={g.key} className="flex min-h-[44px] flex-wrap items-baseline gap-x-2 gap-y-1 border-b px-2 py-2" style={{ borderColor: line }} data-day-god={g.god.key}>
+              <span className={zh ? "font-han text-[14px]" : "font-gloss text-[14px]"} style={{ color: sub }}>{g.from}</span>
+              <span className="font-han text-[17px] font-bold text-[var(--tx)]">{g.own.hanzi}</span>
+              <span className={zh ? "font-han text-[14px]" : "font-gloss text-[14px]"} style={{ color: sub }}>{zh ? `視${g.to}` : `reads ${g.to}`}</span>
+              <span className="font-han text-[17px] font-bold text-[var(--tx)]">{g.other.hanzi}</span>
+              <span className={zh ? "font-han text-[14px]" : "font-gloss text-[14px]"} style={{ color: sub }}>{zh ? "為" : "as"}</span>
+              <span className="font-han text-[17px] font-bold" style={{ color: "var(--gilt)" }}>{g.god.hanzi}</span>
+              <span data-en className="font-gloss text-[14px] text-[var(--tx)]">{g.god.english}</span>
+            </li>
+          ))}
+        </ul>
+        <Link
+          to="/scroll/shishen"
+          className="font-gloss mt-1 inline-flex min-h-[44px] items-center text-[12.5px] uppercase tracking-[0.16em] underline-offset-4 hover:underline"
+          style={{ color: "var(--tx)" }}
+        >
+          <span className="font-han">十神</span><span data-en className="ml-2">The Ten Gods scroll</span>
+        </Link>
       </div>
       {ties.length === 0 ? (
         <p className={zh ? "font-han mt-6 text-[14px]" : "font-gloss mt-6 text-[14px] italic"} style={{ color: sub }}>

@@ -57,5 +57,25 @@ student's, keeping only a meeting that takes a sign from each chart, and a
 three harmony only when neither chart holds it alone. No new table was added.
 Setting two charts side by side as a practice was not read on a source for
 this change; the page lists the meetings and says nothing about what they
-mean for the two people. The ten god each Day Master is to the other is left
-out for the same reason.
+mean for the two people.
+
+### The ten god each Day Master is to the other
+
+Added 11 November 2026, at the owner's word that the meetings and a relation
+can both stand. The table shows which of the ten gods the student's Day
+Master is to the teacher's, and which the teacher's is to the student's, by
+the Academy's own `tenGodOf()`, the function the Ten Gods scroll and the
+pillar chart already use. It shows the name and nothing more.
+
+Read for it: masterseanchan.com, "Yin Earth with Yang Fire" and "Yang Metal
+with Yin Metal" (bazi-yin-earth-with-yang-fire, bazi-yang-metal-with-yin-metal).
+Both pages compare two people by the ten god each Day Master is to the other
+and read it from both sides, which is why the table has two rows. Both say
+the Day Master read is a starting frame and not the whole comparison. They
+are one modern practitioner's pages, not a classical text, and no classical
+source was read for comparing two charts. Neither page says anything about a
+combination or a clash between two charts.
+
+Left out: any sentence about what a given ten god between two people means,
+and any reading of teacher and student in particular. No source was read
+that speaks of a teacher and a student.
