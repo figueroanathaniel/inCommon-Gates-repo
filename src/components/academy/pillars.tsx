@@ -300,7 +300,7 @@ export function PillarChart({
             {selected.god ? (
               <> Against the Day Master it sits as {selected.god.english}: {selected.god.reading}.</>
             ) : (
-              <> Its stem is the Day Master, the self from which every other sign in the chart takes its relation.</>
+              <> Its stem is the Day Master, the self every other sign in the chart takes its relation from.</>
             )}
           </p>
         </div>

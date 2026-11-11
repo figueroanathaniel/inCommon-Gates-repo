@@ -31,7 +31,7 @@ export default function Stone() {
           <h1 className={(zh ? "font-han font-black tracking-[0.12em]" : "font-gloss font-semibold tracking-[0.04em]") + " mt-6 text-[38px] text-[var(--tx)] min-[820px]:text-[46px]"}>{t("Your Nature", "命盤")}</h1>
           <p className={f + " mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed"} style={{ color: "rgba(var(--txr),.7)" }}>
             {t(
-              "One true chart, set at the centre of the house: the same life read in every script the hall keeps, until the scripts become one reading.",
+              "One true chart, set at the centre of the house. It is the same life read in every script the hall keeps, and in the end the scripts become one reading.",
               "一張真盤，置於書院之中：同一生命，以堂中所藏諸卷之字讀之，直至諸卷合為一讀。",
             )}
           </p>
@@ -65,7 +65,7 @@ export default function Stone() {
               <p className={f + (zh ? " mt-6" : "") + " text-[20px] font-bold text-[var(--tx)]"}>{t("The Destiny Chart is not yet laid out", "命盤未排")}</p>
               <p className={f + " mx-auto mt-4 max-w-md text-[15px] leading-relaxed"} style={{ color: "rgba(var(--txr),.7)" }}>
                 {t(
-                  "The house does not read a chart it does not hold, and it will not invent one. When the true chart is set here, every scroll will be found written upon it.",
+                  "The house does not read a chart it does not hold, and it will not invent one. Once the true chart is set here, every scroll can be found written on it.",
                   "書院不讀未持之盤，亦不憑空造盤。真盤置於此時，諸卷皆可見書於其上。",
                 )}
               </p>

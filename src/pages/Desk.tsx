@@ -66,7 +66,7 @@ export default function Desk() {
         </div>
         <p className={f + " mt-7 max-w-2xl text-[15.5px] leading-relaxed text-[rgba(var(--txr),.72)]"}>
           {t(
-            "Here you may cast the pillars of any moment you have leave to read. The Desk keeps twenty four charts at most, for whoever keeps a hundred charts reads none of them. What you cast here is yours alone; the scrolls in the hall remain the same for every ear.",
+            "Here you can cast the pillars of any moment you have leave to read. The Desk keeps twenty four charts at most, because whoever keeps a hundred charts reads none of them. What you cast here is yours alone. The scrolls in the hall stay the same for everyone.",
             "凡你有權一讀之時刻，皆可在此排其四柱。書桌至多存二十四張命盤，因存百盤者一盤也不讀。你在此所排，唯你所有；堂中諸卷，對每一位聽者皆同。",
           )}
         </p>
@@ -96,7 +96,7 @@ export default function Desk() {
             </div>
             <p className={f + " text-[12.5px] italic leading-relaxed"} style={{ color: "rgba(var(--txr),.66)" }}>
               {t(
-                "The year turns at the Beginning of Spring, near the fourth of February; the months turn at the solar terms; the days turn in the unbroken sixty-day round. The hour is read in the twelve double hours.",
+                "The year turns at the Beginning of Spring, near the fourth of February. The months turn at the solar terms, and the days turn in the unbroken round of sixty. The hour is read in the twelve double hours.",
                 "年於立春而轉，約在二月四日前後；月於節氣而轉；日循六十甲子不斷而轉。時以十二時辰而讀。",
               )}
             </p>
@@ -110,7 +110,7 @@ export default function Desk() {
             <p className={f + " text-[15px] italic text-[rgba(var(--txr),.66)]"}>{t("The desk is being tidied.", "書桌整理中。")}</p>
           ) : mine.length === 0 ? (
             <p className={f + " text-[15px] italic text-[rgba(var(--txr),.66)]"}>
-              {t("The Desk is bare. Cast your own pillars above, and they will be kept here between visits.", "書桌空著。在上方排你的四柱，便會存於此處，來訪之間不失。")}
+              {t("The Desk is bare. Cast your own pillars above, and it keeps them here between visits.", "書桌空著。在上方排你的四柱，便會存於此處，來訪之間不失。")}
             </p>
           ) : (
             <div className="grid gap-12">
@@ -249,7 +249,7 @@ function ShareWithTeacher({ chartId, label, offers }: { chartId: number; label: 
         <div id={panel} className="mt-5 grid gap-5">
           <p className={f + " max-w-xl text-[14px] leading-relaxed"} style={{ color: quiet }}>
             {t(
-              "The Desk makes a code for you to hand to your teacher. A teacher who enters it at their table can read this chart: its name, the day, hour and place of birth as kept here, the sex if you gave it, and the eight characters. They cannot change it, and they see nothing else of yours. You can end the share here at any time.",
+              "The Desk makes a code for you to hand to your teacher. A teacher who enters it at their table can read this chart. They see its name, the day, hour and place of birth as kept here, the sex if you gave it, and the eight characters. They cannot change it, and they see nothing else of yours. You can end the share here at any time.",
               "書桌為你立一符，由你親手交予老師。老師在其席上輸入此符，便可讀此盤：盤名，此處所存之生日、時辰與出生地，你若填過的性別，以及八字。老師不能更改此盤，也看不到你其餘之物。你隨時可在此收回。",
             )}
           </p>

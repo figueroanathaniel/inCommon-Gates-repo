@@ -74,7 +74,7 @@ export default function Gate() {
 
         <p className={"rise rise-3 " + f + " mt-12 max-w-xl text-[17px] leading-relaxed text-[rgba(var(--txr),.85)]"}>
           {t(
-            "The art was always handed over slowly: one reader, one listener, one chart between them. This house keeps that slowness and opens its door wider. Whoever enters receives the scrolls whole and in their order, as if each had been unrolled for them alone.",
+            "The art was always handed over slowly, with one reader, one listener and one chart between them. This house keeps that pace and opens its door wider. Whoever comes in gets the scrolls whole and in their order, as if each had been unrolled for them alone.",
             "此術向來傳得緩慢：一位讀者，一位聽者，一張命盤居於其間。書院守此緩慢，而將門開得更寬。入門者得諸卷之全，依序而讀，如每卷專為其一人展開。",
           )}
         </p>
@@ -88,8 +88,8 @@ export default function Gate() {
           {stone.data
             ? zh
               ? `本命已銘：${stone.data.labelZh}。堂中諸卷皆書於其上。`
-              : `Your Nature stands inscribed: ${stone.data.label}. Every scroll in the hall is written upon it.`
-            : t("Your Nature stands veiled. Once it is inscribed, every scroll will be found written upon it.", "本命尚蒙。一經銘定，諸卷皆可見書於其上。")}
+              : `Your Nature stands inscribed as ${stone.data.label}. Every scroll in the hall is written on it.`
+            : t("Your Nature stands veiled. Once it is inscribed, every scroll can be found written on it.", "本命尚蒙。一經銘定，諸卷皆可見書於其上。")}
         </p>
       </section>
 
@@ -101,19 +101,19 @@ export default function Gate() {
           {
             hanzi: "八字",
             english: "BaZi",
-            text: "The year, the month, the day and the hour of a birth, written as eight characters and read as one life: root, sprout, flower and fruit.",
+            text: "The year, the month, the day and the hour of a birth, written as eight characters and read as one life. Root, sprout, flower and fruit.",
             zhText: "生之年、月、日、時，書為八字，讀為一生：根、苗、花、實。",
           },
           {
             hanzi: "五行",
             english: "The Five Phases",
-            text: "Wood, fire, earth, metal and water as movements, turning in the generating ring and governed by the overcoming star.",
+            text: "Wood, fire, earth, metal and water are movements. They turn in the generating ring, and the overcoming star governs them.",
             zhText: "木火土金水，皆為運行，旋於相生之環，制於相剋之星。",
           },
           {
             hanzi: "命盤",
             english: "Your Nature",
-            text: "One true chart set at the centre of the hall. Every scroll returns to it, until the grammar of the art is something you have seen written in a life.",
+            text: "One true chart set at the centre of the hall. Every scroll comes back to it, and by the last one the grammar of the art is something you have seen written in a life.",
             zhText: "一張真盤置於堂中。諸卷皆回歸於它，直至此術之文法，成為你在一生中親見所書者。",
           },
         ].map((c) => (

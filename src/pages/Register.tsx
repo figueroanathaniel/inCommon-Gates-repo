@@ -45,9 +45,9 @@ export default function Register() {
               )
             )}
             {readCount === 0
-              ? t(" No scroll has yet been read through. The Prologue waits at the head of the hall.", "尚無一卷讀訖。緣起之卷候於堂首。")
+              ? t(" No scroll is read through yet. The Prologue waits at the head of the hall.", "尚無一卷讀訖。緣起之卷候於堂首。")
               : readCount === LESSONS.length
-                ? t(" Every scroll is read through. What the house kept is now yours to carry.", "諸卷皆已讀訖。書院所藏，今由你攜帶。")
+                ? t(" Every scroll is read through. What the house kept is yours to carry now.", "諸卷皆已讀訖。書院所藏，今由你攜帶。")
                 : zh
                   ? `九卷之中，已讀訖${numZh(readCount)}卷。其餘依序以待。`
                   : ` Of the nine scrolls, ${readCount} ${readCount === 1 ? "is" : "are"} read through. The rest wait in their order.`}

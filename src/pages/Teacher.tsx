@@ -91,7 +91,7 @@ export default function Teacher() {
             <p className={f + " text-[20px] font-bold text-[var(--tx)]"}>{t("The Desk holds no chart", "案上無盤")}</p>
             <p className={f + " mx-auto mt-4 max-w-md text-[15px] leading-relaxed"} style={{ color: sub }}>
               {t(
-                "The table reads the charts the Desk keeps. Cast your student's pillars there, with their leave, and they can be set here.",
+                "The table reads the charts the Desk keeps. Cast your student's pillars there, with their leave, and you can set them here.",
                 "師席所讀，即書桌所存之盤。經學生同意，在書桌排其四柱，便可置於此席。",
               )}
             </p>
