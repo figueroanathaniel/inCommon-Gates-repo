@@ -51,7 +51,12 @@ const ERR_ZH: Record<string, string> = {
   "The house could not reach your account just now. Try again in a moment.": "書院此刻未能連上你的帳戶。請稍後再試。",
   "That birth does not read as a date and a time the house can cast.": "此生辰未能讀為書院可排之日與時。",
   "That time zone is not one the house knows.": "書院不識此時區。",
-  "The Desk keeps six charts at most.": "書桌至多存六張命盤。",
+  "The Desk keeps twenty four charts at most.": "書桌至多存二十四張命盤。",
+  "Sharing a chart needs an inCommon account.": "呈盤須有 inCommon 帳戶。",
+  "The house keeps three shares a chart and sixty in all. End one to make another.": "書院每盤至多三呈，合計至多六十。收回其一，方可再立。",
+  "Taking up a code needs an inCommon account.": "受符須有 inCommon 帳戶。",
+  "The house cannot open that code. It may be mistyped, already taken up, or more than seven days old.": "書院未能開此符。或有誤字，或已有人受之，或已逾七日。",
+  "The table holds as many students' charts as it can. Let one go to take up another.": "此席所受學生之盤已滿。還其一，方可再受。",
   "No such scroll.": "無此卷。",
   "The house is still opening. Try again in a moment.": "書院尚在開門。請稍後再試。",
 };
