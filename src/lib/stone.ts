@@ -31,6 +31,7 @@ export function stoneChart(now = new Date()) {
   return {
     id: 1,
     label: "The Chart of the House",
+    labelZh: "書院之盤",
     note: null as string | null,
     yearStem: 0, yearBranch: 10, monthStem: 2, monthBranch: 2,
     dayStem: 0, dayBranch: 10, hourStem: 0, hourBranch: 0,

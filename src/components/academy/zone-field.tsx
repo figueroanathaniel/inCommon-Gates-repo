@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { zoneOptions } from "@/lib/zones";
+import { useT, useZh } from "@/lib/lang";
 
 /**
  * Where the birth happened, as the time zone its clock kept.
@@ -25,11 +26,13 @@ export function ZoneField({
   const id = useId();
   const listId = `${id}-zones`;
   const errId = `${id}-err`;
+  const zh = useZh();
+  const t = useT();
   const sub = dark ? "rgba(var(--txr),.6)" : "rgba(var(--txr),.55)";
   return (
     <label className="block">
-      <span className="font-gloss mb-1 block text-[12px] uppercase tracking-[0.18em]" style={{ color: sub }}>
-        Place of birth, by its time zone
+      <span className={(zh ? "font-han" : "font-gloss uppercase") + " mb-1 block text-[12px] tracking-[0.18em]"} style={{ color: sub }}>
+        {t("Place of birth, by its time zone", "出生之地，依其時區")}
       </span>
       <input
         className={fieldClass}
@@ -50,11 +53,11 @@ export function ZoneField({
       </datalist>
       <span
         id={errId}
-        className="font-gloss mt-1 block min-h-[18px] text-[12.5px]"
+        className={(zh ? "font-han" : "font-gloss") + " mt-1 block min-h-[18px] text-[12.5px]"}
         style={{ color: dark ? "var(--warn-ink)" : "var(--warn)" }}
         role={invalid ? "alert" : undefined}
       >
-        {invalid ? "Choose the nearest city from the list." : ""}
+        {invalid ? t("Choose the nearest city from the list.", "請從清單中選最近的城市。") : ""}
       </span>
     </label>
   );

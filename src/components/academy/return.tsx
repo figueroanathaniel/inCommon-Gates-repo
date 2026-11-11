@@ -1,4 +1,5 @@
 import type { MouseEvent } from "react";
+import { useZh } from "@/lib/lang";
 
 /**
  * The way back to inCommon, in the lintel of every room.
@@ -87,6 +88,7 @@ function play(e: MouseEvent<HTMLAnchorElement>) {
 }
 
 export function ReturnLink({ dim }: { dim: string }) {
+  const zh = useZh();
   return (
     <a
       href={INCOMMON_HREF}
@@ -96,7 +98,7 @@ export function ReturnLink({ dim }: { dim: string }) {
     >
       <span aria-hidden className="text-[15px] leading-none">‹</span>
       <Rings />
-      <span>Back to inCommon</span>
+      <span>{zh ? "返回 inCommon" : "Back to inCommon"}</span>
     </a>
   );
 }

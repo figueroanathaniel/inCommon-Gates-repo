@@ -90,7 +90,7 @@ export interface Tie {
   layer: "stem" | "branch";
   phase: Phase | null;
   /** The signs that meet, in the order they were given. */
-  members: { sign: string; char: string }[];
+  members: { sign: string; char: string; en: string }[];
   /** True when a decade or a year is one of them. */
   incoming: boolean;
 }
@@ -113,17 +113,17 @@ export function tiesAmong(signs: Sign[]): Tie[] {
       const b = signs[j];
       const incoming = !!(a.incoming || b.incoming);
       for (const m of stemMeetings(a.stem, b.stem)) {
-        out.push({ ...m, layer: "stem", incoming, members: [{ sign: a.key, char: STEMS[a.stem].hanzi }, { sign: b.key, char: STEMS[b.stem].hanzi }] });
+        out.push({ ...m, layer: "stem", incoming, members: [{ sign: a.key, char: STEMS[a.stem].hanzi, en: STEMS[a.stem].english }, { sign: b.key, char: STEMS[b.stem].hanzi, en: STEMS[b.stem].english }] });
       }
       for (const m of branchMeetings(a.branch, b.branch)) {
-        out.push({ ...m, layer: "branch", incoming, members: [{ sign: a.key, char: BRANCHES[a.branch].hanzi }, { sign: b.key, char: BRANCHES[b.branch].hanzi }] });
+        out.push({ ...m, layer: "branch", incoming, members: [{ sign: a.key, char: BRANCHES[a.branch].hanzi, en: BRANCHES[a.branch].english }, { sign: b.key, char: BRANCHES[b.branch].hanzi, en: BRANCHES[b.branch].english }] });
       }
     }
   }
   for (const h of HARMONIES) {
     const found = h.trio.map((b) => signs.find((s) => s.branch === b));
     if (found.every(Boolean)) {
-      const members = (found as Sign[]).map((s) => ({ sign: s.key, char: BRANCHES[s.branch].hanzi }));
+      const members = (found as Sign[]).map((s) => ({ sign: s.key, char: BRANCHES[s.branch].hanzi, en: BRANCHES[s.branch].english }));
       out.push({ kind: "harmony", layer: "branch", phase: h.phase, members, incoming: (found as Sign[]).some((s) => s.incoming) });
     }
   }
@@ -195,10 +195,10 @@ export function crossTies(teacher: FourPillars, student: FourPillars): Tie[] {
   for (const a of ts) {
     for (const b of ss) {
       for (const m of stemMeetings(a.stem, b.stem)) {
-        out.push({ ...m, layer: "stem", incoming: false, members: [{ sign: a.key, char: STEMS[a.stem].hanzi }, { sign: b.key, char: STEMS[b.stem].hanzi }] });
+        out.push({ ...m, layer: "stem", incoming: false, members: [{ sign: a.key, char: STEMS[a.stem].hanzi, en: STEMS[a.stem].english }, { sign: b.key, char: STEMS[b.stem].hanzi, en: STEMS[b.stem].english }] });
       }
       for (const m of branchMeetings(a.branch, b.branch)) {
-        out.push({ ...m, layer: "branch", incoming: false, members: [{ sign: a.key, char: BRANCHES[a.branch].hanzi }, { sign: b.key, char: BRANCHES[b.branch].hanzi }] });
+        out.push({ ...m, layer: "branch", incoming: false, members: [{ sign: a.key, char: BRANCHES[a.branch].hanzi, en: BRANCHES[a.branch].english }, { sign: b.key, char: BRANCHES[b.branch].hanzi, en: BRANCHES[b.branch].english }] });
       }
     }
   }
@@ -217,7 +217,7 @@ export function crossTies(teacher: FourPillars, student: FourPillars): Tie[] {
     if (!pick) continue;
     const alone = (side: Sign[]) => h.trio.every((b) => side.some((s) => s.branch === b));
     if (alone(ts) || alone(ss)) continue;
-    out.push({ kind: "harmony", layer: "branch", phase: h.phase, incoming: false, members: pick.map((s) => ({ sign: s.key, char: BRANCHES[s.branch].hanzi })) });
+    out.push({ kind: "harmony", layer: "branch", phase: h.phase, incoming: false, members: pick.map((s) => ({ sign: s.key, char: BRANCHES[s.branch].hanzi, en: BRANCHES[s.branch].english })) });
   }
   return out;
 }

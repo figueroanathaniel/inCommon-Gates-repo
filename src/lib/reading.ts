@@ -15,7 +15,8 @@ export interface PillarView {
   domain: string;
   stem: (typeof STEMS)[number];
   branch: (typeof BRANCHES)[number];
-  god: { key: string; hanzi: string; pinyin: string; english: string; reading: string } | null;
+  god: { key: string; hanzi: string; pinyin: string; english: string; reading: string; readingZh: string } | null;
+  domainZh: string;
 }
 
 export function pillarViews(p: FourPillars): PillarView[] {
@@ -29,6 +30,7 @@ export function pillarViews(p: FourPillars): PillarView[] {
       hanzi: label.hanzi,
       english: label.english,
       domain: label.domain,
+      domainZh: label.domainZh,
       stem,
       branch: BRANCHES[branches[i]],
       god: label.key === "day" ? null : tenGodOf(day, stem),
@@ -53,21 +55,13 @@ export function phaseCensus(p: FourPillars): Record<Phase, number> {
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
- * The gloss keeper. In its bilingual posture a symbol carries its English
- * beside it at first showing, （甲）, and stays in English only at every
- * showing after. In the plain posture, kept for the English only
- * control, the characters rest and the reading speaks English alone.
+ * The English reading names every sign by its English name alone. The
+ * Chinese reading, below, names it by its character alone. The two are
+ * never mixed on one page.
  */
 export class ReadingGloss {
-  private seen = new Set<string>();
-  private readonly plain: boolean;
-  constructor(plain = false) {
-    this.plain = plain;
-  }
-  mark(hanzi: string, english: string): string {
-    if (this.plain || this.seen.has(hanzi)) return english;
-    this.seen.add(hanzi);
-    return `${english} （${hanzi}）`;
+  mark(_hanzi: string, english: string): string {
+    return english;
   }
 }
 
@@ -101,7 +95,7 @@ export function censusLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
 }
 
 /**
- * The season of one's strength: the month branch, the month's decree （月令）,
+ * The season of one's strength: the month branch, the month's decree,
  * weighs most in the tradition's judgement of whether the Day Master stands supported.
  */
 export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss()): string[] {
@@ -169,12 +163,85 @@ export function domainLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   });
 }
 
+/* 中文的讀法：同一份讀盤，以繁體中文寫成，只用漢字名。 */
+
+const NUM_ZH = ["零", "一", "二", "三", "四", "五", "六", "七", "八"];
+const YY_ZH = { yin: "陰", yang: "陽" } as const;
+const ZH_PILLAR = PILLAR_LABELS.reduce<Record<string, string>>((a, l) => ((a[l.key] = l.domainZh), a), {});
+
+export function censusLinesZh(p: FourPillars): string[] {
+  const census = phaseCensus(p);
+  const entries = (Object.entries(census) as [Phase, number][]).sort((a, b) => b[1] - a[1]);
+  const lines: string[] = [];
+  const [topPhase, topCount] = entries[0];
+  const [lowPhase, lowCount] = entries[entries.length - 1];
+  lines.push(`此命${PHASES[topPhase].hanzi}最重，八字之中見${NUM_ZH[topCount]}次。`);
+  if (lowCount === 0) {
+    lines.push(
+      `八字之中全不見${PHASES[lowPhase].hanzi}。傳統視之為一間由一生自行布置的空室，在所行的大運之中，在所交的人之間。`
+    );
+  } else if (lowCount === 1 && lowPhase !== topPhase) {
+    lines.push(`${PHASES[lowPhase].hanzi}僅見一次，是其餘七字所倚的一個音。`);
+  }
+  if (entries.filter(([, n]) => n > 0).length === 5) {
+    lines.push("五行俱全。傳統視之如一屋四壁各掛器具，而問手先伸向哪一件。");
+  }
+  return lines;
+}
+
+export function seasonLinesZh(p: FourPillars): string[] {
+  const dm = dayMasterOf(p);
+  const month = BRANCHES[p.monthBranch];
+  const m = PHASES[month.phase].hanzi;
+  const d = PHASES[dm.phase].hanzi;
+  const lines = [`日主為${dm.hanzi}，${YY_ZH[dm.yinyang]}${d}：${dm.qualityZh}。`];
+  const born = `生於${month.hanzi}月，${m}之月，`;
+  if (month.phase === dm.phase) {
+    lines.push(`${born}日主立於本季。傳統稱之為得月令，視自身有根，得力於所植之地。`);
+  } else if (PHASES[month.phase].generates === dm.phase) {
+    lines.push(`${born}季令直生其${d}，因${m}生${d}。傳統視之為日主根受滋養，未作一事，已得扶持。`);
+  } else if (PHASES[dm.phase].generates === month.phase) {
+    lines.push(`${born}日主泄氣於季令，因${d}生${m}。傳統視之為以己力奉其時，不得不發露，並勸此命隨處可息則息。`);
+  } else if (PHASES[month.phase].overcomes === dm.phase) {
+    lines.push(`${born}季令壓於日主，因${m}剋${d}。傳統稱之為爐，視自身早為未曾選擇之重量所鍛。`);
+  } else {
+    lines.push(`${born}日主制其季令，因${d}剋${m}。傳統視之為自初生即與其時相抗，一生化阻力為生計。`);
+  }
+  return lines;
+}
+
+export function godLinesZh(p: FourPillars): string[] {
+  const views = pillarViews(p);
+  const lines: string[] = [];
+  for (const v of views) {
+    if (!v.god) continue;
+    lines.push(`${v.hanzi}之上坐${v.god.hanzi}，${v.god.readingZh}。其所主為${ZH_PILLAR[v.key]}。`);
+  }
+  const keys = views.filter((v) => v.god).map((v) => v.god!.key);
+  const dup = keys.filter((k, i) => keys.indexOf(k) !== i);
+  if (dup.length > 0) {
+    const first = views.find((v) => v.god && v.god.key === dup[0])!;
+    lines.push(`${first.god!.hanzi}於四柱之中重見。神重見，則一生之中兩度發聲，傳統留意其聲落於何處。`);
+  }
+  return lines;
+}
+
+export function domainLinesZh(p: FourPillars): string[] {
+  return pillarViews(p).map((v) => {
+    const below = `下為${v.branch.hanzi}，屬${v.branch.animalHanzi}，${v.branch.qualityZh}`;
+    if (v.key === "day") {
+      return `${v.hanzi}主自身：上為${v.stem.hanzi}，${below}。此柱亦為配偶之宮，傳統視自身之下的地支為至親之人所立之地。`;
+    }
+    return `${v.hanzi}上承${v.stem.hanzi}，${v.stem.qualityZh}；${below}。其所主為${ZH_PILLAR[v.key]}。`;
+  });
+}
+
 export function animalOf(branchIndex: number) {
   return BRANCHES[branchIndex].animal;
 }
 
 export function phaseLabel(phase: Phase) {
-  return `${PHASES[phase].english} （${PHASES[phase].hanzi}）`;
+  return PHASES[phase].english;
 }
 
 export { cap };
