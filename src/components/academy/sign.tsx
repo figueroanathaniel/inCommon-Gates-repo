@@ -13,22 +13,18 @@ const MEANING: Record<string, string> = Object.fromEntries([
  * name first, then the character and its toned pinyin in full width brackets:
  * Yang Wood （甲 "Jiǎ"）, Rat （子 "Zǐ"）. Nate chose this on 11 November 2026
  * from his own sample ("West （生氣 "Generating-Breath," wealth)"); the dashes
- * in the sample are left out by the no dash rule.
+ * in the sample are left out by the no dash rule. The pillars themselves
+ * carry the character alone, in both languages (Nate, 11 November 2026: "No
+ * English in the main text on the pillars, ever."); this form is for prose,
+ * the Meetings and the Teacher's Table.
  */
-export function SignWord({ en, han, stack }: { en: string; han: string; stack?: boolean }) {
+export function SignWord({ en, han }: { en: string; han: string }) {
   const name = MEANING[han] ?? en;
-  // The pillar row is laid out right to left (dir="rtl"), so the sign sets its
-  // own direction or its brackets and quotes come out mirrored.
-  // A pillar cell is a quarter of a phone wide, so there the bracket takes
-  // its own line under the name, smaller, and the name may wrap.
-  const inner = <>（<span className="font-han" lang="zh-Hant">{han}</span> “{en}”）</>;
-  if (stack) {
-    return (
-      <span dir="ltr" className="block max-w-full text-center">
-        <span className="block">{name}</span>
-        <span className="block whitespace-nowrap text-[max(0.62em,10.5px)] font-semibold">{inner}</span>
-      </span>
-    );
-  }
-  return <span dir="ltr">{name} <span className="whitespace-nowrap">{inner}</span></span>;
+  // Inside the pillar panel the row is laid out right to left (dir="rtl"), so
+  // the sign sets its own direction or its brackets and quotes come mirrored.
+  return (
+    <span dir="ltr">
+      {name} <span className="whitespace-nowrap">（<span className="font-han" lang="zh-Hant">{han}</span> “{en}”）</span>
+    </span>
+  );
 }
