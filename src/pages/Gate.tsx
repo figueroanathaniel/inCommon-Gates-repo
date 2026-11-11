@@ -79,12 +79,12 @@ export default function Gate() {
           {
             hanzi: "五行",
             english: "The Five Phases",
-            text: "Wood, fire, earth, metal and water, not as things but as movements, turning in the generating ring and governed by the overcoming star.",
+            text: "Wood, fire, earth, metal and water as movements, turning in the generating ring and governed by the overcoming star.",
           },
           {
             hanzi: "",
             english: "Your Nature",
-            text: "One true chart set at the centre of the hall. Every scroll returns to it, until the grammar of the art is something you have seen, not something you were told.",
+            text: "One true chart set at the centre of the hall. Every scroll returns to it, until the grammar of the art is something you have seen written in a life.",
           },
         ].map((c) => (
           <div key={c.hanzi} className="border-t pt-6" style={{ borderColor: "rgba(var(--ac2r),.35)" }}>
@@ -100,8 +100,8 @@ export default function Gate() {
           <p className="font-han text-[22px] font-semibold tracking-[0.2em] text-[var(--paper)]">命好不如運好，運好不如流年好</p>
           <p className="font-gloss mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[rgba(var(--txr),.65)]">
             A fine chart is not the equal of a fine decade, and a fine decade is not the equal of a fine year.
-            The old readers were plain about this: nothing here is a verdict. The chart shows the seed;
-            the tending is yours.
+            The Marrow of Heaven's Drops keeps the measure: going with the grain is fortune.
+            The chart shows the grain.
           </p>
           <div className="mt-8 flex justify-center">
             <Link

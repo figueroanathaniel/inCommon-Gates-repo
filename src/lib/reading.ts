@@ -87,7 +87,7 @@ export function censusLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   if (lowCount === 0) {
     const low = PHASES[lowPhase];
     lines.push(
-      `${gloss.mark(low.hanzi, low.english)} does not appear at all among the eight. The tradition does not call this a lack to be mourned. It calls it a room the life furnishes by choice, through the phases it walks toward in the decades and the company it keeps.`
+      `${gloss.mark(low.hanzi, low.english)} does not appear at all among the eight. The tradition calls this a room the life furnishes by choice, through the phases it walks toward in the decades and the company it keeps.`
     );
   } else if (lowCount === 1 && lowPhase !== topPhase) {
     const low = PHASES[lowPhase];
@@ -127,7 +127,7 @@ export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
     );
   } else if (PHASES[month.phase].overcomes === dm.phase) {
     lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the season presses upon the Day Master, for ${ph(month.phase)} overcomes ${ph(dm.phase)}. The tradition does not call this misfortune. It calls it a forge, and reads the self as shaped early by weight it did not choose.`
+      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the season presses upon the Day Master, for ${ph(month.phase)} overcomes ${ph(dm.phase)}. The tradition calls this a forge, and reads the self as shaped early by weight it did not choose.`
     );
   } else {
     lines.push(
@@ -152,7 +152,7 @@ export function godLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(
   if (dup.length > 0) {
     const first = views.find((v) => v.god && v.god.key === dup[0])!;
     lines.push(
-      `${gloss.mark(first.god!.hanzi, first.god!.english)} appears more than once among the pillars. A repeated god speaks twice in a life. The tradition listens for where, not whether, it will be heard.`
+      `${gloss.mark(first.god!.hanzi, first.god!.english)} appears more than once among the pillars. A repeated god speaks twice in a life. The tradition listens for where it will be heard.`
     );
   }
   return lines;
