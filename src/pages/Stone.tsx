@@ -3,10 +3,12 @@ import { MirrorReading } from "@/components/academy/mirror";
 import { api } from "@/providers/data";
 import type { FourPillars } from "@contracts/bazi";
 import { LuckRoad } from "@/components/academy/luck";
+import { useTimes } from "@/lib/times";
 
 /** The Destiny Chart (命盤) room: Your Nature, veiled or read. */
 export default function Stone() {
   const stone = api.stone.useQuery();
+  const times = useTimes(stone.data?.luck ?? null);
 
   const pillars: FourPillars | null = stone.data
     ? {
@@ -40,10 +42,10 @@ export default function Stone() {
                 Upon the pedestal is written: {stone.data.note}
               </p>
             ) : null}
-            <MirrorReading pillars={pillars} label={`The Destiny Chart: ${stone.data.label}`} />
+            <MirrorReading pillars={pillars} label={`The Destiny Chart: ${stone.data.label}`} incoming={stone.data.luck ? times.incoming : []} meetings />
             {stone.data.luck ? (
               <div className="mx-auto mt-14 max-w-3xl">
-                <LuckRoad luck={stone.data.luck} dayStem={stone.data.dayStem} dark />
+                <LuckRoad luck={stone.data.luck} dayStem={stone.data.dayStem} dark pillars={pillars} times={times} />
               </div>
             ) : null}
             <div className="mt-14 flex justify-center">

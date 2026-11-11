@@ -1,0 +1,51 @@
+# 合沖刑害 and 旺相休囚死: the pages the tables were read on
+
+Every table in `src/lib/meet.ts` was read on a page before it was typed, on
+11 November 2026. This file lists the page for each and what was left out
+because no page read settles it. The English names in that file are working
+names and wait on the language pass.
+
+## Stems
+
+| Table | Read on |
+|---|---|
+| 天干化合: 甲己土 乙庚金 丙辛水 丁壬木 戊癸火 | zh.wikipedia.org/wiki/天干 |
+| 天干相沖: 甲庚 乙辛 丙壬 丁癸 | zh.wikipedia.org/wiki/天干 |
+
+## Branches
+
+| Table | Read on |
+|---|---|
+| 六合: 子丑土 寅亥木 卯戌火 辰酉金 巳申水 午未 | zh.wikipedia.org/wiki/地支; masterseanchan.com, the branch hexes page |
+| 三合: 申子辰水 寅午戌火 巳酉丑金 亥卯未木 | zh.wikipedia.org/wiki/地支; masterseanchan.com, the branch trines page |
+| 相沖: 子午 丑未 寅申 卯酉 辰戌 巳亥 | zh.wikipedia.org/wiki/地支; masterseanchan.com, the branch clashes page |
+| 相害: 子未 丑午 寅巳 卯辰 申亥 酉戌 | zh.wikipedia.org/wiki/地支; masterseanchan.com, the branch harms page |
+| 相刑: 寅巳申, 丑戌未, 子卯, and 辰 午 酉 亥 each with itself | zh.wikipedia.org/wiki/地支; masterseanchan.com, the branch penalties page |
+
+The first page came through to this reading with every 丑 missing, so each
+pair that names 丑 was taken from the second.
+
+## The season
+
+旺相休囚死 is five relations to the phase in season, which is the month
+branch's own: in season 旺, fed by the season 相, feeding it 休, set to
+overcome it 囚, overcome by it 死. Read on a sina.cn article on the five
+states (news detail 5313408825557511) and a sohu.com article (a/856435912),
+which also gives earth as 旺 in the four months that close a season.
+
+## Hidden stems
+
+The hidden stems are the table the Academy already kept in
+`contracts/bazi.ts`. It was compared with en.wikibooks.org, Ba Zi, Hidden
+Stems, and with the verse quoted on sohu.com (a/17409692_125692), and the
+sets agree. That second page's own table is a different thing, the stem in
+command by days of the month, and is not used.
+
+## Left out
+
+- 半合, the half harmonies: the pages read do not agree on which pairs count.
+- 三會, the three seasonal meetings, and 相破, the breaks: read on one page only.
+- What 午未 combines into: the pages give fire, earth, or both, so the pair
+  is listed as a combination with no phase.
+- Whether a combination transforms. The table lists the meeting and the
+  phase the tradition names for it. It does not judge whether it takes.

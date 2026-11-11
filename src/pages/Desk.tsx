@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Shell, Seal, Rule, JadeButton } from "@/components/academy/chrome";
 import { PillarChart } from "@/components/academy/pillars";
+import type { FourPillars } from "@contracts/bazi";
 import { useAuth } from "@/hooks/useAuth";
 import { api } from "@/providers/data";
 import { ZoneField } from "@/components/academy/zone-field";
-import { LuckRoad } from "@/components/academy/luck";
+import { LuckRoad, type LuckView } from "@/components/academy/luck";
+import { useTimes } from "@/lib/times";
 import { deviceZone, zoneFrom, zoneLabel } from "@/lib/zones";
 
 /** 案 The Desk: where a reader casts their own pillars and keeps them. */
@@ -97,7 +99,7 @@ export default function Desk() {
           ) : (
             <div className="grid gap-12">
               {mine.map((c) => (
-                <div key={c.id} className="border px-5 py-8 min-[820px]:px-8" style={{ borderColor: "rgba(var(--ac2r),.3)", background: "rgba(var(--sfr),.84)" }}>
+                <div key={c.id} className="min-w-0 border px-5 py-8 min-[820px]:px-8" style={{ borderColor: "rgba(var(--ac2r),.3)", background: "rgba(var(--sfr),.84)" }}>
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
                     <h3 className="font-han text-[20px] font-bold text-[var(--tx)]">{c.label}</h3>
                     <span className="font-gloss text-[12.5px] text-[rgba(var(--txr),.66)]">
@@ -105,18 +107,15 @@ export default function Desk() {
                       {c.birthZone ? `, ${zoneLabel(c.birthZone)}` : ", Beijing time"}
                     </span>
                   </div>
-                  <div className="mt-6">
-                    <PillarChart
-                      pillars={{
-                        yearStem: c.yearStem, yearBranch: c.yearBranch, monthStem: c.monthStem, monthBranch: c.monthBranch,
-                        dayStem: c.dayStem, dayBranch: c.dayBranch, hourStem: c.hourStem, hourBranch: c.hourBranch,
-                      }}
-                    />
-                  </div>
-                  <div className="mt-8">
-                    {c.luck ? (
-                      <LuckRoad luck={c.luck} dayStem={c.dayStem} />
-                    ) : c.birthZone && wants !== c.id ? (
+                  <DeskChart
+                    pillars={{
+                      yearStem: c.yearStem, yearBranch: c.yearBranch, monthStem: c.monthStem, monthBranch: c.monthBranch,
+                      dayStem: c.dayStem, dayBranch: c.dayBranch, hourStem: c.hourStem, hourBranch: c.hourBranch,
+                    }}
+                    luck={c.luck ?? null}
+                  />
+                  <div className={c.luck ? "hidden" : "mt-8"}>
+                    {c.luck ? null : c.birthZone && wants !== c.id ? (
                       <button
                         type="button"
                         onClick={() => setWants(c.id)}
@@ -170,5 +169,22 @@ export default function Desk() {
         </div>
       </section>
     </Shell>
+  );
+}
+
+/** One kept chart with whatever the reader lays beside it: its own decade and year, and how they meet the birth. */
+function DeskChart({ pillars, luck }: { pillars: FourPillars; luck: LuckView | null }) {
+  const times = useTimes(luck);
+  return (
+    <>
+      <div className="mt-6">
+        <PillarChart pillars={pillars} incoming={luck ? times.incoming : []} meetings />
+      </div>
+      {luck ? (
+        <div className="mt-8">
+          <LuckRoad luck={luck} dayStem={pillars.dayStem} pillars={pillars} times={times} />
+        </div>
+      ) : null}
+    </>
   );
 }

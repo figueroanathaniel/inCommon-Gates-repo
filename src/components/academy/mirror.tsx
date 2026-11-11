@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FourPillars } from "@contracts/bazi";
 import { ReadingGloss, censusLines, dayMasterOf, domainLines, godLines, seasonLines } from "@/lib/reading";
 import { PillarChart } from "./pillars";
+import type { Sign } from "@/lib/meet";
 import { GhostButton, Rule } from "./chrome";
 
 /**
@@ -15,10 +16,14 @@ export function MirrorReading({
   pillars,
   label,
   compact = false,
+  incoming = [],
+  meetings = false,
 }: {
   pillars: FourPillars;
   label: string;
   compact?: boolean;
+  incoming?: Sign[];
+  meetings?: boolean;
 }) {
   const [plain, setPlain] = useState(false);
   const gloss = new ReadingGloss(plain);
@@ -37,7 +42,7 @@ export function MirrorReading({
           {plain ? "With characters 顯字" : "English only 隱字"}
         </GhostButton>
       </div>
-      <PillarChart pillars={pillars} dark caption={`${label}. Touch any pillar to hear its ground.`} />
+      <PillarChart pillars={pillars} dark incoming={incoming} meetings={meetings} caption={`${label}. Touch any pillar to hear its ground.`} />
       <p className="font-gloss mx-auto mt-8 max-w-2xl text-center text-[15px] italic leading-relaxed" style={{ color: "rgba(var(--txr),.65)" }}>
         The Day Master is {gloss.mark(dm.hanzi, dm.english)}. All that follows is spoken in relation to it.
       </p>
