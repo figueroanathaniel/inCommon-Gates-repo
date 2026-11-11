@@ -8,6 +8,7 @@ import { Rule } from "./chrome";
 import { Meetings } from "./meetings";
 import { litKey } from "@/lib/meet";
 import { YINYANG_ZH, useZh } from "@/lib/lang";
+import { SignWord } from "./sign";
 
 const PHASE_ORDER: Phase[] = ["wood", "fire", "earth", "metal", "water"];
 
@@ -75,8 +76,8 @@ export function PillarChart({
             className="font-gloss mt-3 flex flex-col items-center font-bold"
             style={{ fontSize: wide ? "clamp(17px, 4.2vw, 30px)" : "clamp(19px, 5vw, 34px)", lineHeight: 1.15 }}
           >
-            <span style={charStyle(key, "stem", stem.phase)}>{stem.english}</span>
-            <span style={charStyle(key, "branch", branch.phase)}>{branch.english}</span>
+            <span className="max-w-full" style={charStyle(key, "stem", stem.phase)}><SignWord stack en={stem.english} han={stem.hanzi} /></span>
+            <span className="max-w-full" style={charStyle(key, "branch", branch.phase)}><SignWord stack en={branch.english} han={branch.hanzi} /></span>
           </span>
           <span className="font-gloss mt-3 text-center text-[11px] leading-snug" style={{ color: subColor }}>
             {stem.yinyang === "yang" ? "Yang" : "Yin"} {PHASES[stem.phase].english}
@@ -101,7 +102,7 @@ export function PillarChart({
                 const hs = STEMS[h];
                 return (
                   <span key={h} className="font-gloss flex flex-col items-center text-center leading-tight" style={{ opacity: phase && phase !== hs.phase ? 0.28 : 1 }}>
-                    <span className="text-[13px] font-bold" style={{ color: inkColor }}>{hs.english}</span>
+                    <span className="text-[13px] font-bold" style={{ color: inkColor }}><SignWord stack en={hs.english} han={hs.hanzi} /></span>
                     {prefs.gods ? <span className="text-[10px]" style={{ color: "var(--gilt)" }}>{tenGodOf(day, hs).english}</span> : null}
                   </span>
                 );
@@ -120,8 +121,8 @@ export function PillarChart({
           className="font-han mt-3 font-bold"
           style={{ writingMode: "vertical-rl", textOrientation: "upright", fontSize: wide ? "clamp(26px, 7vw, 56px)" : "clamp(32px, 9vw, 64px)", letterSpacing: "0.14em", lineHeight: 1 }}
         >
-          <span style={charStyle(key, "stem", stem.phase)}>{stem.hanzi}</span>
-          <span style={charStyle(key, "branch", branch.phase)}>{branch.hanzi}</span>
+          <span className="max-w-full" style={charStyle(key, "stem", stem.phase)}>{stem.hanzi}</span>
+          <span className="max-w-full" style={charStyle(key, "branch", branch.phase)}>{branch.hanzi}</span>
         </span>
         <span className="font-han mt-3 text-[13px] tracking-[0.25em]" style={{ color: "var(--gilt)" }}>
           {hanzi}
@@ -291,8 +292,8 @@ export function PillarChart({
         >
           <p className="font-gloss text-[12px] uppercase tracking-[0.22em] text-[var(--gilt)]">{selected.english}</p>
           <p className="font-gloss mt-4 text-[15px] leading-relaxed" style={{ color: inkColor }}>
-            <span className="font-semibold">{selected.stem.english}</span> stands above: {selected.stem.quality}. Beneath it,{" "}
-            <span className="font-semibold">{selected.branch.english}</span>, the {selected.branch.animal}: {selected.branch.quality}.
+            <span className="font-semibold"><SignWord en={selected.stem.english} han={selected.stem.hanzi} /></span> stands above: {selected.stem.quality}. Beneath it,{" "}
+            <span className="font-semibold"><SignWord en={selected.branch.english} han={selected.branch.hanzi} /></span>, the {selected.branch.animal}: {selected.branch.quality}.
           </p>
           <Rule dark={dark} className="my-4" />
           <p className="font-gloss text-[14px] leading-relaxed" style={{ color: subColor }}>

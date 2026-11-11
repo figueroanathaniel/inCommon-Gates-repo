@@ -217,7 +217,7 @@ export function JiaziCycle({ dark = true }: { dark?: boolean }) {
     branch: zh ? BRANCHES[i % 12].hanzi : BRANCHES[i % 12].english,
   }));
   return (
-    <div className="grid grid-cols-5 gap-px min-[820px]:grid-cols-10" data-chart="jiazi" role="list" aria-label={zh ? "六十甲子，依序" : "The sixty Jiazi pairs in their order"}>
+    <div className="grid grid-cols-5 gap-px min-[820px]:grid-cols-10" data-chart="jiazi" role="list" aria-label={zh ? "六十甲子，依序" : "The sixty Jiǎzǐ pairs in their order"}>
       {cells.map((c) => (
         <div key={c.n} role="listitem" className="flex flex-col items-center border px-1 py-2" style={{ borderColor: line }}>
           {zh ? (

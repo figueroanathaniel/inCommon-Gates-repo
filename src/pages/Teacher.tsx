@@ -11,6 +11,7 @@ import { TIE_NAMES, crossSigns, crossTies, type Tie } from "@/lib/meet";
 import { setTeacherRecord, useTeacherRecord } from "@/lib/teacher";
 import { useTimes } from "@/lib/times";
 import { useErr, useT, useZh } from "@/lib/lang";
+import { SignWord } from "../components/academy/sign";
 
 interface Kept {
   id: number;
@@ -360,9 +361,9 @@ function Between({ teacher, student, zh }: { teacher: Kept; student: Kept; zh: b
           {gods.map((g) => (
             <li key={g.key} className="flex min-h-[44px] flex-wrap items-baseline gap-x-2 gap-y-1 border-b px-2 py-2" style={{ borderColor: line }} data-day-god={g.god.key}>
               <span className={zh ? "font-han text-[14px]" : "font-gloss text-[14px]"} style={{ color: sub }}>{g.from}</span>
-              <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold text-[var(--tx)]"}>{zh ? g.own.hanzi : g.own.english}</span>
+              <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold text-[var(--tx)]"}>{zh ? g.own.hanzi : <SignWord en={g.own.english} han={g.own.hanzi} />}</span>
               <span className={zh ? "font-han text-[14px]" : "font-gloss text-[14px]"} style={{ color: sub }}>{zh ? `視${g.to}` : `reads ${g.to}`}</span>
-              <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold text-[var(--tx)]"}>{zh ? g.other.hanzi : g.other.english}</span>
+              <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold text-[var(--tx)]"}>{zh ? g.other.hanzi : <SignWord en={g.other.english} han={g.other.hanzi} />}</span>
               <span className={zh ? "font-han text-[14px]" : "font-gloss text-[14px]"} style={{ color: sub }}>{zh ? "為" : "as"}</span>
               <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold"} style={{ color: "var(--gilt)" }}>{zh ? g.god.hanzi : g.god.english}</span>
             </li>
@@ -390,7 +391,7 @@ function Between({ teacher, student, zh }: { teacher: Kept; student: Kept; zh: b
                   const s = name(m.sign);
                   return (
                     <span key={k} className="whitespace-nowrap">
-                      <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold"} style={{ color: "var(--tx)" }}>{zh ? m.char : m.en}</span>
+                      <span className={(zh ? "font-han text-[17px]" : "font-gloss text-[15px]") + " font-bold"} style={{ color: "var(--tx)" }}>{zh ? m.char : <SignWord en={m.en} han={m.char} />}</span>
                       <span className={(zh ? "font-han" : "font-gloss") + " ml-1 text-[12px]"} style={{ color: sub }}>{zh ? s?.hanzi : s?.english}</span>
                     </span>
                   );

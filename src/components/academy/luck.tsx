@@ -3,6 +3,7 @@ import { yearsOf, type Times } from "@/lib/times";
 import { STEMS, BRANCHES, tenGodOf, type FourPillars } from "@contracts/bazi";
 import { TIE_NAMES, kindsAgainst, yearPillar } from "@/lib/meet";
 import { ageZh, useZh } from "@/lib/lang";
+import { SignWord } from "./sign";
 
 const SHORT: Record<string, string> = { combine: "Comb.", clash: "Clash", harm: "Harm", punish: "Pun." };
 
@@ -117,8 +118,8 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
                 </>
               ) : (
                 <>
-                  <span className="font-gloss mt-2 text-[17px] font-bold leading-tight min-[820px]:text-[19px]" style={{ color: ink }}>{stem.english}</span>
-                  <span className="font-gloss text-[17px] font-bold leading-tight min-[820px]:text-[19px]" style={{ color: ink }}>{branch.english}</span>
+                  <span className="font-gloss mt-2 text-[17px] font-bold leading-tight min-[820px]:text-[19px]" style={{ color: ink }}><SignWord stack en={stem.english} han={stem.hanzi} /></span>
+                  <span className="font-gloss text-[17px] font-bold leading-tight min-[820px]:text-[19px]" style={{ color: ink }}><SignWord stack en={branch.english} han={branch.hanzi} /></span>
                   <span className="font-gloss mt-2 text-center text-[10.5px] leading-snug" style={{ color: "var(--gilt)" }}>{god.english}</span>
                 </>
               )}
@@ -178,8 +179,8 @@ export function LuckRoad({ luck, dayStem, dark = false, pillars, times }: { luck
                       <span className="font-han mt-1 text-[18px] font-bold leading-tight" style={{ color: ink }}>{STEMS[yp.stem].hanzi}{BRANCHES[yp.branch].hanzi}</span>
                     ) : (
                       <span className="font-gloss mt-1 flex flex-col items-center text-[13px] font-bold leading-tight" style={{ color: ink }}>
-                        <span>{STEMS[yp.stem].english}</span>
-                        <span>{BRANCHES[yp.branch].english}</span>
+                        <span><SignWord stack en={STEMS[yp.stem].english} han={STEMS[yp.stem].hanzi} /></span>
+                        <span><SignWord stack en={BRANCHES[yp.branch].english} han={BRANCHES[yp.branch].hanzi} /></span>
                       </span>
                     )}
                     <span data-marks className={(zh ? "font-han text-[11.5px] tracking-[0.1em]" : "font-gloss text-center text-[10px] leading-snug") + " mt-1 min-h-[16px]"} style={{ color: "var(--gilt)" }} aria-hidden="true">
