@@ -4,7 +4,7 @@
  * including the heaviest census cases, and its output is read by greps
  * for the classic failure modes.
  */
-import { censusLines, seasonLines, domainLines, godLines, pillarViews, dayMasterOf, ReadingGloss } from "../src/lib/reading";
+import { censusLines, seasonLines, domainLines, godLines, censusLinesZh, seasonLinesZh, domainLinesZh, godLinesZh, pillarViews, dayMasterOf } from "../src/lib/reading";
 import { PHASES, STEMS, BRANCHES, tenGodOf } from "../contracts/bazi";
 import type { FourPillars } from "../contracts/bazi";
 
@@ -94,33 +94,24 @@ if (dayMasterOf({ yearStem: 0, yearBranch: 0, monthStem: 0, monthBranch: 0, dayS
   problems.push("dayMasterOf picks the wrong stem");
 }
 
-// 5) The Translate to English posture: no character may remain in any line
+// 5) English is wholly English, and 中文 wholly Chinese, over the 400 seeded charts
 {
-  const p: FourPillars = { yearStem: 0, yearBranch: 0, monthStem: 1, monthBranch: 1, dayStem: 2, dayBranch: 2, hourStem: 3, hourBranch: 3 };
-  const gloss = new ReadingGloss(true);
-  const all = [...seasonLines(p, gloss), ...censusLines(p, gloss), ...domainLines(p, gloss), ...godLines(p, gloss)].join("\n");
-  if (/[一-鿿（）]/.test(all)) problems.push(`plain gloss kept characters: ${all}`);
-  runs++;
-}
-
-// 6) One keeper across a whole reading: no symbol is glossed twice,
-//    and a symbol named early is kept in English when named again
-{
-  const p: FourPillars = { yearStem: 0, yearBranch: 0, monthStem: 2, monthBranch: 2, dayStem: 0, dayBranch: 0, hourStem: 4, hourBranch: 4 };
-  const gloss = new ReadingGloss(false);
-  const all = [...seasonLines(p, gloss), ...censusLines(p, gloss), ...domainLines(p, gloss), ...godLines(p, gloss)].join("\n");
-  const counts: Record<string, number> = {};
-  for (const m of all.matchAll(/（([一-鿿]+)）/g)) counts[m[1]] = (counts[m[1]] ?? 0) + 1;
-  for (const [h, n] of Object.entries(counts)) {
-    if (n > 1) problems.push(`symbol ${h} glossed ${n} times in one reading`);
+  const latin = /[A-Za-z]/;
+  const cjk = /[\u3000-\u303f\u3400-\u9fff\uf900-\ufaff\uff00-\uffef]/;
+  let seed = 7;
+  const rnd = (n: number) => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed % n; };
+  for (let i = 0; i < 400; i++) {
+    const p: FourPillars = {
+      yearStem: rnd(10), yearBranch: rnd(12), monthStem: rnd(10), monthBranch: rnd(12),
+      dayStem: rnd(10), dayBranch: rnd(12), hourStem: rnd(10), hourBranch: rnd(12),
+    };
+    const en = [...seasonLines(p), ...censusLines(p), ...domainLines(p), ...godLines(p)].join("\n");
+    if (cjk.test(en)) problems.push(`English reading kept a character: ${en.match(cjk)![0]}`);
+    const zh = [...seasonLinesZh(p), ...censusLinesZh(p), ...domainLinesZh(p), ...godLinesZh(p)].join("\n");
+    if (latin.test(zh)) problems.push(`中文 reading kept a Latin letter: ${zh}`);
+    if (/undefined|NaN|\u2014|\u2013/.test(zh)) problems.push(`中文 reading defect: ${zh}`);
+    runs++;
   }
-  // a repeat of an earlier symbol must not carry its character again
-  const tail = all.slice(all.indexOf("\n"));
-  for (const m of tail.matchAll(/（([一-鿿]+)）/g)) {
-    const before = all.slice(0, all.indexOf(m[0]));
-    if (before.includes(m[1])) problems.push(`late gloss of an earlier symbol: ${m[1]}`);
-  }
-  runs++;
 }
 
 console.log(`swept ${runs} chart sets; ten-god anchors: ${anchors.length}`);
