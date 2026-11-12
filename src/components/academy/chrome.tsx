@@ -118,6 +118,7 @@ const NAV = [
   { to: "/glossary", hanzi: "典", english: "Glossary", end: false },
   { to: "/stone", hanzi: "命盤", english: "Destiny Chart", end: false },
   { to: "/desk", hanzi: "案", english: "Desk", end: false },
+  { to: "/journey", hanzi: "行", english: "Journey", end: false },
   { to: "/register", hanzi: "冊", english: "Register", end: false },
 ];
 
