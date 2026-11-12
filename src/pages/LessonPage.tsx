@@ -7,7 +7,7 @@ import { MirrorReading } from "@/components/academy/mirror";
 import { LESSON_BODY } from "@/content/lessons";
 import { useAuth } from "@/hooks/useAuth";
 import { api } from "@/providers/data";
-import { numZh, useT, useZh } from "@/lib/lang";
+import { useT, useZh } from "@/lib/lang";
 
 function stoneToPillars(s: {
   yearStem: number; yearBranch: number; monthStem: number; monthBranch: number;
@@ -70,10 +70,7 @@ export default function LessonPage() {
       <article className="py-14 min-[820px]:py-20">
         {/* The scroll's head */}
         <header className="mx-auto max-w-2xl">
-          <div className="flex items-center justify-between">
-            <span className="font-gloss text-[12px] uppercase tracking-[0.26em]" style={{ color: "rgba(var(--txr),.66)" }}>
-              {t(`Scroll ${String(meta.order + 1).padStart(2, "0")} of ${String(LESSONS.length).padStart(2, "0")}`, `第${numZh(meta.order + 1)}卷，共${numZh(LESSONS.length)}卷`)}
-            </span>
+          <div className="flex items-center justify-end">
             <Seal char={meta.hanzi.charAt(0)} size={40} dark />
           </div>
           {zh ? (
@@ -117,8 +114,8 @@ export default function LessonPage() {
               <p className={(zh ? "font-han" : "font-gloss") + " text-[26px] font-bold text-[var(--tx)]"}>{t("The Destiny Chart is not yet laid out", "命盤未排")}</p>
               <p className="font-gloss mt-4 text-[15.5px] leading-relaxed" style={{ color: "rgba(var(--txr),.7)" }}>
                 {t(
-                  "The house does not read a chart it does not hold. Once the chart is laid out, this scroll reads it whole, aloud, in the order of the scrolls you have unrolled.",
-                  "書院不讀未持之盤。命盤排定之日，此卷便依你所展諸卷之序，通篇讀之。",
+                  "Once the chart is laid out, this scroll reads it whole, aloud, in the order of the scrolls you have unrolled.",
+                  "命盤排定之日，此卷便依你所展諸卷之序，通篇讀之。",
                 )}
               </p>
             </div>
@@ -132,7 +129,7 @@ export default function LessonPage() {
             <p className={(zh ? "font-han" : "font-gloss") + " mt-5 text-[16px] leading-[1.85] text-[rgba(var(--txr),.85)]"}>{zh ? body.stoneTurnZh : body.stoneTurn}</p>
             {showStoneChart ? (
               <div className="mt-8">
-                <PillarChart pillars={inscribed} dark caption={t(`Your Nature: ${stone.data!.label}`, `本命：${stone.data!.labelZh}`)} />
+                <PillarChart pillars={inscribed} dark caption={t(`Your Nature · ${stone.data!.label}`, `本命：${stone.data!.labelZh}`)} />
               </div>
             ) : inscribed ? (
               <p className="font-gloss mt-5 text-[14.5px] italic" style={{ color: "rgba(var(--txr),.66)" }}>

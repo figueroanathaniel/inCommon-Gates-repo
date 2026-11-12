@@ -116,7 +116,7 @@ export default function Glossary() {
         </div>
         <p className={(zh ? "font-han" : "font-gloss") + " mt-8 max-w-2xl text-[16px] leading-relaxed text-[rgba(var(--txr),.75)]"}>
           {t(
-            "The words a reading uses, given as the tradition gives them and in the order the scrolls teach them. Each term carries its pinyin, the sound of the character it stands for.",
+            "The words a reading uses, in the order the scrolls teach them. Each term carries its pinyin, the sound of the character it stands for.",
             "讀盤所用之字彙，依傳統所授，並依諸卷所教之序排列。",
           )}
         </p>

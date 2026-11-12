@@ -48,7 +48,7 @@ export default function Stone() {
                 {t("Upon the pedestal is written: ", "座上書曰：")}{stone.data.note}
               </p>
             ) : null}
-            <MirrorReading pillars={pillars} label={zh ? `命盤：${stone.data.labelZh}` : `The Destiny Chart: ${stone.data.label}`} incoming={stone.data.luck ? times.incoming : []} meetings />
+            <MirrorReading pillars={pillars} label={zh ? `命盤：${stone.data.labelZh}` : `The Destiny Chart · ${stone.data.label}`} incoming={stone.data.luck ? times.incoming : []} meetings />
             {stone.data.luck ? (
               <div className="mx-auto mt-14 max-w-3xl">
                 <LuckRoad luck={stone.data.luck} dayStem={stone.data.dayStem} dark pillars={pillars} times={times} />
@@ -65,8 +65,8 @@ export default function Stone() {
               <p className={f + (zh ? " mt-6" : "") + " text-[20px] font-bold text-[var(--tx)]"}>{t("The Destiny Chart is not yet laid out", "命盤未排")}</p>
               <p className={f + " mx-auto mt-4 max-w-md text-[15px] leading-relaxed"} style={{ color: "rgba(var(--txr),.7)" }}>
                 {t(
-                  "The house does not read a chart it does not hold, and it will not invent one. Once the true chart is set here, every scroll can be found written on it.",
-                  "書院不讀未持之盤，亦不憑空造盤。真盤置於此時，諸卷皆可見書於其上。",
+                  "Once the true chart is set here, every scroll can be found written on it.",
+                  "真盤置於此時，諸卷皆可見書於其上。",
                 )}
               </p>
             </div>

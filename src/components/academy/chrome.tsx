@@ -226,10 +226,10 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
         <Rule dark={paper} />
         <div className="mt-8 flex flex-col gap-2 min-[820px]:flex-row min-[820px]:items-end min-[820px]:justify-between">
           <p className={(zh ? "font-han tracking-[0.35em]" : "font-gloss italic") + " text-[13px]"} style={{ color: "rgba(var(--txr),.66)" }}>
-            {zh ? "一命二運三風水，四積陰德五讀書" : "First fate, second fortune, third the lie of the land, fourth quiet kindness, fifth study."}
+            {zh ? "一命二運三風水，四積陰德五讀書" : "First the life you are given, second its seasons, third the lie of the land, fourth quiet kindness, fifth study."}
           </p>
           <p className="font-gloss text-[13px]" style={{ color: "rgba(var(--txr),.66)" }}>
-            {zh ? "inCommon 之一支。命盤示其種，耕耘在你。" : "A branch of inCommon. The chart shows the seed, and the tending is yours."}
+            {zh ? "inCommon 之一支。" : "A branch of inCommon."}
           </p>
         </div>
       </footer>

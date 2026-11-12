@@ -352,8 +352,8 @@ function Between({ teacher, student, zh }: { teacher: Kept; student: Kept; zh: b
         <h2 className={(zh ? "font-han" : "font-gloss") + " text-[22px] font-bold text-[var(--tx)]"}>{zh ? "師生合參" : "Where the two charts meet"}</h2>
       </div>
       <div className="mt-6 grid gap-8">
-        <PillarChart pillars={tp} dark interactive={false} caption={zh ? `師 ${teacher.label}` : `The teacher: ${teacher.label}`} />
-        <PillarChart pillars={sp} dark interactive={false} caption={zh ? `生 ${student.label}` : `The student: ${student.label}`} />
+        <PillarChart pillars={tp} dark interactive={false} caption={zh ? `師 ${teacher.label}` : `The teacher · ${teacher.label}`} />
+        <PillarChart pillars={sp} dark interactive={false} caption={zh ? `生 ${student.label}` : `The student · ${student.label}`} />
       </div>
       <div className="mt-8">
         <h3 className={(zh ? "font-han" : "font-gloss") + " text-[17px] font-bold text-[var(--tx)]"}>{zh ? "日主十神" : "Each Day Master to the other"}</h3>
