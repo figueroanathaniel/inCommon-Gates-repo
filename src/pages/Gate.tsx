@@ -15,9 +15,6 @@ export default function Gate() {
       <section className="flex min-h-[88dvh] flex-col items-start justify-center py-16">
         <div className="rise rise-1 flex items-center gap-4">
           <Seal char="門" size={44} />
-          <span className={(zh ? "font-han tracking-[0.3em]" : "font-gloss uppercase tracking-[0.3em]") + " text-[13px] text-[var(--gilt)]"}>
-            {t("A branch of inCommon", "inCommon 之一支")}
-          </span>
         </div>
 
         {zh ? (
@@ -141,7 +138,7 @@ export default function Gate() {
             <>
               <p className="font-gloss text-[20px] font-semibold italic text-[var(--paper)]">A fine chart is not the equal of a fine decade, and a fine decade is not the equal of a fine year.</p>
               <p className="font-gloss mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[rgba(var(--txr),.65)]">
-                The Marrow of Heaven's Drops keeps the measure: going with the grain is fortune. The chart shows the grain.
+                The Marrow of Heaven's Drops keeps the measure. Going with the grain is fortune. The chart shows the grain.
               </p>
             </>
           )}

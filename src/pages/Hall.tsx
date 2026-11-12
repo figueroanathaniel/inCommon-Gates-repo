@@ -29,8 +29,8 @@ export default function Hall() {
         </div>
         <p className={(zh ? "font-han" : "font-gloss") + " mt-8 max-w-2xl text-[16px] leading-relaxed text-[rgba(var(--txr),.75)]"}>
           {t(
-            "Nine scrolls hang in this hall, and they are unrolled in one order, the order the art unfolds in. None is held back and none can be stepped past, because each is written in the characters of the one before it. A scroll you have read through carries the sage mark, and the register keeps your place among them.",
-            "此堂懸卷九軸，依一序展開，即此術開展之序。無一卷秘而不示，亦無一卷可以越過，因每卷皆以前卷之字寫成。讀訖之卷留有記號，學籍記下你在其間之位。",
+            "Nine scrolls hang in this hall, unrolled in the order the art unfolds in. Each is written in the characters of the one before it. A scroll you have read through carries the sage mark, and the register keeps your place among them.",
+            "此堂懸卷九軸，依此術開展之序展開。每卷皆以前卷之字寫成。讀訖之卷留有記號，學籍記下你在其間之位。",
           )}
         </p>
         {stone.data ? (

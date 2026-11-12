@@ -79,7 +79,7 @@ export function MirrorReading({
           <p className={font + " mx-auto mt-8 max-w-2xl text-center text-[15px] leading-relaxed"} style={{ color: "rgba(var(--txr),.7)" }}>
             {zh
               ? "讀盤至此而止，傳統自知其所轄之界。地已名，季已名，朝已名。一生如何用之，屬於那一生。"
-              : "The reading stops here, because the tradition knows where its say ends. The ground is named, the season is named and the court is named. What a life makes of them belongs to the life."}
+              : "Here the reading rests. The ground is named, the season is named and the court is named. What a life makes of them belongs to the life."}
           </p>
         </>
       ) : null}

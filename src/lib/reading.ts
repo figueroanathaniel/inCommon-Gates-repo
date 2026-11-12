@@ -81,7 +81,7 @@ export function censusLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   if (lowCount === 0) {
     const low = PHASES[lowPhase];
     lines.push(
-      `${gloss.mark(low.hanzi, low.english)} does not appear among the eight at all. The tradition calls this a room the life furnishes for itself, with the phases it walks toward in the decades and the company it keeps.`
+      `${gloss.mark(low.hanzi, low.english)} does not appear among the eight at all. It is a room the life furnishes for itself, with the phases it walks toward in the decades and the company it keeps.`
     );
   } else if (lowCount === 1 && lowPhase !== topPhase) {
     const low = PHASES[lowPhase];
@@ -89,7 +89,7 @@ export function censusLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   }
   const spread = entries.filter(([, n]) => n > 0).length;
   if (spread === 5) {
-    lines.push("All five phases are present. The tradition reads this as a house with every tool hanging somewhere on its walls, and asks which one the hand reaches for first.");
+    lines.push("All five phases are present. It is a house with every tool hanging somewhere on its walls, and the question is which one the hand reaches for first.");
   }
   return lines;
 }
@@ -109,23 +109,23 @@ export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   );
   if (month.phase === dm.phase) {
     lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, the month of ${ph(month.phase)}, the Day Master stands in its own season. The tradition calls this command of ${decree()}. It reads the self as rooted, and as drawing strength from the ground it was planted in.`
+      `Born in ${gloss.mark(month.hanzi, month.english)}, the month of ${ph(month.phase)}, the Day Master stands in its own season. This is called command of ${decree()}. The self is read as rooted, and as drawing strength from the ground it was planted in.`
     );
   } else if (PHASES[month.phase].generates === dm.phase) {
     lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master is fed by its season, because ${ph(month.phase)} generates ${ph(dm.phase)}. The tradition reads this as a self nourished at the root and supported before it has done anything at all.`
+      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master is fed by its season, because ${ph(month.phase)} generates ${ph(dm.phase)}. This is a self nourished at the root and supported before it has done anything at all.`
     );
   } else if (PHASES[dm.phase].generates === month.phase) {
     lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master pours itself into the season, because ${ph(dm.phase)} generates ${ph(month.phase)}. The tradition reads this as a self that spends its strength on its time and has to express itself. Its counsel for such a chart is to rest where it can.`
+      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master pours itself into the season, because ${ph(dm.phase)} generates ${ph(month.phase)}. This is a self that spends its strength on its time and has to express itself. The counsel for such a chart is to rest where it can.`
     );
   } else if (PHASES[month.phase].overcomes === dm.phase) {
     lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master is pressed by its season, because ${ph(month.phase)} overcomes ${ph(dm.phase)}. The tradition calls this a forge. It reads the self as shaped early by a weight it did not choose.`
+      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master is pressed by its season, because ${ph(month.phase)} overcomes ${ph(dm.phase)}. This is called a forge. The self is read as shaped early by a weight it did not choose.`
     );
   } else {
     lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master masters its season, because ${ph(dm.phase)} overcomes ${ph(month.phase)}. The tradition reads this as a self set against its time from the first breath, and as a life spent turning resistance into a living.`
+      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master masters its season, because ${ph(dm.phase)} overcomes ${ph(month.phase)}. This is a self set against its time from the first breath, and as a life spent turning resistance into a living.`
     );
   }
   return lines;
@@ -146,7 +146,7 @@ export function godLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(
   if (dup.length > 0) {
     const first = views.find((v) => v.god && v.god.key === dup[0])!;
     lines.push(
-      `${gloss.mark(first.god!.hanzi, first.god!.english)} appears more than once among the pillars. A god that repeats speaks twice in a life, and the tradition listens for where it will be heard.`
+      `${gloss.mark(first.god!.hanzi, first.god!.english)} appears more than once among the pillars. A god that repeats speaks twice in a life, and the reading listens for where it will be heard.`
     );
   }
   return lines;
@@ -157,7 +157,7 @@ export function domainLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   return pillarViews(p).map((v) => {
     const branchNote = `eneath it is the ${gloss.mark(v.branch.animalHanzi, v.branch.animal)}, ${gloss.mark(v.branch.hanzi, v.branch.english)}, ${v.branch.quality}`;
     if (v.key === "day") {
-      return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} holds the self. ${gloss.mark(v.stem.hanzi, v.stem.english)} stands above, and b${branchNote}. This pillar is also the spouse's palace. The tradition reads the branch under the self as the ground one's closest companion stands on.`;
+      return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} holds the self. ${gloss.mark(v.stem.hanzi, v.stem.english)} stands above, and b${branchNote}. This pillar is also the spouse's palace. The branch under the self is read as the ground one's closest companion stands on.`;
     }
     return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} carries ${gloss.mark(v.stem.hanzi, v.stem.english)} above, ${v.stem.quality}. B${branchNote}. Its ground is ${v.domain}.`;
   });
