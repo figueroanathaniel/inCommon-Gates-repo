@@ -6,7 +6,7 @@ import { Shell, Seal, JadeButton, GhostButton } from "@/components/academy/chrom
 import { SignWord } from "@/components/academy/sign";
 import { api } from "@/providers/data";
 import { useAuth } from "@/hooks/useAuth";
-import { setLang, useT, useZh } from "@/lib/lang";
+import { setLang, useT, useZh, ZH_OPEN, ZH_SOON } from "@/lib/lang";
 import { World, webglOk, type LegSpec } from "@/game/world";
 import { Sound } from "@/game/sound";
 import { CHAPTERS, buildHours, closingHours } from "@/game/hours";
@@ -582,7 +582,11 @@ function Play({ pick, chapter, onChapter, onLeave, onLost }: { pick: Pick; chapt
             <h2 className={(zh ? "font-han font-black tracking-[0.16em]" : "font-gloss font-semibold tracking-[0.06em]") + " text-[24px]"}>{t("Eight Characters Academy", "八字書院")}</h2>
             <div className="mt-6 grid gap-3">
               <button type="button" autoFocus className={btn} style={{ background: "#2fff8f", color: "#141418" }} onClick={() => setMenu(false)}>{t("Back to the road", "回到路上")}</button>
-              <button type="button" className={btn + (zh ? " font-gloss" : " font-han")} style={chip} lang={zh ? "en" : "zh-Hant"} onClick={() => setLang(zh ? "en" : "zh")}>{zh ? "English" : "中文"}</button>
+              {ZH_OPEN ? (
+                <button type="button" className={btn + (zh ? " font-gloss" : " font-han")} style={chip} lang={zh ? "en" : "zh-Hant"} onClick={() => setLang(zh ? "en" : "zh")}>{zh ? "English" : "中文"}</button>
+              ) : (
+                <button type="button" className={btn + " font-han cursor-default"} style={chip} aria-disabled="true" aria-label="Chinese, coming soon" data-lang-soon><span lang="zh-Hant">中文 · {ZH_SOON}</span></button>
+              )}
               <button type="button" className={btn} style={{ ...chip, borderColor: soundOn ? GOLD : "rgba(244,236,216,.28)" }} aria-pressed={soundOn} onClick={toggleSound}>{t("Sound", "聲音")}</button>
               <a href={HELP} className={btn} style={{ background: "var(--safety)", color: "#141418", fontWeight: 700 }}>{t("Get Help", "尋求協助")}</a>
               <button type="button" className={btn} style={chip} onClick={onLeave}>{t("Leave the road", "離開這條路")}</button>

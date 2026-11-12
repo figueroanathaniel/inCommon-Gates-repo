@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Shell, Seal, Rule } from "@/components/academy/chrome";
 import { STEMS, BRANCHES, PHASES, PILLAR_LABELS, TEN_GODS } from "@contracts/bazi";
 import { useT, useZh, YINYANG_ZH } from "@/lib/lang";
+import { BRANCH_LINE, GOD_LINE, STEM_LINE } from "@/content/sign-lines";
 
 /**
  * The Glossary: the vocabulary a reading uses, given as the tradition gives
@@ -134,7 +135,7 @@ export default function Glossary() {
       <Section hanzi="天干" english="The Ten Stems" note="Heaven's breath, standing above." noteZh="天之氣，立於上。" />
       {STEMS.map((s) => (
         <Entry key={s.hanzi} hanzi={s.hanzi} pinyin={s.pinyin} english={`${s.english}, ${cap(s.yinyang)} ${PHASES[s.phase].english}`}>
-          {zh ? `${YINYANG_ZH[s.yinyang]}${PHASES[s.phase].hanzi}。${s.qualityZh}。` : `${cap(s.quality)}.`}
+          {zh ? `${YINYANG_ZH[s.yinyang]}${PHASES[s.phase].hanzi}。${s.qualityZh}。` : `${cap(s.quality)}. ${STEM_LINE[s.hanzi]}`}
         </Entry>
       ))}
 
@@ -143,14 +144,14 @@ export default function Glossary() {
         <Entry key={b.hanzi} hanzi={b.hanzi} pinyin={b.pinyin} english={`${b.english}, the ${b.animal}`}>
           {zh
             ? `屬${b.animalHanzi}。${b.qualityZh}。藏干：${b.hiddenStems.map((x) => STEMS[x].hanzi).join("、")}。`
-            : `${cap(b.quality)}. Its hidden stems: ${b.hiddenStems.map((x) => STEMS[x].english).join(", ")}.`}
+            : `${cap(b.quality)}. Its hidden stems: ${b.hiddenStems.map((x) => STEMS[x].english).join(", ")}. ${BRANCH_LINE[b.hanzi]}`}
         </Entry>
       ))}
 
       <Section hanzi="十神" english="The Ten Gods" note="Relations around the Day Master." noteZh="日主周圍之關係。" />
       {Object.entries(TEN_GODS).map(([godKey, g]) => (
         <Entry key={godKey} hanzi={g.hanzi} pinyin={g.pinyin} english={g.english}>
-          {zh ? `${g.readingZh}。` : `${cap(g.reading)}.`}
+          {zh ? `${g.readingZh}。` : `${cap(g.reading)}. ${GOD_LINE[godKey]}`}
         </Entry>
       ))}
 
