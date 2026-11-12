@@ -1,5 +1,5 @@
 import type { Phase } from "@contracts/bazi";
-import type { EnvKind, FigureKind, Tone } from "./world";
+import type { EnvKind, GodKind, Tone } from "./world";
 
 /*
   Every word spoken on the walk, in English and in 中文. A line may hold
@@ -10,8 +10,9 @@ import type { EnvKind, FigureKind, Tone } from "./world";
   figures dramatise the ten gods' one line readings, and no line says what
   will happen to anybody.
 
-  The whole script is a draft for the owner to approve. The 中文 has not been
-  read by a reader of Chinese.
+  The owner approved chapter I (the road, the ten figures' names and its 中文)
+  on 12 November 2026. Chapter II's words live in hours.ts and are a draft.
+  The 中文 has not been read by a reader of Chinese.
 */
 
 export interface L { en: string; zh: string }
@@ -81,7 +82,7 @@ export const AGAIN: L = { en: "We meet again. A sign that repeats speaks twice. 
 export const INTIMACY: L = { en: "This is the ground a partner is read from. Intimacy lives here, being known at close range, which is both the tenderest thing and the most exposed.", zh: "此地是讀伴侶之處。親密住在這裡，在近處被人看清，既最柔軟，也最無遮。" };
 export const ONWARD: L = { en: "The moon gate is open. Walk on when the heart is ready.", zh: "月門已開。心定了，便往前走。" };
 
-export const GODS: Record<Exclude<FigureKind, "keeper">, GodScript> = {
+export const GODS: Record<GodKind, GodScript> = {
   companion: {
     name: { en: "The Friend", zh: "友人" },
     hard: [

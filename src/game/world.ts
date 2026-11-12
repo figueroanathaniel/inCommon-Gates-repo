@@ -11,9 +11,10 @@ import type { Phase } from "@contracts/bazi";
 
 export type EnvKind = "garden" | Phase;
 export type Tone = "dawn" | "day" | "dusk" | "night";
-export type FigureKind =
-  | "keeper" | "companion" | "robwealth" | "eatinggod" | "hurtingofficer" | "indirectwealth"
+export type GodKind =
+  | "companion" | "robwealth" | "eatinggod" | "hurtingofficer" | "indirectwealth"
   | "directwealth" | "sevenkillings" | "directofficer" | "indirectresource" | "directresource";
+export type FigureKind = "keeper" | "animal" | GodKind;
 
 export interface LegSpec {
   env: EnvKind;
@@ -21,12 +22,18 @@ export interface LegSpec {
   figure: FigureKind;
   /** The phase the figure wears. The Keeper wears none. */
   phase?: Phase;
+  /** Which of the twelve animals keeps this place, 0 for 子 to 11 for 亥. */
+  animal?: number;
+  /** The hour on the clock, 0 to 24, which places the sun, the moon and the stars. */
+  hour?: number;
 }
 
 export interface WorldEvents {
   onNear: () => void;
   onGate: () => void;
   onLost: () => void;
+  /** A footfall, for the sound. */
+  onStep?: () => void;
 }
 
 const PHASE_HEX: Record<Phase, number> = {
@@ -148,6 +155,7 @@ function makeFigure(kind: FigureKind, phase: Phase): THREE.Group {
   const head = inked(mesh(new THREE.SphereGeometry(0.44, 20, 16), toon(SKIN), 0, 1.36, 0), 1.05);
   const eyeM = new THREE.MeshBasicMaterial({ color: 0x1b1622 });
   const eyes: THREE.Mesh[] = [];
+  const hands: THREE.Mesh[] = [];
   for (const sx of [-1, 1]) {
     const e = mesh(new THREE.SphereGeometry(0.062, 10, 8), eyeM, sx * 0.16, 1.38, 0.39);
     e.scale.set(1, 1.45, 0.5);
@@ -156,6 +164,8 @@ function makeFigure(kind: FigureKind, phase: Phase): THREE.Group {
     cheek.rotation.y = sx * 0.6;
     const hand = mesh(new THREE.SphereGeometry(0.1, 10, 8), toon(SKIN), sx * 0.42, 0.62, 0.12);
     eyes.push(e);
+    hand.userData.y = hand.position.y;
+    hands.push(hand);
     body.add(e, hi, cheek, hand);
   }
   body.add(torso, sash, head);
@@ -241,7 +251,220 @@ function makeFigure(kind: FigureKind, phase: Phase): THREE.Group {
     default: hairCap();
   }
   g.add(body, blob(0.55));
-  g.userData = { body, eyes, baseY: 0 };
+  g.userData = { body, eyes, hands, ears: [], tail: null, eyeY: 1.3, baseY: 0 };
+  return g;
+}
+
+/*
+  The twelve who keep the hours. Each is our own small creature built from
+  spheres, cones and rings, wearing a collar in the phase of its branch.
+*/
+const FUR: [number, number][] = [
+  [0x9aa0ad, 0xe6e2dc], [0x8a5a3c, 0xe9d7b8], [0xf08a2c, 0xfff3e0], [0xf3ede4, 0xffffff],
+  [0x2fa39a, 0xf2e2a0], [0x5aa845, 0xe8e6a0], [0x9c5a2e, 0xd9b48a], [0xeee6d2, 0xffffff],
+  [0x8a5a34, 0xe8c9a0], [0xfdfbf5, 0xffffff], [0xd9a566, 0xf6e6c8], [0xf7b6bd, 0xfcd9dc],
+];
+
+function makeAnimal(i: number, phase: Phase): THREE.Group {
+  const g = new THREE.Group();
+  const body = new THREE.Group();
+  const [fur, belly] = FUR[((i % 12) + 12) % 12];
+  const furM = toon(fur), bellyM = toon(belly), darkM = toon(0x2a2230), pinkM = toon(0xf59aa8);
+  const add = <T extends THREE.Object3D>(m: T) => { body.add(m); return m; };
+  const ears: THREE.Object3D[] = [];
+  const hands: THREE.Mesh[] = [];
+  let tail: THREE.Object3D | null = null;
+  const snake = i === 5;
+  const HY = snake ? 1.12 : 1.2;
+  const sph = (r: number, m: THREE.Material, x: number, y: number, z: number, sx = 1, sy = 1, sz = 1) => {
+    const o = mesh(new THREE.SphereGeometry(r, 14, 10), m, x, y, z);
+    o.scale.set(sx, sy, sz);
+    return o;
+  };
+  const cone = (r: number, h: number, m: THREE.Material, x: number, y: number, z: number) => mesh(new THREE.ConeGeometry(r, h, 10), m, x, y, z);
+  const ear = (o: THREE.Object3D, rz = 0) => { o.rotation.z = rz; o.userData.rz = rz; ears.push(o); return add(o); };
+
+  if (snake) {
+    [[0.5, 0.14], [0.4, 0.38], [0.3, 0.6]].forEach(([r, y]) => {
+      const c = inked(mesh(new THREE.TorusGeometry(r, 0.14, 10, 28), furM, 0, y, 0), 1.03);
+      c.rotation.x = Math.PI / 2;
+      add(c);
+    });
+    add(mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.5, 12), furM, 0, 0.82, 0));
+  } else {
+    add(inked(sph(0.46, furM, 0, 0.5, 0, 1, 0.98, 0.9), 1.06));
+    add(sph(0.33, bellyM, 0, 0.46, 0.2, 1, 1.05, 0.7));
+    for (const sx of [-1, 1]) {
+      add(sph(0.15, furM, sx * 0.22, 0.1, 0.12, 1, 0.7, 1.3));
+      const hand = sph(0.11, furM, sx * 0.44, 0.6, 0.14);
+      hands.push(hand);
+      add(hand);
+    }
+  }
+  add(inked(sph(snake ? 0.34 : 0.42, furM, 0, HY, 0, 1, snake ? 0.82 : 0.95, 1), 1.05));
+  const eyeM = new THREE.MeshBasicMaterial({ color: 0x1b1622 });
+  const eyes: THREE.Mesh[] = [];
+  const ez = snake ? 0.29 : 0.37, ex = snake ? 0.14 : 0.17;
+  for (const sx of [-1, 1]) {
+    const e = mesh(new THREE.SphereGeometry(0.06, 10, 8), eyeM, sx * ex, HY + 0.06, ez);
+    e.scale.set(1, 1.45, 0.5);
+    eyes.push(e);
+    add(e);
+    add(mesh(new THREE.SphereGeometry(0.02, 6, 6), new THREE.MeshBasicMaterial({ color: 0xffffff }), sx * ex + 0.02, HY + 0.1, ez + 0.035));
+    const cheek = mesh(new THREE.CircleGeometry(0.06, 12), new THREE.MeshBasicMaterial({ color: 0xff9aa2, transparent: true, opacity: 0.5 }), sx * (ex + 0.11), HY - 0.07, ez - 0.04);
+    cheek.rotation.y = sx * 0.6;
+    add(cheek);
+  }
+  // The collar of the branch's phase, and its bell.
+  const collar = mesh(new THREE.TorusGeometry(snake ? 0.2 : 0.3, 0.045, 8, 22), toon(PHASE_HEX[phase]), 0, snake ? 0.9 : 0.88, 0);
+  collar.rotation.x = Math.PI / 2;
+  add(collar);
+  add(sph(0.06, toon(0xf2c94c), 0, snake ? 0.86 : 0.82, snake ? 0.2 : 0.3));
+
+  const arc = (r: number, tube: number, m: THREE.Material, len = Math.PI) => new THREE.Mesh(new THREE.TorusGeometry(r, tube, 6, 16, len), m);
+  switch (i) {
+    case 0: { // Rat
+      for (const sx of [-1, 1]) {
+        const e = sph(0.2, furM, sx * 0.34, HY + 0.34, -0.02, 1, 1, 0.3);
+        e.add(sph(0.13, pinkM, 0, 0, 0.06, 1, 1, 0.3));
+        ear(e);
+      }
+      add(cone(0.1, 0.2, bellyM, 0, HY - 0.06, 0.44).rotateX(Math.PI / 2));
+      add(sph(0.04, pinkM, 0, HY - 0.06, 0.55));
+      add(mesh(new THREE.BoxGeometry(0.07, 0.07, 0.02), new THREE.MeshBasicMaterial({ color: 0xffffff }), 0, HY - 0.17, 0.42));
+      tail = add(arc(0.34, 0.025, pinkM)); tail.position.set(0, 0.2, -0.5); tail.rotation.set(0.4, Math.PI / 2, 0);
+      break;
+    }
+    case 1: { // Ox
+      for (const sx of [-1, 1]) {
+        add(cone(0.08, 0.34, toon(0xf3ead2), sx * 0.34, HY + 0.42, 0).rotateZ(-sx * 0.7));
+        ear(sph(0.12, furM, sx * 0.46, HY + 0.12, 0, 1.3, 0.7, 0.5), sx * 0.3);
+        add(sph(0.025, darkM, sx * 0.08, HY - 0.1, 0.52));
+      }
+      add(sph(0.2, bellyM, 0, HY - 0.12, 0.33, 1.25, 0.8, 0.8));
+      const ring = mesh(new THREE.TorusGeometry(0.07, 0.014, 6, 16), toon(0xf2c94c), 0, HY - 0.2, 0.5); add(ring);
+      tail = add(cone(0.05, 0.4, furM, 0, 0.42, -0.46)); tail.rotation.x = -2.4;
+      break;
+    }
+    case 2: { // Tiger
+      for (const sx of [-1, 1]) {
+        const e = sph(0.14, furM, sx * 0.3, HY + 0.36, 0, 1, 1, 0.45);
+        e.add(sph(0.08, darkM, 0, 0, -0.04, 1, 1, 0.4));
+        ear(e);
+        add(mesh(new THREE.BoxGeometry(0.16, 0.035, 0.03), darkM, sx * 0.3, HY - 0.02, 0.3).rotateZ(sx * 0.3));
+      }
+      [-0.1, 0, 0.1].forEach((x) => add(mesh(new THREE.BoxGeometry(0.035, 0.14, 0.03), darkM, x, HY + 0.3, 0.3)));
+      add(sph(0.17, bellyM, 0, HY - 0.12, 0.31, 1.2, 0.8, 0.7));
+      add(sph(0.035, pinkM, 0, HY - 0.08, 0.44));
+      for (const y of [0.4, 0.62]) { const st = arc(0.44, 0.03, darkM); st.position.set(0, y, 0); st.rotation.set(Math.PI / 2, 0, Math.PI); add(st); }
+      tail = add(arc(0.3, 0.05, furM)); tail.position.set(0, 0.3, -0.48); tail.rotation.set(0.3, Math.PI / 2, 0);
+      break;
+    }
+    case 3: { // Rabbit
+      for (const sx of [-1, 1]) {
+        const e = sph(0.1, furM, sx * 0.16, HY + 0.62, -0.04, 1, 3.2, 0.5);
+        e.add(sph(0.06, pinkM, 0, 0, 0.05, 1, 1, 0.4));
+        ear(e, -sx * 0.14);
+      }
+      add(sph(0.035, pinkM, 0, HY - 0.07, 0.41));
+      tail = add(sph(0.14, bellyM, 0, 0.36, -0.44));
+      break;
+    }
+    case 4: { // Dragon
+      const gold = toon(0xf2c94c);
+      for (const sx of [-1, 1]) {
+        const a = mesh(new THREE.CylinderGeometry(0.03, 0.04, 0.42, 6), gold, sx * 0.2, HY + 0.52, -0.05);
+        a.add(mesh(new THREE.CylinderGeometry(0.02, 0.03, 0.2, 6), gold, sx * 0.08, 0.06, 0).rotateZ(-sx * 0.9));
+        ear(a, -sx * 0.3);
+        const w = mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.5, 5), gold, sx * 0.3, HY - 0.1, 0.5);
+        w.rotation.set(0.3, 0, sx * 1.1); add(w);
+        add(sph(0.025, darkM, sx * 0.07, HY - 0.04, 0.66));
+      }
+      add(sph(0.2, furM, 0, HY - 0.1, 0.42, 0.95, 0.75, 1.4));
+      add(sph(0.14, bellyM, 0, HY - 0.17, 0.42, 0.9, 0.5, 1.4));
+      [0.95, 0.7, 0.45].forEach((y, k) => add(cone(0.07, 0.18, gold, 0, y + 0.02, -0.34 - k * 0.05).rotateX(-0.6)));
+      add(cone(0.07, 0.18, gold, 0, HY + 0.36, -0.2).rotateX(-0.4));
+      tail = add(cone(0.12, 0.6, furM, 0, 0.26, -0.6)); tail.rotation.x = -1.9;
+      break;
+    }
+    case 5: { // Snake
+      const t1 = mesh(new THREE.BoxGeometry(0.03, 0.012, 0.2), toon(0xd8343c), 0, HY - 0.1, 0.4); add(t1);
+      for (const sx of [-1, 1]) add(mesh(new THREE.BoxGeometry(0.02, 0.012, 0.08), toon(0xd8343c), sx * 0.025, HY - 0.1, 0.52).rotateY(sx * 0.5));
+      [[0, 0.2], [-0.14, 0.12], [0.14, 0.12]].forEach(([x, y]) => add(sph(0.05, bellyM, x, HY + y, 0.14, 1, 0.6, 1)));
+      tail = add(cone(0.07, 0.4, furM, 0.5, 0.12, -0.3)); tail.rotation.set(-1.4, 0, -0.6);
+      break;
+    }
+    case 6: { // Horse
+      for (const sx of [-1, 1]) {
+        ear(cone(0.08, 0.24, furM, sx * 0.2, HY + 0.44, -0.02), -sx * 0.2);
+        add(sph(0.022, darkM, sx * 0.07, HY - 0.16, 0.66));
+      }
+      add(sph(0.2, bellyM, 0, HY - 0.14, 0.4, 0.9, 0.85, 1.5));
+      [0.36, 0.2, 0.02, -0.16].forEach((y, k) => add(sph(0.13, darkM, 0, HY + y, -0.3 - (k > 1 ? 0.06 : 0))));
+      add(sph(0.1, darkM, 0, HY + 0.4, 0.1));
+      tail = add(cone(0.1, 0.6, darkM, 0, 0.3, -0.52)); tail.rotation.x = Math.PI - 0.5;
+      break;
+    }
+    case 7: { // Goat
+      const horn = toon(0x9a8f7c);
+      for (const sx of [-1, 1]) {
+        const h = arc(0.17, 0.045, horn, Math.PI * 1.1); h.position.set(sx * 0.22, HY + 0.34, -0.14); h.rotation.set(0, sx * (Math.PI / 2 - 0.35), 0.2); add(h);
+        ear(sph(0.12, furM, sx * 0.48, HY + 0.02, 0, 1.4, 0.55, 0.5), sx * 0.5);
+      }
+      add(sph(0.15, bellyM, 0, HY - 0.14, 0.33, 1, 0.8, 0.9));
+      add(sph(0.03, pinkM, 0, HY - 0.1, 0.46));
+      add(cone(0.07, 0.24, bellyM, 0, HY - 0.44, 0.3).rotateX(Math.PI));
+      tail = add(sph(0.09, furM, 0, 0.5, -0.44, 1, 1.4, 1));
+      break;
+    }
+    case 8: { // Monkey
+      for (const sx of [-1, 1]) {
+        const e = sph(0.14, bellyM, sx * 0.44, HY + 0.02, 0, 0.5, 1, 1);
+        ear(e);
+      }
+      add(sph(0.32, bellyM, 0, HY - 0.02, 0.17, 1, 0.92, 0.75));
+      add(sph(0.14, bellyM, 0, HY - 0.16, 0.36, 1.2, 0.7, 0.7));
+      add(sph(0.025, darkM, 0, HY - 0.1, 0.46));
+      tail = add(new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.04, 6, 18, Math.PI * 1.6), furM)); tail.position.set(0, 0.5, -0.56); tail.rotation.y = Math.PI / 2;
+      break;
+    }
+    case 9: { // Rooster
+      const red = toon(0xd8343c);
+      [[-0.1, 0.4, 0.1], [0, 0.46, 0.13], [0.1, 0.4, 0.1]].forEach(([z, y, r]) => add(sph(r, red, 0, HY + y, z + 0.05)));
+      add(cone(0.08, 0.2, toon(0xf2b632), 0, HY - 0.06, 0.48).rotateX(Math.PI / 2));
+      add(sph(0.06, red, 0, HY - 0.22, 0.38, 0.8, 1.3, 0.8));
+      const fan = new THREE.Group();
+      [[-0.4, 0x2f6f7a], [0, 0xd8343c], [0.4, 0x2a2230]].forEach(([rz, c]) => {
+        const f = sph(0.12, toon(c), 0, 0.3, 0, 0.5, 2.6, 1);
+        const h = new THREE.Group(); h.rotation.z = rz as number; h.add(f); fan.add(h);
+      });
+      fan.position.set(0, 0.5, -0.4); fan.rotation.x = -0.7;
+      tail = add(fan);
+      break;
+    }
+    case 10: { // Dog
+      const brown = toon(0x8a5a34);
+      for (const sx of [-1, 1]) ear(sph(0.14, brown, sx * 0.4, HY + 0.08, 0, 0.5, 1.5, 0.9), sx * 0.25);
+      add(sph(0.17, bellyM, 0, HY - 0.13, 0.33, 1.1, 0.8, 1));
+      add(sph(0.05, darkM, 0, HY - 0.07, 0.5));
+      add(sph(0.12, brown, -0.17, HY + 0.08, 0.3, 1, 1.1, 0.5));
+      tail = add(cone(0.06, 0.36, furM, 0, 0.62, -0.46)); tail.rotation.x = -0.6;
+      break;
+    }
+    default: { // Pig
+      const snoutM = toon(0xe98a98);
+      for (const sx of [-1, 1]) {
+        ear(cone(0.13, 0.2, snoutM, sx * 0.26, HY + 0.38, 0.04), -sx * 0.5);
+        add(sph(0.022, darkM, sx * 0.05, HY - 0.1, 0.5));
+      }
+      add(mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.12, 14), snoutM, 0, HY - 0.1, 0.42).rotateX(Math.PI / 2));
+      tail = add(new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.025, 6, 14, Math.PI * 1.7), snoutM)); tail.position.set(0, 0.5, -0.46); tail.rotation.y = Math.PI / 2;
+    }
+  }
+  if (tail) tail.userData.ry = tail.rotation.y;
+  for (const h of hands) h.userData.y = h.position.y;
+  g.add(body, blob(0.6));
+  g.userData = { body, eyes, hands, ears, tail, animal: true, eyeY: HY, baseY: 0 };
   return g;
 }
 
@@ -714,6 +937,18 @@ export class World {
   private yaw = 0;
   private pitch = 0;
   private bob = 0;
+  private stride = 0;
+  private moving = 0;
+  private lean = 0;
+  private baseFov = 62;
+  private heaven = new THREE.Group();
+  private sunDisc: THREE.Sprite;
+  private moon: THREE.Sprite;
+  private stars: THREE.Points;
+  private clouds = new THREE.Group();
+  private birds = new THREE.Group();
+  private night = 0;
+  private nightTo = 0;
   private grow = 1;
   private pal: Palette;
   private palTo: Palette;
@@ -751,6 +986,60 @@ export class World {
     );
     this.sun.position.set(14, 30, 10);
     this.scene.add(this.sky, this.hemi, this.sun, this.camera);
+    // What hangs in the sky: a sun, a moon, stars, cloud and a few birds. They follow the walker, so they never draw near.
+    this.sky.renderOrder = -2;
+    const far = { transparent: true, depthWrite: false, fog: false } as const;
+    this.sunDisc = new THREE.Sprite(new THREE.SpriteMaterial({ map: softDot(), color: 0xfff0c4, blending: THREE.AdditiveBlending, ...far }));
+    this.sunDisc.scale.setScalar(90);
+    this.moon = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: canvasTex(128, 128, (c) => {
+        const gl = c.createRadialGradient(64, 64, 20, 64, 64, 64);
+        gl.addColorStop(0, "rgba(230,236,255,.55)"); gl.addColorStop(1, "rgba(230,236,255,0)");
+        c.fillStyle = gl; c.fillRect(0, 0, 128, 128);
+        c.fillStyle = "#f6f1de"; c.beginPath(); c.arc(64, 64, 30, 0, Math.PI * 2); c.fill();
+        c.fillStyle = "rgba(170,170,190,.45)";
+        for (const [x, y, r] of [[54, 56, 7], [74, 70, 5], [66, 48, 4], [56, 76, 3.5], [78, 54, 3]]) { c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); }
+      }), ...far,
+    }));
+    this.moon.scale.setScalar(46);
+    const SN = 420, sp = new Float32Array(SN * 3), sr = rng(77);
+    for (let i = 0; i < SN; i++) {
+      const a = sr() * Math.PI * 2, y = 0.06 + sr() * 0.94, r = Math.sqrt(1 - y * y);
+      sp[i * 3] = Math.cos(a) * r * 280; sp[i * 3 + 1] = y * 280; sp[i * 3 + 2] = Math.sin(a) * r * 280;
+    }
+    const sg = new THREE.BufferGeometry();
+    sg.setAttribute("position", new THREE.BufferAttribute(sp, 3));
+    this.stars = new THREE.Points(sg, new THREE.PointsMaterial({ map: softDot(), size: 3.2, sizeAttenuation: false, color: 0xffffff, opacity: 0, ...far }));
+    this.stars.frustumCulled = false;
+    const cloudTex = canvasTex(256, 128, (c) => {
+      for (const [x, y, r] of [[70, 78, 40], [120, 62, 50], [170, 76, 42], [205, 86, 28], [45, 90, 24], [128, 92, 46]]) {
+        const gr = c.createRadialGradient(x, y, 0, x, y, r);
+        gr.addColorStop(0, "rgba(255,255,255,.95)"); gr.addColorStop(0.6, "rgba(255,255,255,.6)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+        c.fillStyle = gr; c.fillRect(0, 0, 256, 128);
+      }
+    });
+    const cr = rng(5);
+    for (let i = 0; i < 9; i++) {
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: cloudTex, opacity: 0.8, ...far }));
+      const a = (i / 9) * Math.PI * 2 + cr() * 0.5, d = 170 + cr() * 50, w = 70 + cr() * 60;
+      s.position.set(Math.cos(a) * d, 46 + cr() * 46, Math.sin(a) * d);
+      s.scale.set(w, w * 0.42, 1);
+      this.clouds.add(s);
+    }
+    const wingM = new THREE.MeshBasicMaterial({ color: 0x2a2230, side: THREE.DoubleSide, fog: false });
+    const wingG = new THREE.PlaneGeometry(0.9, 0.26);
+    wingG.translate(0.45, 0, 0);
+    for (let i = 0; i < 6; i++) {
+      const b = new THREE.Group();
+      const l = new THREE.Mesh(wingG, wingM), r = new THREE.Mesh(wingG, wingM);
+      l.rotation.x = r.rotation.x = -Math.PI / 2; r.scale.x = -1;
+      const lw = new THREE.Group(), rw = new THREE.Group();
+      lw.add(l); rw.add(r); b.add(lw, rw);
+      b.userData = { lw, rw, a: cr() * 6.28, r: 38 + cr() * 30, y: 22 + cr() * 14, v: 0.12 + cr() * 0.08 };
+      this.birds.add(b);
+    }
+    this.heaven.add(this.sunDisc, this.moon, this.stars, this.clouds, this.birds);
+    this.scene.add(this.heaven);
     // The moon gate at the end of each road.
     this.gate = new THREE.Group();
     const ringM = glow(0xffe7a8);
@@ -788,7 +1077,8 @@ export class World {
     const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
-    this.camera.fov = w < h ? 74 : 62;
+    this.baseFov = w < h ? 74 : 62;
+    this.camera.fov = this.baseFov - this.lean * 5;
     this.camera.updateProjectionMatrix();
   }
 
@@ -813,7 +1103,20 @@ export class World {
     this.palTo = { ...p, top: tint(p.top), bot: tint(p.bot), fog: tint(p.fog), hemiSky: tint(p.hemiSky), sun: tint(p.sun), sunI: p.sunI * tone.light, hemiI: p.hemiI * (0.55 + tone.light * 0.45) };
     if (how === "cut" || this.reduced) this.pal = { ...this.palTo };
     // The one who waits on this road.
-    this.figure = leg.figure === "keeper" ? makeKeeper() : makeFigure(leg.figure, leg.phase ?? "earth");
+    // The hour hangs the sun or the moon, and wakes the stars.
+    const hour = leg.hour ?? { dawn: 6.5, day: 10.5, dusk: 18, night: 0 }[leg.tone];
+    const a = ((hour - 6) / 12) * Math.PI, up = Math.sin(a), side = Math.cos(a);
+    this.sunDisc.position.set(side * 0.8, up * 0.4, -0.6).normalize().multiplyScalar(250);
+    this.moon.position.set(-side * 0.8, -up * 0.32, -0.6).normalize().multiplyScalar(250);
+    this.sunDisc.visible = up > -0.12;
+    this.moon.visible = up < 0.12;
+    this.sun.position.set((up >= 0 ? side : -side) * 20, 14 + 16 * Math.abs(up), 10);
+    this.nightTo = 1 - Math.max(0, Math.min(1, (up + 0.15) / 0.35));
+    if (how === "cut" || this.reduced) this.night = this.nightTo;
+    this.birds.visible = !this.reduced && up > 0.1;
+    this.figure = leg.figure === "keeper" ? makeKeeper()
+      : leg.figure === "animal" ? makeAnimal(leg.animal ?? 0, leg.phase ?? "earth")
+      : makeFigure(leg.figure, leg.phase ?? "earth");
     this.figure.position.copy(place.figureAt);
     this.scene.add(this.figure);
     this.gate.position.set(0, place.heightAt(0, place.gateZ), place.gateZ);
@@ -876,6 +1179,7 @@ export class World {
 
     // Walking.
     let mx = this.input.x, mz = this.input.z;
+    let walked = false;
     const fig = p.figureAt;
     if (this.auto && !this.locked) {
       // Once met, the walker steps round the one who spoke, then makes for the gate.
@@ -898,8 +1202,12 @@ export class World {
         this.pos.x += (fx * mz + rx * mx) / len * sp * dt;
         this.pos.z += (fz * mz + rz * mx) / len * sp * dt;
         if (!this.reduced) this.bob += dt * 9;
+        this.stride += sp * dt;
+        if (this.stride > 1.9) { this.stride = 0; this.ev.onStep?.(); }
+        walked = true;
       }
     }
+    this.moving += ((walked ? 1 : 0) - this.moving) * Math.min(1, dt * 6);
     // The road keeps the walker.
     this.pos.x = Math.max(-p.halfWidth, Math.min(p.halfWidth, this.pos.x));
     const far = this.gateOpen ? p.gateZ - 2.5 : this.met ? p.gateZ + 2 : fig.z + 2.2;
@@ -915,15 +1223,44 @@ export class World {
       const want = Math.atan2(-(fig.x - this.pos.x), -(fig.z - this.pos.z));
       let d = want - this.yaw; d = Math.atan2(Math.sin(d), Math.cos(d));
       this.yaw += d * Math.min(1, dt * 4);
-      const eyeY = (this.figure.userData.keeper ? 1.9 : 1.3) + fig.y;
+      const eyeY = (this.figure.userData.keeper ? 1.9 : (this.figure.userData.eyeY as number)) + fig.y;
       const wantP = Math.atan2(eyeY - (p.heightAt(this.pos.x, this.pos.z) + 1.5), dist);
       this.pitch += (wantP - this.pitch) * Math.min(1, dt * 4);
     }
     const gy = p.heightAt(this.pos.x, this.pos.z);
     this.pos.y += (gy - this.pos.y) * Math.min(1, dt * 12);
-    this.camera.position.set(this.pos.x, this.pos.y + 1.5 + Math.sin(this.bob) * 0.035, this.pos.z);
-    this.camera.rotation.set(this.pitch, this.yaw, 0, "YXZ");
+    // The walker breathes, sways a little in the stride, and leans in to listen.
+    const live = this.reduced ? 0 : 1;
+    const breath = Math.sin(this.t * 1.3) * 0.012 * live;
+    this.camera.position.set(this.pos.x, this.pos.y + 1.5 + Math.sin(this.bob) * 0.04 * this.moving + breath, this.pos.z);
+    this.camera.rotation.set(this.pitch, this.yaw, Math.sin(this.bob * 0.5) * 0.007 * this.moving * live, "YXZ");
+    const leanTo = this.talking && live ? 1 : 0;
+    if (Math.abs(leanTo - this.lean) > 0.002) {
+      this.lean += (leanTo - this.lean) * Math.min(1, dt * 2.4);
+      this.camera.fov = this.baseFov - this.lean * 5;
+      this.camera.updateProjectionMatrix();
+    }
     this.sky.position.copy(this.camera.position);
+    this.heaven.position.copy(this.camera.position);
+    this.night += (this.nightTo - this.night) * Math.min(1, dt * 1.2);
+    (this.stars.material as THREE.PointsMaterial).opacity = this.night * (live ? 0.82 + Math.sin(this.t * 2.1) * 0.08 : 0.85);
+    const cloudCol = new THREE.Color(this.pal.top).lerp(new THREE.Color(0xffffff), 0.75 - this.night * 0.45);
+    for (const c of this.clouds.children) {
+      const m = (c as THREE.Sprite).material;
+      m.color.copy(cloudCol); m.opacity = 0.8 - this.night * 0.5;
+    }
+    if (live) {
+      this.clouds.rotation.y = this.t * 0.004;
+      this.stars.rotation.y = this.t * 0.002;
+      for (const b of this.birds.children) {
+        const u = b.userData as { lw: THREE.Group; rw: THREE.Group; a: number; r: number; y: number; v: number };
+        const an = u.a + this.t * u.v;
+        b.position.set(Math.cos(an) * u.r, u.y + Math.sin(this.t * 0.5 + u.a) * 1.5, Math.sin(an) * u.r - 20);
+        b.rotation.y = -an;
+        const flap = Math.sin(this.t * 7 + u.a * 3) * 0.6;
+        u.lw.rotation.z = flap; u.rw.rotation.z = -flap;
+      }
+    }
 
     // The figure breathes, and turns to the walker.
     if (this.figure) {
@@ -942,6 +1279,13 @@ export class World {
         body.rotation.y += d * Math.min(1, dt * 3);
         const blink = Math.sin(this.t * 0.9 + 1) > 0.985 ? 0.15 : 1.45;
         for (const e of this.figure.userData.eyes as THREE.Mesh[]) e.scale.y = blink;
+        if (!this.reduced) {
+          // Hands that talk, ears that listen, a tail that cannot keep still.
+          const ud = this.figure.userData as { hands: THREE.Mesh[]; ears: THREE.Object3D[]; tail: THREE.Object3D | null };
+          ud.hands.forEach((h, n) => { h.position.y = (h.userData.y as number) + (this.talking ? Math.max(0, Math.sin(this.t * 4.2 + n * 2.2)) * 0.14 : Math.sin(this.t * 2.2 + n) * 0.012); });
+          ud.ears.forEach((e, n) => { e.rotation.z = (e.userData.rz as number) + Math.sin(this.t * 2.6 + n * 1.7) * (this.talking ? 0.1 : 0.05); });
+          if (ud.tail) ud.tail.rotation.y = (ud.tail.userData.ry as number) + Math.sin(this.t * 2.8) * 0.3;
+        }
       }
     }
     // The gate wakes when the meeting is done.
