@@ -1,5 +1,5 @@
 import { BRANCHES, PHASES, PILLAR_LABELS, STEMS, tenGodOf, type FourPillars, type Phase } from "@contracts/bazi";
-import type { FigureKind, LegSpec, Tone } from "./world";
+import type { GodKind, LegSpec, Tone } from "./world";
 import {
   AGAIN, CLOSE_FIRST, CLOSE_LAST, CLOSE_WAY, FRAME, GODS, INTIMACY, KEEPER, KEEPER_INVITE, KEEPER_OPEN, OPENING, READ_AS,
   type Choice, type L, type Tag,
@@ -23,9 +23,16 @@ export type Part =
 export interface Vars {
   branch: Part; phase: L; quality: L;
   stem?: Part; god?: Part; reading?: L; pillar?: L; domain?: L;
+  /** Chapter II: the branch's two hours, an earlier branch, its pillar, and the name of a meeting. */
+  hours?: L; other?: Part; earlier?: L; tie?: L;
 }
 
-export interface Beat { who: "keeper" | "figure" | "voice"; line: L }
+export interface Beat {
+  who: "keeper" | "figure" | "voice";
+  line: L;
+  /** What this one line fills its tokens from, over the leg's own. */
+  vars?: Partial<Vars>;
+}
 export interface Leg {
   spec: LegSpec;
   name: L;
@@ -37,10 +44,14 @@ export interface Leg {
   exit: "grow" | "gate" | "end";
   /** Said once the next place has grown, before the reader walks. */
   arrive?: L;
+  /** A second line on the place's title card, and beside its name. */
+  sub?: L;
+  /** Said on the road as the reader steps into this place through a gate. */
+  enter?: L;
 }
 
-const capWords = (s: string) => s.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-const signOf = (x: { english: string; hanzi: string }): Part => ({ sign: { en: x.english, han: x.hanzi } });
+export const capWords = (s: string) => s.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+export const signOf = (x: { english: string; hanzi: string }): Part => ({ sign: { en: x.english, han: x.hanzi } });
 const TONES: Tone[] = ["day", "dusk", "night", "dawn", "day"];
 
 export function buildStory(p: FourPillars, luckStem: number | null): Leg[] {
@@ -72,7 +83,7 @@ export function buildStory(p: FourPillars, luckStem: number | null): Leg[] {
   stops.forEach((s, i) => {
     const stem = STEMS[s.stem];
     const god = tenGodOf(dm, stem);
-    const kind = god.key as Exclude<FigureKind, "keeper">;
+    const kind = god.key as GodKind;
     const sc = GODS[kind];
     const pl = s.pillar === undefined ? null : PILLAR_LABELS[s.pillar];
     const vars: Vars = {
