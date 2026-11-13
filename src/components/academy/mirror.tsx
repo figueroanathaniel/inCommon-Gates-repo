@@ -16,6 +16,7 @@ import { Rule } from "./chrome";
 import { useZh } from "@/lib/lang";
 import { useState } from "react";
 import { closingAsk, takeAskTurn } from "@/content/sign-lines";
+import { READ_FROM, RESTS, say } from "@/content/reading-turns";
 
 /**
  * The Mirror's whole reading of a chart, spoken in the order of the scrolls:
@@ -29,16 +30,20 @@ export function MirrorReading({
   compact = false,
   incoming = [],
   meetings = false,
+  turn,
 }: {
   pillars: FourPillars;
   label: string;
   compact?: boolean;
   incoming?: Sign[];
   meetings?: boolean;
+  /** The reading's turn, when the room has already taken one. */
+  turn?: number;
 }) {
   const zh = useZh();
-  // A new closing question each time a reading is opened, steady while it stays open.
-  const [askTurn] = useState(takeAskTurn);
+  // Each time a reading is opened it turns once: its phrases and its closing
+  // question are said a new way, and stay steady while it stays open.
+  const [askTurn] = useState(() => turn ?? takeAskTurn());
   const dm = dayMasterOf(pillars);
   const sections: { key: string; title: string; lines: string[] }[] = zh
     ? [
@@ -48,10 +53,10 @@ export function MirrorReading({
         { key: "court", title: "朝 · 十神列朝", lines: godLinesZh(pillars) },
       ]
     : [
-        { key: "self", title: "The Self is named", lines: seasonLines(pillars) },
-        { key: "census", title: "The census is taken", lines: censusLines(pillars) },
-        { key: "grounds", title: "The pillars are read in their grounds", lines: domainLines(pillars) },
-        { key: "court", title: "The court is assembled", lines: godLines(pillars) },
+        { key: "self", title: "The Self is named", lines: seasonLines(pillars, undefined, askTurn) },
+        { key: "census", title: "The census is taken", lines: censusLines(pillars, undefined, askTurn) },
+        { key: "grounds", title: "The pillars are read in their grounds", lines: domainLines(pillars, undefined, askTurn) },
+        { key: "court", title: "The court is assembled", lines: godLines(pillars, undefined, askTurn) },
       ];
   const font = zh ? "font-han" : "font-gloss";
   return (
@@ -67,7 +72,7 @@ export function MirrorReading({
         caption={zh ? `${label}。點觸任一柱，以聞其所主。` : `${label}. Touch any pillar to hear its ground.`}
       />
       <p className={font + " mx-auto mt-8 max-w-2xl text-center text-[15px] italic leading-relaxed"} style={{ color: "rgba(var(--txr),.65)" }}>
-        {zh ? `日主為${dm.hanzi}。以下所言，皆就此而論。` : `The Day Master is ${dm.english}. Everything after this is said in relation to it.`}
+        {zh ? `日主為${dm.hanzi}。以下所言，皆就此而論。` : say(READ_FROM, { dm: dm.english }, dm.yinyang, askTurn, 1)}
       </p>
       {sections.map((s) => (
         <section key={s.key} className="mx-auto mt-14 max-w-2xl">
@@ -88,7 +93,7 @@ export function MirrorReading({
           <p className={font + " mx-auto mt-8 max-w-2xl text-center text-[15px] leading-relaxed"} style={{ color: "rgba(var(--txr),.7)" }}>
             {zh
               ? "讀盤至此而止，傳統自知其所轄之界。地已名，季已名，朝已名。一生如何用之，屬於那一生。"
-              : "Here the reading rests. The ground is named, the season is named and the court is named. What a life makes of them belongs to the life."}
+              : say(RESTS, {}, dm.yinyang, askTurn, 2)}
           </p>
         </>
       ) : null}

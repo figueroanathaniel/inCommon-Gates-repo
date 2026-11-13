@@ -7,6 +7,7 @@
 import { censusLines, seasonLines, domainLines, godLines, censusLinesZh, seasonLinesZh, domainLinesZh, godLinesZh, pillarViews, dayMasterOf } from "../src/lib/reading";
 import { PHASES, STEMS, BRANCHES, tenGodOf } from "../contracts/bazi";
 import type { FourPillars } from "../contracts/bazi";
+import { TURN_CYCLE, leaves, READ_FROM, RESTS, STONE_INTRO } from "../src/content/reading-turns";
 
 function xorshift(seed: number) {
   let s = seed >>> 0 || 1;
@@ -24,6 +25,8 @@ function inspect(text: string, ctx: string) {
   if (/\. [a-z]/.test(text)) problems.push(`${ctx}: lowercase after full stop: ${text}`);
   if (/\ba [AEIOU]/.test(text)) problems.push(`${ctx}: orphan article: ${text}`);
   if (/\b(1 times|1 pillars? are|2 time\b)/.test(text)) problems.push(`${ctx}: number grammar: ${text}`);
+  if (/[:;]/.test(text)) problems.push(`${ctx}: colon or semicolon: ${text}`);
+  if (/\byou are\b|\brather than\b|\binstead of\b|\bfate\b/i.test(text)) problems.push(`${ctx}: house rule word: ${text}`);
   const machinery = ["calculate", "compute", "algorithm", "parameter", "variable", "function", "output", "input"];
   for (const m of machinery) {
     if (new RegExp(`\\b${m}`, "i").test(text)) problems.push(`${ctx}: machinery word '${m}': ${text}`);
@@ -40,8 +43,11 @@ for (let seed = 1; seed <= 400; seed++) {
     dayStem: Math.floor(rnd() * 10), dayBranch: Math.floor(rnd() * 12),
     hourStem: Math.floor(rnd() * 10), hourBranch: Math.floor(rnd() * 12),
   };
-  for (const fn of [censusLines, seasonLines, domainLines, godLines]) {
-    for (const line of fn(p)) inspect(line, `seed=${seed} ${fn.name}`);
+  // Every turn of the reading, so all 72 leaves of each phrase are read.
+  for (let turn = 0; turn < TURN_CYCLE; turn++) {
+    for (const fn of [censusLines, seasonLines, domainLines, godLines]) {
+      for (const line of fn(p, undefined, turn)) inspect(line, `seed=${seed} turn=${turn} ${fn.name}`);
+    }
   }
   runs++;
 }
@@ -112,6 +118,10 @@ if (dayMasterOf({ yearStem: 0, yearBranch: 0, monthStem: 0, monthBranch: 0, dayS
     if (/undefined|NaN|\u2014|\u2013/.test(zh)) problems.push(`中文 reading defect: ${zh}`);
     runs++;
   }
+}
+
+for (const t of [READ_FROM, RESTS, STONE_INTRO]) {
+  for (const line of leaves(t as Parameters<typeof leaves>[0], { dm: "Jiǎ" })) inspect(line, "frame");
 }
 
 console.log(`swept ${runs} chart sets; ten-god anchors: ${anchors.length}`);

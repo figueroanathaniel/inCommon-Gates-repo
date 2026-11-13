@@ -8,6 +8,7 @@ import {
   type Phase,
 } from "@contracts/bazi";
 import { BRANCH_LINE, GOD_LINE, SEASON_LINE, STEM_LINE, seasonMeeting } from "@/content/sign-lines";
+import { ABSENT, ALL_FIVE, DAY_GROUND, DAY_MASTER, GOD, GOD_TWICE, GROUND, HEAVY, ONCE, SEASON, say } from "@/content/reading-turns";
 
 export interface PillarView {
   key: string;
@@ -53,8 +54,6 @@ export function phaseCensus(p: FourPillars): Record<Phase, number> {
   return census;
 }
 
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
 /**
  * The English reading names every sign by its English name alone. The
  * Chinese reading, below, names it by its character alone. The two are
@@ -67,109 +66,109 @@ export class ReadingGloss {
 }
 
 /** Declarative census lines, heaviest first. Honest: no verdicts, only weight. */
-export function censusLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss()): string[] {
+export function censusLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(), turn = 0): string[] {
   const census = phaseCensus(p);
+  const yy = dayMasterOf(p).yinyang;
   const entries = (Object.entries(census) as [Phase, number][]).sort((a, b) => b[1] - a[1]);
   const lines: string[] = [];
   const [topPhase, topCount] = entries[0];
   const [lowPhase, lowCount] = entries[entries.length - 1];
   const top = PHASES[topPhase];
-  lines.push(
-    `${gloss.mark(top.hanzi, top.english)} is the heaviest phase in this chart. It appears ${topCount} ${
-      topCount === 1 ? "time" : "times"
-    } among the eight characters.`
-  );
+  lines.push(say(HEAVY, { P: gloss.mark(top.hanzi, top.english), n: topCount }, yy, turn));
   if (lowCount === 0) {
     const low = PHASES[lowPhase];
-    lines.push(
-      `${gloss.mark(low.hanzi, low.english)} does not appear among the eight at all. It is a room the life furnishes for itself, with the phases it walks toward in the decades and the company it keeps.`
-    );
+    lines.push(say(ABSENT, { L: gloss.mark(low.hanzi, low.english) }, yy, turn, 1));
   } else if (lowCount === 1 && lowPhase !== topPhase) {
     const low = PHASES[lowPhase];
-    lines.push(`${gloss.mark(low.hanzi, low.english)} appears only once, and the other seven lean on that single note.`);
+    lines.push(say(ONCE, { L: gloss.mark(low.hanzi, low.english) }, yy, turn, 1));
   }
   const spread = entries.filter(([, n]) => n > 0).length;
-  if (spread === 5) {
-    lines.push("All five phases are present. It is a house with every tool hanging somewhere on its walls, and the question is which one the hand reaches for first.");
-  }
+  if (spread === 5) lines.push(say(ALL_FIVE, {}, yy, turn, 2));
   return lines;
+}
+
+/** How the month's phase meets the Day Master's, in the five ways a self meets its season. */
+function seasonKind(dm: Phase, month: Phase): keyof typeof SEASON {
+  if (month === dm) return "same";
+  if (PHASES[month].generates === dm) return "fed";
+  if (PHASES[dm].generates === month) return "pours";
+  if (PHASES[month].overcomes === dm) return "pressed";
+  return "masters";
 }
 
 /**
  * The season of one's strength: the month branch, the month's decree,
  * weighs most in the tradition's judgement of whether the Day Master stands supported.
  */
-export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss()): string[] {
+export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(), turn = 0): string[] {
   const dm = dayMasterOf(p);
   const month = BRANCHES[p.monthBranch];
-  const decree = () => gloss.mark("月令", "the month's decree");
   const ph = (phase: Phase) => gloss.mark(PHASES[phase].hanzi, PHASES[phase].english.toLowerCase());
-  const lines: string[] = [];
-  lines.push(
-    `The Day Master is ${gloss.mark(dm.hanzi, dm.english)}, which is ${dm.yinyang} ${PHASES[dm.phase].english.toLowerCase()}. It is ${dm.quality}. ${STEM_LINE[dm.hanzi]}`
+  const first = say(
+    DAY_MASTER,
+    { dm: gloss.mark(dm.hanzi, dm.english), yy: dm.yinyang, p: PHASES[dm.phase].english.toLowerCase(), q: dm.quality },
+    dm.yinyang,
+    turn,
+    1,
   );
-  if (month.phase === dm.phase) {
-    lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, the month of ${ph(month.phase)}, the Day Master stands in its own season. This is called command of ${decree()}. The self is read as rooted, and as drawing strength from the ground it was planted in.`
-    );
-  } else if (PHASES[month.phase].generates === dm.phase) {
-    lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master is fed by its season, because ${ph(month.phase)} generates ${ph(dm.phase)}. This is a self nourished at the root and supported before it has done anything at all.`
-    );
-  } else if (PHASES[dm.phase].generates === month.phase) {
-    lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master pours itself into the season, because ${ph(dm.phase)} generates ${ph(month.phase)}. This is a self that spends its strength on its time and has to express itself. The counsel for such a chart is to rest where it can.`
-    );
-  } else if (PHASES[month.phase].overcomes === dm.phase) {
-    lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master is pressed by its season, because ${ph(month.phase)} overcomes ${ph(dm.phase)}. This is called a forge. The self is read as shaped early by a weight it did not choose.`
-    );
-  } else {
-    lines.push(
-      `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master masters its season, because ${ph(dm.phase)} overcomes ${ph(month.phase)}. This is a self set against its time from the first breath, and as a life spent turning resistance into a living.`
-    );
-  }
-  lines[1] += ` ${SEASON_LINE[seasonMeeting(dm.phase, month.phase)]}`;
-  return lines;
+  const season = say(
+    SEASON[seasonKind(dm.phase, month.phase)],
+    { m: gloss.mark(month.hanzi, month.english), mph: ph(month.phase), dph: ph(dm.phase), decree: gloss.mark("月令", "the month's decree") },
+    dm.yinyang,
+    turn,
+  );
+  return [`${first} ${STEM_LINE[dm.hanzi]}`, `${season} ${SEASON_LINE[seasonMeeting(dm.phase, month.phase)]}`];
 }
 
 /** The gods that gather around the Day Master, pillar by pillar. */
-export function godLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss()): string[] {
+export function godLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(), turn = 0): string[] {
   const views = pillarViews(p);
   const lines: string[] = [];
   const said = new Set<string>();
+  let k = 0;
   for (const v of views) {
     if (!v.god) continue;
     // A god the chart holds twice has its line said once.
     const own = said.has(v.god.key) ? "" : ` ${GOD_LINE[v.god.key]}`;
     said.add(v.god.key);
-    lines.push(
-      `Above the ${gloss.mark(v.hanzi, v.english.toLowerCase())} sits ${gloss.mark(v.god.hanzi, v.god.english)}, ${v.god.reading}. Its ground is ${v.domain}.${own}`
+    // Each pillar takes its own branch of the tree, and its stem's voice.
+    const line = say(
+      GOD,
+      { pl: gloss.mark(v.hanzi, v.english.toLowerCase()), G: gloss.mark(v.god.hanzi, v.god.english), reading: v.god.reading, domain: v.domain },
+      v.stem.yinyang,
+      turn,
+      k++,
     );
+    lines.push(`${line}${own}`);
   }
   const keys = views.filter((v) => v.god).map((v) => v.god!.key);
   const dup = keys.filter((k, i) => keys.indexOf(k) !== i);
   if (dup.length > 0) {
     const first = views.find((v) => v.god && v.god.key === dup[0])!;
-    lines.push(
-      `${gloss.mark(first.god!.hanzi, first.god!.english)} appears more than once among the pillars. A god that repeats speaks twice in a life, and the reading listens for where it will be heard.`
-    );
+    lines.push(say(GOD_TWICE, { G: gloss.mark(first.god!.hanzi, first.god!.english) }, dayMasterOf(p).yinyang, turn, 1));
   }
   return lines;
 }
 
 /** Pillar-by-pillar reading, each grounded in its traditional domain. */
-export function domainLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss()): string[] {
+export function domainLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(), turn = 0): string[] {
   const said = new Set<string>();
+  let k = 0;
   return pillarViews(p).map((v) => {
     // A branch the chart holds twice has its line said once.
     const own = said.has(v.branch.hanzi) ? "" : ` ${BRANCH_LINE[v.branch.hanzi]}`;
     said.add(v.branch.hanzi);
-    const branchNote = `eneath it is the ${gloss.mark(v.branch.animalHanzi, v.branch.animal)}, ${gloss.mark(v.branch.hanzi, v.branch.english)}, ${v.branch.quality}`;
-    if (v.key === "day") {
-      return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} holds the self. ${gloss.mark(v.stem.hanzi, v.stem.english)} stands above, and b${branchNote}. This pillar is also the spouse's palace. The branch under the self is read as the ground one's closest companion stands on.${own}`;
-    }
-    return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} carries ${gloss.mark(v.stem.hanzi, v.stem.english)} above, ${v.stem.quality}. B${branchNote}. Its ground is ${v.domain}.${own}`;
+    const ctx = {
+      pl: gloss.mark(v.hanzi, v.english.toLowerCase()),
+      S: gloss.mark(v.stem.hanzi, v.stem.english),
+      sq: v.stem.quality,
+      A: gloss.mark(v.branch.animalHanzi, v.branch.animal),
+      B: gloss.mark(v.branch.hanzi, v.branch.english),
+      bq: v.branch.quality,
+      domain: v.domain,
+    };
+    // The day pillar speaks in the Day Master's voice; the others in their own stem's.
+    return `${say(v.key === "day" ? DAY_GROUND : GROUND, ctx, v.stem.yinyang, turn, v.key === "day" ? 0 : k++)}${own}`;
   });
 }
 
@@ -254,4 +253,5 @@ export function phaseLabel(phase: Phase) {
   return PHASES[phase].english;
 }
 
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 export { cap };
