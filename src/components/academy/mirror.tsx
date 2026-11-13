@@ -14,7 +14,8 @@ import { PillarChart } from "./pillars";
 import type { Sign } from "@/lib/meet";
 import { Rule } from "./chrome";
 import { useZh } from "@/lib/lang";
-import { closingAsk } from "@/content/sign-lines";
+import { useState } from "react";
+import { closingAsk, takeAskTurn } from "@/content/sign-lines";
 
 /**
  * The Mirror's whole reading of a chart, spoken in the order of the scrolls:
@@ -36,6 +37,8 @@ export function MirrorReading({
   meetings?: boolean;
 }) {
   const zh = useZh();
+  // A new closing question each time a reading is opened, steady while it stays open.
+  const [askTurn] = useState(takeAskTurn);
   const dm = dayMasterOf(pillars);
   const sections: { key: string; title: string; lines: string[] }[] = zh
     ? [
@@ -76,7 +79,7 @@ export function MirrorReading({
       ))}
       {!zh ? (
         <p data-closing-ask className="font-gloss mx-auto mt-14 max-w-2xl text-center text-[17px] italic leading-relaxed text-[rgba(var(--txr),.88)]">
-          {closingAsk(pillars)}
+          {closingAsk(pillars, askTurn)}
         </p>
       ) : null}
       {!compact ? (
