@@ -7,7 +7,7 @@
 import { phaseLines, seasonLines, domainLines, godLines, phaseLinesZh, seasonLinesZh, domainLinesZh, godLinesZh, pillarViews, dayMasterOf } from "../src/lib/reading";
 import { PHASES, STEMS, BRANCHES, tenGodOf } from "../contracts/bazi";
 import type { FourPillars } from "../contracts/bazi";
-import { TURN_CYCLE, leaves, READ_FROM, RESTS, STONE_INTRO } from "../src/content/reading-turns";
+import { TURN_CYCLE, leaves, b1Forms, READ_FROM, RESTS, STONE_INTRO } from "../src/content/reading-turns";
 
 function xorshift(seed: number) {
   let s = seed >>> 0 || 1;
@@ -26,6 +26,7 @@ function inspect(text: string, ctx: string) {
   if (/\ba [AEIOU]/.test(text)) problems.push(`${ctx}: orphan article: ${text}`);
   if (/\b(1 times|1 pillars? are|2 time\b)/.test(text)) problems.push(`${ctx}: number grammar: ${text}`);
   if (/[:;]/.test(text)) problems.push(`${ctx}: colon or semicolon: ${text}`);
+  if (/tradition|tends? to|appear|this chart|old reckoning/i.test(text)) problems.push(`${ctx}: retired phrasing: ${text}`);
   if (/\byou are\b|\brather than\b|\binstead of\b|\bfate\b/i.test(text)) problems.push(`${ctx}: house rule word: ${text}`);
   const machinery = ["calculate", "compute", "algorithm", "parameter", "variable", "function", "output", "input", "census", "architecture", "polarity", "framework", "dynamics", "leverage", "navigate", "landscape", "metric", "configuration"];
   for (const m of machinery) {
@@ -122,6 +123,7 @@ if (dayMasterOf({ yearStem: 0, yearBranch: 0, monthStem: 0, monthBranch: 0, dayS
 
 for (const t of [READ_FROM, RESTS, STONE_INTRO]) {
   for (const line of leaves(t as Parameters<typeof leaves>[0], { dm: "Jiǎ" })) inspect(line, "frame");
+  for (const line of b1Forms(t as Parameters<typeof b1Forms>[0], { dm: "Jiǎ" })) inspect(line, "frame b1");
 }
 
 console.log(`swept ${runs} chart sets; ten-god anchors: ${anchors.length}`);

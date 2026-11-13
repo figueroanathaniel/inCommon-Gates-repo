@@ -9,11 +9,11 @@ const trees: [string, T.Tree<any>, any][] = [
   ["ONCE", T.ONCE, { L: "Fire", k: "fire" }],
   ["ALL_FIVE", T.ALL_FIVE, {}],
   ["DAY_MASTER", T.DAY_MASTER, { dm: "Jiǎ", yy: "yang", p: "wood", q: "the great tree" }],
-  ...(Object.entries(T.SEASON).map(([k, t]) => [`SEASON.${k}`, t, { m: "Yín", mph: "wood", dph: "fire", decree: "the month's decree" }]) as [string, T.Tree<any>, any][]),
-  ["GOD", T.GOD, { pl: "year pillar", G: "Companion", reading: "shoulder to shoulder", domain: "ancestry" }],
+  ...(Object.entries(T.SEASON).map(([k, t]) => [`SEASON.${k}`, t, { m: "Yín", mph: "wood", dph: "fire", decree: "the month's decree", dk: "fire" }]) as [string, T.Tree<any>, any][]),
+  ["GOD", T.GOD, { pl: "year pillar", G: "Companion", reading: "shoulder to shoulder", domain: "ancestry", ph: "wood" }],
   ["GOD_TWICE", T.GOD_TWICE, { G: "Companion" }],
-  ["GROUND", T.GROUND, { pl: "year pillar", S: "Jiǎ", sq: "the great tree", A: "Rat", B: "Zǐ", bq: "the deep hour", domain: "ancestry" }],
-  ["DAY_GROUND", T.DAY_GROUND, { pl: "day pillar", S: "Jiǎ", sq: "the great tree", A: "Rat", B: "Zǐ", bq: "the deep hour", domain: "the self" }],
+  ["GROUND", T.GROUND, { pl: "year pillar", S: "Jiǎ", sq: "the great tree", A: "Rat", B: "Zǐ", bq: "the deep hour", domain: "ancestry", ph: "wood" }],
+  ["DAY_GROUND", T.DAY_GROUND, { pl: "day pillar", S: "Jiǎ", sq: "the great tree", A: "Rat", B: "Zǐ", bq: "the deep hour", domain: "the self", ph: "wood" }],
   ["READ_FROM", T.READ_FROM, { dm: "Jiǎ" }],
   ["RESTS", T.RESTS, {}],
   ["STONE_INTRO", T.STONE_INTRO, {}],
@@ -34,13 +34,39 @@ describe("the Destiny Chart's phrase trees", () => {
       expect(seen.size).toBe(36);
     }
   });
+
+  it.each(trees)("%s says b1 nine different ways", (_n, t, ctx) => {
+    expect(new Set(T.b1Forms(t, ctx)).size).toBe(9);
+  });
+
+  it.each(trees)("%s never says b1 the same way twice in one cycle", (_n, t, ctx) => {
+    const forms = T.b1Forms(t, ctx);
+    for (const salt of [0, 1, 2, 3]) {
+      const used: string[] = [];
+      for (let turn = 0; turn < T.TURN_CYCLE; turn++) {
+        const line = T.say(t, ctx, "yang", turn, salt);
+        const f = forms.find((b) => line.includes(b));
+        if (f) used.push(f);
+      }
+      expect(used).toHaveLength(9);
+      expect(new Set(used).size).toBe(9);
+    }
+  });
+});
+
+describe("the reading's voice", () => {
+  const banned = /tradition|tends? to|appear|this chart|old reckoning|\byou are\b/i;
+  it.each(trees)("%s speaks to you, warmly, with none of the retired phrasing", (_n, t, ctx) => {
+    const all = [...T.leaves(t, ctx), ...T.b1Forms(t, ctx)];
+    for (const line of all) expect(line).not.toMatch(banned);
+  });
 });
 
 const chart: FourPillars = { yearStem: 0, yearBranch: 10, monthStem: 2, monthBranch: 2, dayStem: 0, dayBranch: 10, hourStem: 0, hourBranch: 0 };
 
 describe("the reading turns", () => {
   it("turn 0 opens on the heaviest phase", () => {
-    expect(phaseLines(chart)[0].startsWith("Wood is the heaviest phase in this chart, holding")).toBe(true);
+    expect(phaseLines(chart)[0].startsWith("Wood is the heaviest phase in your chart, holding")).toBe(true);
   });
 
   it("no two pillar lines in one reading share an opening or a close", () => {

@@ -113,7 +113,7 @@ export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   );
   const season = say(
     SEASON[seasonKind(dm.phase, month.phase)],
-    { m: gloss.mark(month.hanzi, month.english), mph: ph(month.phase), dph: ph(dm.phase), decree: gloss.mark("月令", "the month's decree") },
+    { m: gloss.mark(month.hanzi, month.english), mph: ph(month.phase), dph: ph(dm.phase), decree: gloss.mark("月令", "the month's decree"), dk: dm.phase },
     dm.yinyang,
     turn,
   );
@@ -134,7 +134,7 @@ export function godLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(
     // Each pillar takes its own branch of the tree, and its stem's voice.
     const line = say(
       GOD,
-      { pl: gloss.mark(v.hanzi, v.english.toLowerCase()), G: gloss.mark(v.god.hanzi, v.god.english), reading: v.god.reading, domain: v.domain },
+      { pl: gloss.mark(v.hanzi, v.english.toLowerCase()), G: gloss.mark(v.god.hanzi, v.god.english), reading: v.god.reading, domain: v.domain, ph: v.stem.phase },
       v.stem.yinyang,
       turn,
       k++,
@@ -166,6 +166,7 @@ export function domainLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
       B: gloss.mark(v.branch.hanzi, v.branch.english),
       bq: v.branch.quality,
       domain: v.domain,
+      ph: v.stem.phase,
     };
     // The day pillar speaks in the Day Master's voice; the others in their own stem's.
     return `${say(v.key === "day" ? DAY_GROUND : GROUND, ctx, v.stem.yinyang, turn, v.key === "day" ? 0 : k++)}${own}`;
