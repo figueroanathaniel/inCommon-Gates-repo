@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import * as T from "./reading-turns";
-import { censusLines, domainLines, godLines, seasonLines } from "@/lib/reading";
+import { phaseLines, domainLines, godLines, seasonLines } from "@/lib/reading";
 import type { FourPillars } from "@contracts/bazi";
 
 const trees: [string, T.Tree<any>, any][] = [
-  ["HEAVY", T.HEAVY, { P: "Wood", n: 3 }],
-  ["ABSENT", T.ABSENT, { L: "Metal" }],
-  ["ONCE", T.ONCE, { L: "Fire" }],
+  ["HEAVY", T.HEAVY, { P: "Wood", n: 3, k: "wood" }],
+  ["ABSENT", T.ABSENT, { L: "Metal", k: "metal" }],
+  ["ONCE", T.ONCE, { L: "Fire", k: "fire" }],
   ["ALL_FIVE", T.ALL_FIVE, {}],
   ["DAY_MASTER", T.DAY_MASTER, { dm: "Jiǎ", yy: "yang", p: "wood", q: "the great tree" }],
   ...(Object.entries(T.SEASON).map(([k, t]) => [`SEASON.${k}`, t, { m: "Yín", mph: "wood", dph: "fire", decree: "the month's decree" }]) as [string, T.Tree<any>, any][]),
@@ -27,7 +27,7 @@ describe("the Destiny Chart's phrase trees", () => {
     expect(new Set(T.leaves(t, ctx)).size).toBe(72);
   });
 
-  it.each(trees)("%s gives all 36 of one polarity before any repeats", (_n, t, ctx) => {
+  it.each(trees)("%s gives all 36 of one voice before any repeats", (_n, t, ctx) => {
     for (const yy of ["yang", "yin"] as const) {
       const seen = new Set<string>();
       for (let turn = 0; turn < T.TURN_CYCLE; turn++) seen.add(T.say(t, ctx, yy, turn));
@@ -39,8 +39,8 @@ describe("the Destiny Chart's phrase trees", () => {
 const chart: FourPillars = { yearStem: 0, yearBranch: 10, monthStem: 2, monthBranch: 2, dayStem: 0, dayBranch: 10, hourStem: 0, hourBranch: 0 };
 
 describe("the reading turns", () => {
-  it("turn 0 keeps the wording that shipped before", () => {
-    expect(censusLines(chart)[0].startsWith("Wood is the heaviest phase in this chart. It appears")).toBe(true);
+  it("turn 0 opens on the heaviest phase", () => {
+    expect(phaseLines(chart)[0].startsWith("Wood is the heaviest phase in this chart, holding")).toBe(true);
   });
 
   it("no two pillar lines in one reading share an opening or a close", () => {
@@ -55,7 +55,7 @@ describe("the reading turns", () => {
   });
 
   it("each line changes from one opening to the next", () => {
-    for (const fn of [censusLines, seasonLines, domainLines, godLines]) {
+    for (const fn of [phaseLines, seasonLines, domainLines, godLines]) {
       for (let turn = 0; turn < T.TURN_CYCLE; turn++) {
         const now = fn(chart, undefined, turn);
         const next = fn(chart, undefined, turn + 1);

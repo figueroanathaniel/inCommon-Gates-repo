@@ -1,7 +1,7 @@
 import type { FourPillars } from "@contracts/bazi";
 import {
-  censusLines,
-  censusLinesZh,
+  phaseLines,
+  phaseLinesZh,
   dayMasterOf,
   domainLines,
   domainLinesZh,
@@ -20,7 +20,7 @@ import { READ_FROM, RESTS, say } from "@/content/reading-turns";
 
 /**
  * The Mirror's whole reading of a chart, spoken in the order of the scrolls:
- * the self named, the census taken, the pillars read in their grounds, the
+ * the self named, the five phases gathered, the pillars read in their grounds, the
  * court assembled. Used by the Mirror scroll and the Destiny Chart room.
  * Read wholly in English or wholly in traditional Chinese, as the reader chose.
  */
@@ -48,13 +48,13 @@ export function MirrorReading({
   const sections: { key: string; title: string; lines: string[] }[] = zh
     ? [
         { key: "self", title: "主 · 自身之名", lines: seasonLinesZh(pillars) },
-        { key: "census", title: "衡 · 五行之數", lines: censusLinesZh(pillars) },
+        { key: "phases", title: "衡 · 五行之數", lines: phaseLinesZh(pillars) },
         { key: "grounds", title: "宮 · 四柱所主", lines: domainLinesZh(pillars) },
         { key: "court", title: "朝 · 十神列朝", lines: godLinesZh(pillars) },
       ]
     : [
         { key: "self", title: "The Self is named", lines: seasonLines(pillars, undefined, askTurn) },
-        { key: "census", title: "The census is taken", lines: censusLines(pillars, undefined, askTurn) },
+        { key: "phases", title: "The five phases gather", lines: phaseLines(pillars, undefined, askTurn) },
         { key: "grounds", title: "The pillars are read in their grounds", lines: domainLines(pillars, undefined, askTurn) },
         { key: "court", title: "The court is assembled", lines: godLines(pillars, undefined, askTurn) },
       ];

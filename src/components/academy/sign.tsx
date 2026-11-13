@@ -2,7 +2,7 @@ import { BRANCHES, STEMS } from "@contracts/bazi";
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-/** What a sign is called in English: a stem's polarity and phase, a branch's animal. */
+/** What a sign is called in English: a stem's yin or yang and phase, a branch's animal. */
 const MEANING: Record<string, string> = Object.fromEntries([
   ...STEMS.map((s) => [s.hanzi, `${cap(s.yinyang)} ${cap(s.phase)}`]),
   ...BRANCHES.map((b) => [b.hanzi, b.animal]),

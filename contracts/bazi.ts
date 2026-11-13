@@ -102,16 +102,16 @@ export const TEN_GODS: Record<
   string,
   { hanzi: string; pinyin: string; english: string; reading: string; readingZh: string }
 > = {
-  companion: { hanzi: "比肩", pinyin: "bǐ jiān", english: "Companion", reading: "shoulder to shoulder, the same phase in the same polarity", readingZh: "並肩而立，同行同性" },
-  robwealth: { hanzi: "劫財", pinyin: "jié cái", english: "Rob Wealth", reading: "the same phase in opposite polarity, a rival who shares your nature", readingZh: "同行異性，與己同質而相爭者" },
-  eatinggod: { hanzi: "食神", pinyin: "shí shén", english: "Eating God", reading: "what the self produces in its own polarity, expression that nourishes", readingZh: "我所生之同性，滋養人的表達" },
-  hurtingofficer: { hanzi: "傷官", pinyin: "shāng guān", english: "Hurting Officer", reading: "what the self produces in opposite polarity, brilliance that tests authority", readingZh: "我所生之異性，考驗權威的才華" },
-  indirectwealth: { hanzi: "偏財", pinyin: "piān cái", english: "Indirect Wealth", reading: "what the self masters in the same polarity, the windfall and the wide field", readingZh: "我所剋之同性，意外之財與廣闊之田" },
-  directwealth: { hanzi: "正財", pinyin: "zhèng cái", english: "Direct Wealth", reading: "what the self masters in opposite polarity, the honest wage and the kept store", readingZh: "我所剋之異性，正當的酬勞與守住的積存" },
-  sevenkillings: { hanzi: "七殺", pinyin: "qī shā", english: "Seven Killings", reading: "what masters the self in the same polarity, pressure that forges or breaks", readingZh: "剋我之同性，或鍛或折的壓力" },
-  directofficer: { hanzi: "正官", pinyin: "zhèng guān", english: "Direct Officer", reading: "what masters the self in opposite polarity, rightful order and standing", readingZh: "剋我之異性，正當的秩序與名位" },
-  indirectresource: { hanzi: "偏印", pinyin: "piān yìn", english: "Indirect Resource", reading: "what generates the self in the same polarity, unconventional learning", readingZh: "生我之同性，由無名小徑而來的學問" },
-  directresource: { hanzi: "正印", pinyin: "zhèng yìn", english: "Direct Resource", reading: "what generates the self in opposite polarity, the seal of rightful support", readingZh: "生我之異性，正當扶持之印" },
+  companion: { hanzi: "比肩", pinyin: "bǐ jiān", english: "Companion", reading: "shoulder to shoulder, the same phase breathing in step with the self", readingZh: "並肩而立，同行同性" },
+  robwealth: { hanzi: "劫財", pinyin: "jié cái", english: "Rob Wealth", reading: "the same phase breathing against the self, a rival of the same nature", readingZh: "同行異性，與己同質而相爭者" },
+  eatinggod: { hanzi: "食神", pinyin: "shí shén", english: "Eating God", reading: "what the self brings forth on its own breath, expression that nourishes", readingZh: "我所生之同性，滋養人的表達" },
+  hurtingofficer: { hanzi: "傷官", pinyin: "shāng guān", english: "Hurting Officer", reading: "what the self brings forth on the opposite breath, brilliance that tests authority", readingZh: "我所生之異性，考驗權威的才華" },
+  indirectwealth: { hanzi: "偏財", pinyin: "piān cái", english: "Indirect Wealth", reading: "what the self masters on its own breath, the windfall and the wide field", readingZh: "我所剋之同性，意外之財與廣闊之田" },
+  directwealth: { hanzi: "正財", pinyin: "zhèng cái", english: "Direct Wealth", reading: "what the self masters on the opposite breath, the honest wage and the kept store", readingZh: "我所剋之異性，正當的酬勞與守住的積存" },
+  sevenkillings: { hanzi: "七殺", pinyin: "qī shā", english: "Seven Killings", reading: "what masters the self on its own breath, pressure that forges or breaks", readingZh: "剋我之同性，或鍛或折的壓力" },
+  directofficer: { hanzi: "正官", pinyin: "zhèng guān", english: "Direct Officer", reading: "what masters the self on the opposite breath, rightful order and standing", readingZh: "剋我之異性，正當的秩序與名位" },
+  indirectresource: { hanzi: "偏印", pinyin: "piān yìn", english: "Indirect Resource", reading: "what feeds the self on its own breath, learning that arrives by unmarked paths", readingZh: "生我之同性，由無名小徑而來的學問" },
+  directresource: { hanzi: "正印", pinyin: "zhèng yìn", english: "Direct Resource", reading: "what feeds the self on the opposite breath, the seal of rightful support", readingZh: "生我之異性，正當扶持之印" },
 };
 
 const godKey = (samePolarity: boolean, rel: "same" | "produces" | "masters" | "masteredBy" | "generatedBy"): string => {

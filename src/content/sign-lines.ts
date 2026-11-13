@@ -79,7 +79,7 @@ export function seasonMeeting(day: Phase, month: Phase): SeasonMeeting {
   The closing question. Each phase keeps four families of question, each
   family holds three variations, and each variation is written twice, a Yang
   form that calls the reader forward and a Yin form that steadies and
-  strengthens from within. The Day Master's polarity chooses the form; the
+  strengthens from within. The Day Master's yin or yang chooses the form; the
   turn chooses the family and the variation. Families rotate on every reading
   shown, so the next three readings always ask from a different family, and
   all twelve questions a reader can be asked come round before any repeats.
@@ -231,7 +231,7 @@ export const ASK_CYCLE = FAMILIES * VARIATIONS;
 
 /**
  * The question that closes a reading. The Day Master's phase chooses the
- * twelve, its polarity chooses the Yang or Yin form, and the turn walks them,
+ * twelve, its yin or yang chooses the Yang or Yin form, and the turn walks them,
  * a new family each time, starting from a place the chart chooses. The same
  * chart and turn always give the same question.
  */

@@ -32,7 +32,7 @@ describe("the closing questions", () => {
     }
   });
 
-  it("answer the Day Master's polarity with the matching form", () => {
+  it("answer the Day Master's yin or yang with the matching form", () => {
     for (let s = 0; s < 10; s++) {
       const stem = STEMS[s];
       for (let t = 0; t < ASK_CYCLE; t++) {

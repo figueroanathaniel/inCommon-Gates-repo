@@ -45,13 +45,13 @@ export function dayMasterOf(p: FourPillars) {
 }
 
 /** Count the five phases across all eight characters. */
-export function phaseCensus(p: FourPillars): Record<Phase, number> {
-  const census: Record<Phase, number> = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
+export function phaseWeights(p: FourPillars): Record<Phase, number> {
+  const weights: Record<Phase, number> = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
   const stems = [p.yearStem, p.monthStem, p.dayStem, p.hourStem];
   const branches = [p.yearBranch, p.monthBranch, p.dayBranch, p.hourBranch];
-  stems.forEach((s) => census[STEMS[s].phase]++);
-  branches.forEach((b) => census[BRANCHES[b].phase]++);
-  return census;
+  stems.forEach((s) => weights[STEMS[s].phase]++);
+  branches.forEach((b) => weights[BRANCHES[b].phase]++);
+  return weights;
 }
 
 /**
@@ -65,22 +65,22 @@ export class ReadingGloss {
   }
 }
 
-/** Declarative census lines, heaviest first. Honest: no verdicts, only weight. */
-export function censusLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(), turn = 0): string[] {
-  const census = phaseCensus(p);
+/** The lines on the five phases, heaviest first. Honest: no verdicts, only weight. */
+export function phaseLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(), turn = 0): string[] {
+  const weights = phaseWeights(p);
   const yy = dayMasterOf(p).yinyang;
-  const entries = (Object.entries(census) as [Phase, number][]).sort((a, b) => b[1] - a[1]);
+  const entries = (Object.entries(weights) as [Phase, number][]).sort((a, b) => b[1] - a[1]);
   const lines: string[] = [];
   const [topPhase, topCount] = entries[0];
   const [lowPhase, lowCount] = entries[entries.length - 1];
   const top = PHASES[topPhase];
-  lines.push(say(HEAVY, { P: gloss.mark(top.hanzi, top.english), n: topCount }, yy, turn));
+  lines.push(say(HEAVY, { P: gloss.mark(top.hanzi, top.english), n: topCount, k: topPhase }, yy, turn));
   if (lowCount === 0) {
     const low = PHASES[lowPhase];
-    lines.push(say(ABSENT, { L: gloss.mark(low.hanzi, low.english) }, yy, turn, 1));
+    lines.push(say(ABSENT, { L: gloss.mark(low.hanzi, low.english), k: lowPhase }, yy, turn, 1));
   } else if (lowCount === 1 && lowPhase !== topPhase) {
     const low = PHASES[lowPhase];
-    lines.push(say(ONCE, { L: gloss.mark(low.hanzi, low.english) }, yy, turn, 1));
+    lines.push(say(ONCE, { L: gloss.mark(low.hanzi, low.english), k: lowPhase }, yy, turn, 1));
   }
   const spread = entries.filter(([, n]) => n > 0).length;
   if (spread === 5) lines.push(say(ALL_FIVE, {}, yy, turn, 2));
@@ -178,9 +178,9 @@ const NUM_ZH = ["零", "一", "二", "三", "四", "五", "六", "七", "八"];
 const YY_ZH = { yin: "陰", yang: "陽" } as const;
 const ZH_PILLAR = PILLAR_LABELS.reduce<Record<string, string>>((a, l) => ((a[l.key] = l.domainZh), a), {});
 
-export function censusLinesZh(p: FourPillars): string[] {
-  const census = phaseCensus(p);
-  const entries = (Object.entries(census) as [Phase, number][]).sort((a, b) => b[1] - a[1]);
+export function phaseLinesZh(p: FourPillars): string[] {
+  const weights = phaseWeights(p);
+  const entries = (Object.entries(weights) as [Phase, number][]).sort((a, b) => b[1] - a[1]);
   const lines: string[] = [];
   const [topPhase, topCount] = entries[0];
   const [lowPhase, lowCount] = entries[entries.length - 1];
