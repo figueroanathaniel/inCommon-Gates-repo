@@ -5,6 +5,10 @@ import type { FourPillars } from "@contracts/bazi";
 import { LuckRoad } from "@/components/academy/luck";
 import { useTimes } from "@/lib/times";
 import { useT, useZh } from "@/lib/lang";
+import { useState } from "react";
+import { takeAskTurn } from "@/content/sign-lines";
+import { STEMS } from "@contracts/bazi";
+import { STONE_INTRO, say, sayOpening } from "@/content/reading-turns";
 
 /** The Destiny Chart (命盤) room: Your Nature, veiled or read. */
 export default function Stone() {
@@ -13,6 +17,8 @@ export default function Stone() {
   const zh = useZh();
   const t = useT();
   const f = zh ? "font-han" : "font-gloss";
+  // One turn per visit: the room's opening and its reading are said a new way each time.
+  const [turn] = useState(takeAskTurn);
 
   const pillars: FourPillars | null = stone.data
     ? {
@@ -31,7 +37,7 @@ export default function Stone() {
           <h1 className={(zh ? "font-han font-black tracking-[0.12em]" : "font-gloss font-semibold tracking-[0.04em]") + " mt-6 text-[38px] text-[var(--tx)] min-[820px]:text-[46px]"}>{t("Your Nature", "命盤")}</h1>
           <p className={f + " mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed"} style={{ color: "rgba(var(--txr),.7)" }}>
             {t(
-              "One true chart, set at the centre of the house. It is the same life read in every script the hall keeps, and in the end the scripts become one reading.",
+              stone.data ? say(STONE_INTRO, {}, STEMS[stone.data.dayStem].yinyang, turn) : sayOpening(STONE_INTRO, {}, turn),
               "一張真盤，置於書院之中：同一生命，以堂中所藏諸卷之字讀之，直至諸卷合為一讀。",
             )}
           </p>
@@ -48,7 +54,7 @@ export default function Stone() {
                 {t("Upon the pedestal is written: ", "座上書曰：")}{stone.data.note}
               </p>
             ) : null}
-            <MirrorReading pillars={pillars} label={zh ? `命盤：${stone.data.labelZh}` : `The Destiny Chart · ${stone.data.label}`} incoming={stone.data.luck ? times.incoming : []} meetings />
+            <MirrorReading pillars={pillars} label={zh ? `命盤：${stone.data.labelZh}` : `The Destiny Chart · ${stone.data.label}`} incoming={stone.data.luck ? times.incoming : []} meetings turn={turn} />
             {stone.data.luck ? (
               <div className="mx-auto mt-14 max-w-3xl">
                 <LuckRoad luck={stone.data.luck} dayStem={stone.data.dayStem} dark pillars={pillars} times={times} />

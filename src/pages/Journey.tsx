@@ -11,6 +11,7 @@ import { World, webglOk, type LegSpec } from "@/game/world";
 import { Sound } from "@/game/sound";
 import { CHAPTERS, buildHours, closingHours } from "@/game/hours";
 import { buildStory, closing, parts, plain, type Leg, type Part, type Vars } from "@/game/story";
+import { nextWalkTurn } from "@/game/choices";
 import { KEEPER, ONWARD, PLACE, TONE, type Choice, type L, type Option, type Tag } from "@/game/script";
 
 /*
@@ -200,7 +201,9 @@ function Play({ pick, chapter, onChapter, onLeave, onLost }: { pick: Pick; chapt
   const t = useT();
   const f = zh ? "font-han" : "font-gloss";
   const reduced = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, []);
-  const legs = useMemo(() => (chapter === "hours" ? buildHours(pick.pillars) : buildStory(pick.pillars, pick.luckStem)), [pick, chapter]);
+  // Each walk turns the choices once. The 中文 walk keeps the approved ones, which are the only ones written in 中文.
+  const [turn] = useState(() => (zh ? null : nextWalkTurn()));
+  const legs = useMemo(() => (chapter === "hours" ? buildHours(pick.pillars, turn) : buildStory(pick.pillars, pick.luckStem, turn)), [pick, chapter, turn]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const worldRef = useRef<World | null>(null);

@@ -1,12 +1,14 @@
 /**
  * Prose sweep, in the manner of the parent house's 400-seed rule:
  * every generator in src/lib/reading.ts is run across hundreds of charts,
- * including the heaviest census cases, and its output is read by greps
+ * including the heaviest phase cases, and its output is read by greps
  * for the classic failure modes.
  */
-import { censusLines, seasonLines, domainLines, godLines, censusLinesZh, seasonLinesZh, domainLinesZh, godLinesZh, pillarViews, dayMasterOf } from "../src/lib/reading";
+import { phaseLines, seasonLines, domainLines, godLines, phaseLinesZh, seasonLinesZh, domainLinesZh, godLinesZh, pillarViews, dayMasterOf } from "../src/lib/reading";
 import { PHASES, STEMS, BRANCHES, tenGodOf } from "../contracts/bazi";
 import type { FourPillars } from "../contracts/bazi";
+import * as RT from "../src/content/reading-turns";
+import { TURN_CYCLE, leaves, b1Forms, allForms, READ_FROM, RESTS, STONE_INTRO } from "../src/content/reading-turns";
 
 function xorshift(seed: number) {
   let s = seed >>> 0 || 1;
@@ -24,7 +26,10 @@ function inspect(text: string, ctx: string) {
   if (/\. [a-z]/.test(text)) problems.push(`${ctx}: lowercase after full stop: ${text}`);
   if (/\ba [AEIOU]/.test(text)) problems.push(`${ctx}: orphan article: ${text}`);
   if (/\b(1 times|1 pillars? are|2 time\b)/.test(text)) problems.push(`${ctx}: number grammar: ${text}`);
-  const machinery = ["calculate", "compute", "algorithm", "parameter", "variable", "function", "output", "input"];
+  if (/[:;]/.test(text)) problems.push(`${ctx}: colon or semicolon: ${text}`);
+  if (/tradition|tends? to|appear|this chart|old reckoning/i.test(text)) problems.push(`${ctx}: retired phrasing: ${text}`);
+  if (/\byou are\b|\brather than\b|\binstead of\b|\bfate\b/i.test(text)) problems.push(`${ctx}: house rule word: ${text}`);
+  const machinery = ["calculate", "compute", "algorithm", "parameter", "variable", "function", "output", "input", "census", "architecture", "polarity", "framework", "dynamics", "leverage", "navigate", "landscape", "metric", "configuration"];
   for (const m of machinery) {
     if (new RegExp(`\\b${m}`, "i").test(text)) problems.push(`${ctx}: machinery word '${m}': ${text}`);
   }
@@ -40,13 +45,16 @@ for (let seed = 1; seed <= 400; seed++) {
     dayStem: Math.floor(rnd() * 10), dayBranch: Math.floor(rnd() * 12),
     hourStem: Math.floor(rnd() * 10), hourBranch: Math.floor(rnd() * 12),
   };
-  for (const fn of [censusLines, seasonLines, domainLines, godLines]) {
-    for (const line of fn(p)) inspect(line, `seed=${seed} ${fn.name}`);
+  // Every turn of the reading, so all 72 leaves of each phrase are read.
+  for (let turn = 0; turn < TURN_CYCLE; turn++) {
+    for (const fn of [phaseLines, seasonLines, domainLines, godLines]) {
+      for (const line of fn(p, undefined, turn)) inspect(line, `seed=${seed} turn=${turn} ${fn.name}`);
+    }
   }
   runs++;
 }
 
-// 2) The heaviest census cases: all eight characters one phase (five charts)
+// 2) The heaviest phase cases: all eight characters one phase (five charts)
 const byPhase: Record<string, { stems: number[]; branches: number[] }> = {};
 for (const ph of Object.keys(PHASES)) {
   byPhase[ph] = {
@@ -59,7 +67,7 @@ for (const [ph, { stems, branches }] of Object.entries(byPhase)) {
     yearStem: stems[0], yearBranch: branches[0], monthStem: stems[1], monthBranch: branches[1 % branches.length],
     dayStem: stems[0], dayBranch: branches[0], hourStem: stems[1], hourBranch: branches[1 % branches.length],
   };
-  for (const fn of [censusLines, seasonLines, domainLines, godLines]) {
+  for (const fn of [phaseLines, seasonLines, domainLines, godLines]) {
     for (const line of fn(p)) inspect(line, `mono-${ph} ${fn.name}`);
   }
   runs++;
@@ -105,12 +113,27 @@ if (dayMasterOf({ yearStem: 0, yearBranch: 0, monthStem: 0, monthBranch: 0, dayS
       yearStem: rnd(10), yearBranch: rnd(12), monthStem: rnd(10), monthBranch: rnd(12),
       dayStem: rnd(10), dayBranch: rnd(12), hourStem: rnd(10), hourBranch: rnd(12),
     };
-    const en = [...seasonLines(p), ...censusLines(p), ...domainLines(p), ...godLines(p)].join("\n");
+    const en = [...seasonLines(p), ...phaseLines(p), ...domainLines(p), ...godLines(p)].join("\n");
     if (cjk.test(en)) problems.push(`English reading kept a character: ${en.match(cjk)![0]}`);
-    const zh = [...seasonLinesZh(p), ...censusLinesZh(p), ...domainLinesZh(p), ...godLinesZh(p)].join("\n");
+    const zh = [...seasonLinesZh(p), ...phaseLinesZh(p), ...domainLinesZh(p), ...godLinesZh(p)].join("\n");
     if (latin.test(zh)) problems.push(`中文 reading kept a Latin letter: ${zh}`);
     if (/undefined|NaN|\u2014|\u2013/.test(zh)) problems.push(`中文 reading defect: ${zh}`);
     runs++;
+  }
+}
+
+for (const t of [READ_FROM, RESTS, STONE_INTRO]) {
+  for (const line of leaves(t as Parameters<typeof leaves>[0], { dm: "Jiǎ" })) inspect(line, "frame");
+  for (const line of b1Forms(t as Parameters<typeof b1Forms>[0], { dm: "Jiǎ" })) inspect(line, "frame b1");
+}
+
+// 6) Every form of every part of every tree, for every phase in play
+{
+  const trees: [string, unknown][] = Object.entries(RT).filter(([, v]) => v && typeof v === "object" && "a" in (v as object) && "c" in (v as object));
+  for (const [k, v] of Object.entries(RT.SEASON)) trees.push([`SEASON.${k}`, v]);
+  for (const ph of Object.keys(PHASES)) {
+    const ctx = { P: "Wood", n: 3, k: ph, L: "Metal", dm: "Jiǎ", yy: "yang", p: ph, q: "the great tree", m: "Yín", mph: ph, dph: ph, decree: "the month's decree", dk: ph, pl: "year pillar", G: "Companion", reading: "shoulder to shoulder", domain: "ancestry", ph, S: "Jiǎ", sq: "the great tree", A: "Rat", B: "Zǐ", bq: "the deep hour" };
+    for (const [name, t] of trees) for (const line of allForms(t as Parameters<typeof allForms>[0], ctx)) inspect(line, `forms ${name} ${ph}`);
   }
 }
 

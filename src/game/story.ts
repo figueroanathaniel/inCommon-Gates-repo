@@ -4,6 +4,7 @@ import {
   AGAIN, CLOSE_FIRST, CLOSE_LAST, CLOSE_WAY, FRAME, GODS, INTIMACY, KEEPER, KEEPER_INVITE, KEEPER_OPEN, OPENING, READ_AS,
   type Choice, type L, type Tag,
 } from "./script";
+import { GOD_TURNS, ROAD_INVITE_TURNS, turnChoice } from "./choices";
 
 /*
   The road of one chart. It is read straight off the eight characters with
@@ -54,7 +55,8 @@ export const capWords = (s: string) => s.split(" ").map((w) => w.charAt(0).toUpp
 export const signOf = (x: { english: string; hanzi: string }): Part => ({ sign: { en: x.english, han: x.hanzi } });
 const TONES: Tone[] = ["day", "dusk", "night", "dawn", "day"];
 
-export function buildStory(p: FourPillars, luckStem: number | null): Leg[] {
+/** turn: which of the twelve choices each place offers; null keeps the approved ones. */
+export function buildStory(p: FourPillars, luckStem: number | null, turn: number | null = null): Leg[] {
   const dm = STEMS[p.dayStem];
   const branch = BRANCHES[p.dayBranch];
   const base: Vars = {
@@ -68,7 +70,7 @@ export function buildStory(p: FourPillars, luckStem: number | null): Leg[] {
     spec: { env: "garden", tone: "dawn", figure: "keeper" },
     name: KEEPER, vars: base,
     meet: KEEPER_OPEN.map((line) => ({ who: "keeper" as const, line })),
-    choice: KEEPER_INVITE, after: [], exit: "grow", arrive: OPENING[branch.phase],
+    choice: turnChoice(KEEPER_INVITE, ROAD_INVITE_TURNS, turn, 0, false), after: [], exit: "grow", arrive: OPENING[branch.phase],
   });
 
   const stops: { stem: number; env: Phase; frame: "day" | "pillar" | "luck"; pillar?: number }[] = [
@@ -107,7 +109,7 @@ export function buildStory(p: FourPillars, luckStem: number | null): Leg[] {
     if (s.frame === "day") after.push(fig(INTIMACY));
     legs.push({
       spec: { env: s.env, tone: TONES[i % TONES.length], figure: kind, phase: stem.phase },
-      name: sc.name, vars, meet, choice: again ? null : sc.choice, after, exit: "gate",
+      name: sc.name, vars, meet, choice: again ? null : turnChoice(sc.choice, GOD_TURNS[kind], turn, i), after, exit: "gate",
     });
   });
 

@@ -3,6 +3,7 @@ import { TIE_NAMES, branchMeetings } from "../lib/meet";
 import type { Tone } from "./world";
 import { KEEPER, OPENING, type Choice, type L, type Tag } from "./script";
 import { capWords, signOf, type Beat, type Leg, type Vars } from "./story";
+import { HOURS_INVITE_TURNS, PILLAR_TURNS, turnChoice } from "./choices";
 
 /*
   Chapter II, The Hours. Chapter I walked the stems, which stand in the open.
@@ -127,7 +128,8 @@ export function toneOfHour(branch: number): Tone {
   return "day";
 }
 
-export function buildHours(p: FourPillars): Leg[] {
+/** turn: which of the twelve choices each place offers; null keeps the approved ones. */
+export function buildHours(p: FourPillars, turn: number | null = null): Leg[] {
   const dm = STEMS[p.dayStem];
   const walked = [p.yearBranch, p.monthBranch, p.dayBranch, p.hourBranch];
   const varsOf = (bi: number, pillar: number): Vars => {
@@ -149,7 +151,7 @@ export function buildHours(p: FourPillars): Leg[] {
     spec: { env: "garden", tone: "night", figure: "keeper", hour: 0 },
     name: KEEPER, vars: varsOf(walked[0], 0),
     meet: HOURS_OPEN.map((line) => ({ who: "keeper" as const, line })),
-    choice: HOURS_INVITE, after: [], exit: "grow", arrive: OPENING[first.phase],
+    choice: turnChoice(HOURS_INVITE, HOURS_INVITE_TURNS, turn, 0, false), after: [], exit: "grow", arrive: OPENING[first.phase],
   });
 
   walked.forEach((bi, i) => {
@@ -182,7 +184,7 @@ export function buildHours(p: FourPillars): Leg[] {
     legs.push({
       spec: { env: b.phase, tone: toneOfHour(bi), figure: "animal", animal: bi, hour: (bi * 2) % 24, phase: b.phase },
       name: { en: `The ${b.animal}`, zh: b.animalHanzi },
-      vars: varsOf(bi, i), meet, choice: PILLAR_CHOICE[i], after, exit: "gate",
+      vars: varsOf(bi, i), meet, choice: turnChoice(PILLAR_CHOICE[i], PILLAR_TURNS[i], turn, i), after, exit: "gate",
       sub: { en: `The hour of the ${b.animal}`, zh: `${b.hanzi}時` },
       enter: HOUR_AIR[bi],
     });
