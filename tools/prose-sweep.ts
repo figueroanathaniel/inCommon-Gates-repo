@@ -7,7 +7,8 @@
 import { phaseLines, seasonLines, domainLines, godLines, phaseLinesZh, seasonLinesZh, domainLinesZh, godLinesZh, pillarViews, dayMasterOf } from "../src/lib/reading";
 import { PHASES, STEMS, BRANCHES, tenGodOf } from "../contracts/bazi";
 import type { FourPillars } from "../contracts/bazi";
-import { TURN_CYCLE, leaves, b1Forms, READ_FROM, RESTS, STONE_INTRO } from "../src/content/reading-turns";
+import * as RT from "../src/content/reading-turns";
+import { TURN_CYCLE, leaves, b1Forms, allForms, READ_FROM, RESTS, STONE_INTRO } from "../src/content/reading-turns";
 
 function xorshift(seed: number) {
   let s = seed >>> 0 || 1;
@@ -124,6 +125,16 @@ if (dayMasterOf({ yearStem: 0, yearBranch: 0, monthStem: 0, monthBranch: 0, dayS
 for (const t of [READ_FROM, RESTS, STONE_INTRO]) {
   for (const line of leaves(t as Parameters<typeof leaves>[0], { dm: "Jiǎ" })) inspect(line, "frame");
   for (const line of b1Forms(t as Parameters<typeof b1Forms>[0], { dm: "Jiǎ" })) inspect(line, "frame b1");
+}
+
+// 6) Every form of every part of every tree, for every phase in play
+{
+  const trees: [string, unknown][] = Object.entries(RT).filter(([, v]) => v && typeof v === "object" && "a" in (v as object) && "c" in (v as object));
+  for (const [k, v] of Object.entries(RT.SEASON)) trees.push([`SEASON.${k}`, v]);
+  for (const ph of Object.keys(PHASES)) {
+    const ctx = { P: "Wood", n: 3, k: ph, L: "Metal", dm: "Jiǎ", yy: "yang", p: ph, q: "the great tree", m: "Yín", mph: ph, dph: ph, decree: "the month's decree", dk: ph, pl: "year pillar", G: "Companion", reading: "shoulder to shoulder", domain: "ancestry", ph, S: "Jiǎ", sq: "the great tree", A: "Rat", B: "Zǐ", bq: "the deep hour" };
+    for (const [name, t] of trees) for (const line of allForms(t as Parameters<typeof allForms>[0], ctx)) inspect(line, `forms ${name} ${ph}`);
+  }
 }
 
 console.log(`swept ${runs} chart sets; ten-god anchors: ${anchors.length}`);

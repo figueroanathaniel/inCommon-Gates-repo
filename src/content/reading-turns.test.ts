@@ -54,10 +54,33 @@ describe("the Destiny Chart's phrase trees", () => {
   });
 });
 
+describe("every part has as many options as b1", () => {
+  const phases = ["wood", "fire", "earth", "metal", "water"];
+  it.each(trees)("%s says every part nine different ways, for every phase", (_n, t, ctx) => {
+    for (const ph of phases) {
+      const c = { ...ctx, ph, k: ph, dk: ph, p: ph };
+      for (const p of T.pools(t)) expect(new Set(T.forms(p, c)).size).toBe(9);
+    }
+  });
+
+  it.each(trees)("%s shows all nine forms of each part before any repeats", (_n, t, ctx) => {
+    for (const yy of ["yang", "yin"] as const) {
+      const seen = T.pools(t).map(() => new Set<string>());
+      const all = T.pools(t).map((p) => T.forms(p, ctx));
+      for (let turn = 0; turn < T.TURN_CYCLE * 3; turn++) {
+        const line = T.say(t, ctx, yy, turn);
+        all.forEach((fs, i) => fs.forEach((f) => { if (line.includes(f)) seen[i].add(f); }));
+      }
+      const own = T.pools(t).map((_, i) => i).filter((i) => i < 7 || (yy === "yang" ? i % 2 === 1 : i % 2 === 0));
+      for (const i of own) expect(seen[i].size).toBe(9);
+    }
+  });
+});
+
 describe("the reading's voice", () => {
   const banned = /tradition|tends? to|appear|this chart|old reckoning|\byou are\b/i;
   it.each(trees)("%s speaks to you, warmly, with none of the retired phrasing", (_n, t, ctx) => {
-    const all = [...T.leaves(t, ctx), ...T.b1Forms(t, ctx)];
+    const all = [...T.leaves(t, ctx), ...T.allForms(t, ctx)];
     for (const line of all) expect(line).not.toMatch(banned);
   });
 });
