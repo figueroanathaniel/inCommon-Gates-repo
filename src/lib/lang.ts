@@ -9,9 +9,21 @@ import { setChartPrefs, useChartPrefs } from "./prefs";
   which names the other language in that language.
 */
 
-/** True while the reader has chosen 中文. */
+/**
+  中文 is locked all the way through (the owner, 12 November 2026): the
+  Chinese has not been read by a reader of Chinese, so the Academy reads in
+  English whatever the device kept, and the switch says coming soon. Every
+  Chinese string is still in place. Set this true to open it again.
+*/
+export const ZH_OPEN: boolean = false;
+
+/** "Coming soon", as the switch says it while 中文 is locked. */
+export const ZH_SOON = "即將推出";
+
+/** True while the reader has chosen 中文, and 中文 is open. */
 export function useZh(): boolean {
-  return useChartPrefs().lang === "zh";
+  const chosen = useChartPrefs().lang === "zh";
+  return ZH_OPEN && chosen;
 }
 
 /** Picks the line for the language the reader chose. */
@@ -29,6 +41,7 @@ export function numZh(n: number): string {
 }
 
 export function setLang(lang: "en" | "zh") {
+  if (lang === "zh" && !ZH_OPEN) return;
   setChartPrefs({ lang });
 }
 

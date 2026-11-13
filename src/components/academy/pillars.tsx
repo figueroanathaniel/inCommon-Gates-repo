@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FourPillars, Phase } from "@contracts/bazi";
 import { BRANCHES, PHASES, STEMS, tenGodOf } from "@contracts/bazi";
 import { pillarViews } from "@/lib/reading";
+import { BRANCH_LINE, GOD_LINE, STEM_LINE } from "@/content/sign-lines";
 import { SEASON_STATES, natalSigns, seasonState, type Sign } from "@/lib/meet";
 import { setChartPrefs, useChartPrefs } from "@/lib/prefs";
 import { Rule } from "./chrome";
@@ -300,11 +301,14 @@ export function PillarChart({
             <span className="font-semibold"><SignWord en={selected.stem.english} han={selected.stem.hanzi} /></span> stands above: {selected.stem.quality}. Beneath it,{" "}
             <span className="font-semibold"><SignWord en={selected.branch.english} han={selected.branch.hanzi} /></span>, the {selected.branch.animal}: {selected.branch.quality}.
           </p>
+          <p className="font-gloss mt-3 text-[15px] leading-relaxed" style={{ color: inkColor }} data-sign-lines>
+            {STEM_LINE[selected.stem.hanzi]} {BRANCH_LINE[selected.branch.hanzi]}
+          </p>
           <Rule dark={dark} className="my-4" />
           <p className="font-gloss text-[14px] leading-relaxed" style={{ color: subColor }}>
             This is the {selected.english.toLowerCase()}. Its ground is {selected.domain}.
             {selected.god ? (
-              <> Against the Day Master it sits as {selected.god.english}: {selected.god.reading}.</>
+              <> Against the Day Master it sits as {selected.god.english}: {selected.god.reading}. {GOD_LINE[selected.god.key]}</>
             ) : (
               <> Its stem is the Day Master, the self every other sign in the chart takes its relation from.</>
             )}

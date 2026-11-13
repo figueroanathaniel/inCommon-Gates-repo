@@ -2,7 +2,7 @@ import { ReturnLink } from "./return";
 import { Link, NavLink } from "react-router";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { setLang, useLangAttr, useZh } from "@/lib/lang";
+import { setLang, useLangAttr, useZh, ZH_OPEN, ZH_SOON } from "@/lib/lang";
 
 /** 印 The seal of the house, set as a rubbing: ink on paper, never cinnabar. */
 export function Seal({ char, size = 44, dark = false }: { char: string; size?: number; dark?: boolean }) {
@@ -180,16 +180,31 @@ export function Shell({ children, paper = false }: { children: ReactNode; paper?
                 )}
               </NavLink>
             ))}
-            <button
-              type="button"
-              data-lang-switch
-              lang={zh ? "en" : "zh-Hant"}
-              onClick={() => setLang(zh ? "en" : "zh")}
-              className={(zh ? "font-gloss tracking-[0.12em] uppercase" : "font-han tracking-[0.2em]") + " ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center border px-3 text-[13px] transition-colors duration-200 hover:text-gilt"}
-              style={{ borderColor: "rgba(var(--txr),.3)", color: "rgba(var(--txr),.85)" }}
-            >
-              {zh ? "English" : "中文"}
-            </button>
+            {ZH_OPEN ? (
+              <button
+                type="button"
+                data-lang-switch
+                lang={zh ? "en" : "zh-Hant"}
+                onClick={() => setLang(zh ? "en" : "zh")}
+                className={(zh ? "font-gloss tracking-[0.12em] uppercase" : "font-han tracking-[0.2em]") + " ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center border px-3 text-[13px] transition-colors duration-200 hover:text-gilt"}
+                style={{ borderColor: "rgba(var(--txr),.3)", color: "rgba(var(--txr),.85)" }}
+              >
+                {zh ? "English" : "中文"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                data-lang-switch
+                data-lang-soon
+                aria-disabled="true"
+                aria-label="Chinese, coming soon"
+                className="font-han ml-2 flex min-h-[44px] min-w-[44px] cursor-default flex-col items-center justify-center gap-[3px] border px-3 leading-none"
+                style={{ borderColor: "rgba(var(--txr),.3)", color: "rgba(var(--txr),.85)" }}
+              >
+                <span lang="zh-Hant" className="text-[13px] tracking-[0.2em]">中文</span>
+                <span lang="zh-Hant" className="text-[11px] tracking-[0.08em]" style={{ color: "rgba(var(--txr),.7)" }}>{ZH_SOON}</span>
+              </button>
+            )}
             {isSignedIn ? (
               <>
               <span className="mx-2 hidden h-5 w-px min-[820px]:block" style={{ background: "rgba(var(--txr),.2)" }} aria-hidden />

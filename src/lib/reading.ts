@@ -7,6 +7,7 @@ import {
   type FourPillars,
   type Phase,
 } from "@contracts/bazi";
+import { BRANCH_LINE, GOD_LINE, SEASON_LINE, STEM_LINE, seasonMeeting } from "@/content/sign-lines";
 
 export interface PillarView {
   key: string;
@@ -105,7 +106,7 @@ export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
   const ph = (phase: Phase) => gloss.mark(PHASES[phase].hanzi, PHASES[phase].english.toLowerCase());
   const lines: string[] = [];
   lines.push(
-    `The Day Master is ${gloss.mark(dm.hanzi, dm.english)}, which is ${dm.yinyang} ${PHASES[dm.phase].english.toLowerCase()}. It is ${dm.quality}.`
+    `The Day Master is ${gloss.mark(dm.hanzi, dm.english)}, which is ${dm.yinyang} ${PHASES[dm.phase].english.toLowerCase()}. It is ${dm.quality}. ${STEM_LINE[dm.hanzi]}`
   );
   if (month.phase === dm.phase) {
     lines.push(
@@ -128,6 +129,7 @@ export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
       `Born in ${gloss.mark(month.hanzi, month.english)}, a month of ${ph(month.phase)}, the Day Master masters its season, because ${ph(dm.phase)} overcomes ${ph(month.phase)}. This is a self set against its time from the first breath, and as a life spent turning resistance into a living.`
     );
   }
+  lines[1] += ` ${SEASON_LINE[seasonMeeting(dm.phase, month.phase)]}`;
   return lines;
 }
 
@@ -135,10 +137,14 @@ export function seasonLines(p: FourPillars, gloss: ReadingGloss = new ReadingGlo
 export function godLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss()): string[] {
   const views = pillarViews(p);
   const lines: string[] = [];
+  const said = new Set<string>();
   for (const v of views) {
     if (!v.god) continue;
+    // A god the chart holds twice has its line said once.
+    const own = said.has(v.god.key) ? "" : ` ${GOD_LINE[v.god.key]}`;
+    said.add(v.god.key);
     lines.push(
-      `Above the ${gloss.mark(v.hanzi, v.english.toLowerCase())} sits ${gloss.mark(v.god.hanzi, v.god.english)}, ${v.god.reading}. Its ground is ${v.domain}.`
+      `Above the ${gloss.mark(v.hanzi, v.english.toLowerCase())} sits ${gloss.mark(v.god.hanzi, v.god.english)}, ${v.god.reading}. Its ground is ${v.domain}.${own}`
     );
   }
   const keys = views.filter((v) => v.god).map((v) => v.god!.key);
@@ -154,12 +160,16 @@ export function godLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss(
 
 /** Pillar-by-pillar reading, each grounded in its traditional domain. */
 export function domainLines(p: FourPillars, gloss: ReadingGloss = new ReadingGloss()): string[] {
+  const said = new Set<string>();
   return pillarViews(p).map((v) => {
+    // A branch the chart holds twice has its line said once.
+    const own = said.has(v.branch.hanzi) ? "" : ` ${BRANCH_LINE[v.branch.hanzi]}`;
+    said.add(v.branch.hanzi);
     const branchNote = `eneath it is the ${gloss.mark(v.branch.animalHanzi, v.branch.animal)}, ${gloss.mark(v.branch.hanzi, v.branch.english)}, ${v.branch.quality}`;
     if (v.key === "day") {
-      return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} holds the self. ${gloss.mark(v.stem.hanzi, v.stem.english)} stands above, and b${branchNote}. This pillar is also the spouse's palace. The branch under the self is read as the ground one's closest companion stands on.`;
+      return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} holds the self. ${gloss.mark(v.stem.hanzi, v.stem.english)} stands above, and b${branchNote}. This pillar is also the spouse's palace. The branch under the self is read as the ground one's closest companion stands on.${own}`;
     }
-    return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} carries ${gloss.mark(v.stem.hanzi, v.stem.english)} above, ${v.stem.quality}. B${branchNote}. Its ground is ${v.domain}.`;
+    return `The ${gloss.mark(v.hanzi, v.english.toLowerCase())} carries ${gloss.mark(v.stem.hanzi, v.stem.english)} above, ${v.stem.quality}. B${branchNote}. Its ground is ${v.domain}.${own}`;
   });
 }
 
